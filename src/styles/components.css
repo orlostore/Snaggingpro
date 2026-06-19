@@ -230,31 +230,40 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: var(--space-3);
-  max-width: 280px;
+  width: 100%;
+  max-width: 360px;
   margin: 0 auto;
 }
 .pin__key {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-lg);
-  min-height: 64px;
-  font-size: var(--text-xl);
+  aspect-ratio: 1 / 1;
+  min-height: 72px;
+  font-size: var(--text-2xl);
   font-family: var(--font-display);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
 }
 .pin__key:active {
   background: var(--color-brand-soft);
+  transform: scale(0.96);
 }
 .pin__dots {
   display: flex;
-  gap: var(--space-3);
+  gap: var(--space-4);
   justify-content: center;
-  margin: var(--space-6) 0;
+  margin: var(--space-6) 0 var(--space-8);
 }
 .pin__dot {
-  width: 14px;
-  height: 14px;
+  width: 18px;
+  height: 18px;
   border-radius: 50%;
   border: 2px solid var(--color-border-strong);
+  transition: background var(--duration-fast) var(--ease-out);
 }
 .pin__dot--on {
   background: var(--color-brand);

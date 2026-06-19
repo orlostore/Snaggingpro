@@ -325,6 +325,65 @@
   margin: var(--space-6) 0 var(--space-10);
 }
 
+/* ============ Observation block (per Issue item) ============ */
+.obs-block {
+  margin-top: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.obs {
+  background: var(--color-bg-sunken);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.obs__photos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+  gap: var(--space-2);
+}
+.obs__photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--color-bg-elevated);
+}
+.obs__photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.obs__photo-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  color: var(--color-text-muted);
+}
+.obs__photo-remove {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: var(--text-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.obs__actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
 /* ============ Report screen ============ */
 .report-screen {
   padding-bottom: var(--space-10);
