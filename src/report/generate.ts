@@ -13,11 +13,12 @@
 
 import { escapeHtml as h } from '@/lib/escape';
 import { collectSnags, statsForRoom, SEVERITY_LABEL, type SnagRecord } from '@/domain/snags';
+import { DISC_LABELS, DISCIPLINE_ORDER, type Discipline } from '@/domain/disciplines';
 import { HANDOVER_SECTIONS, HANDOVER_FOOTNOTE } from '@/domain/handoverDocs';
 import { PROP_LABEL } from '@/domain/pricing';
 import { formatDateLong, formatAED } from '@/lib/format';
 import { getPhoto } from '@/storage/photos';
-import type { State } from '@/state/schema';
+import type { RoomState, State } from '@/state/schema';
 
 const BRAND_CSS = `
   :root {
@@ -71,6 +72,22 @@ const BRAND_CSS = `
   .rect-block__pill--open { background: #a16207; }
   .rect-block__title { color: var(--grey); }
   .rect-block__note { margin-top: 6px; }
+  .checkpoints { background: var(--light); border-radius: 8px; padding: 14px 16px; margin: 12px 0 16px; }
+  .checkpoints h3 { color: var(--dark); margin: 0; font-size: 14px; }
+  .checkpoints .meta { font-size: 12px; margin-top: 2px; }
+  .cp__group { margin-top: 12px; page-break-inside: avoid; }
+  .cp__disc { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: var(--brand); border-bottom: 1px solid #d6d8db; padding-bottom: 4px; margin-bottom: 6px; }
+  .cp__list { list-style: none; padding: 0; margin: 0; }
+  .cp__item { display: flex; gap: 8px; padding: 3px 0; font-size: 12px; line-height: 1.45; align-items: baseline; }
+  .cp__mark { display: inline-block; width: 16px; flex-shrink: 0; text-align: center; font-weight: 700; }
+  .cp__mark--pass { color: #0f7a44; }
+  .cp__mark--issue { color: #b6221b; }
+  .cp__mark--na { color: var(--grey); }
+  .cp__mark--pending { color: var(--grey); }
+  .cp__label { flex: 1; }
+  .cp__ref { color: var(--grey); }
+  .cp__db { display: inline-block; background: rgba(47,109,170,0.10); color: #2f6dbb; padding: 0 6px; border-radius: 99px; font-size: 10px; font-weight: 600; margin-right: 4px; }
+  .room__findings-title { font-size: 14px; color: var(--dark); margin: 18px 0 6px; border-top: 1px solid #e2e4e9; padding-top: 12px; }
   @media print { @page { size: A4; margin: 14mm; } .no-print { display: none; } }
 `;
 
@@ -220,6 +237,63 @@ function snagBlock(s: SnagRecord, photos: Map<string, string>): string {
   `;
 }
 
+function statusIcon(status: 'pending' | 'pass' | 'issue' | 'na'): string {
+  switch (status) {
+    case 'pass':  return '<span class="cp__mark cp__mark--pass">✓</span>';
+    case 'issue': return '<span class="cp__mark cp__mark--issue">⚠</span>';
+    case 'na':    return '<span class="cp__mark cp__mark--na">—</span>';
+    case 'pending': default:
+                  return '<span class="cp__mark cp__mark--pending">·</span>';
+  }
+}
+
+function checkpointsBlock(room: RoomState, snags: SnagRecord[]): string {
+  const items = Object.values(room.items);
+  if (items.length === 0) return '';
+
+  // Group by discipline in the canonical order
+  const grouped = new Map<Discipline, typeof items>();
+  for (const it of items) {
+    if (!grouped.has(it.disc)) grouped.set(it.disc, []);
+    grouped.get(it.disc)!.push(it);
+  }
+  const orderedDiscs = DISCIPLINE_ORDER.filter((d) => grouped.has(d));
+
+  const snagByItemKey = new Map<string, SnagRecord[]>();
+  for (const s of snags) {
+    if (!snagByItemKey.has(s.itemKey)) snagByItemKey.set(s.itemKey, []);
+    snagByItemKey.get(s.itemKey)!.push(s);
+  }
+
+  return `
+    <div class="checkpoints">
+      <h3>Inspection checkpoints</h3>
+      <p class="meta">Every item walked through during this inspection.</p>
+      ${orderedDiscs
+        .map((disc) => {
+          const list = grouped.get(disc)!;
+          return `
+        <div class="cp__group">
+          <h4 class="cp__disc">${h(DISC_LABELS[disc])} · ${list.length} item${list.length === 1 ? '' : 's'}</h4>
+          <ul class="cp__list">
+            ${list
+              .map((it) => {
+                const refs = snagByItemKey.get(it.key) ?? [];
+                const refTxt = refs.length ? ` <span class="cp__ref">(see ${refs.map((r) => h(r.id)).join(', ')})</span>` : '';
+                const sev = refs.length && refs[0]?.severity ? ` <span class="pill pill--${refs[0]!.severity}">${h(SEVERITY_LABEL[refs[0]!.severity])}</span>` : '';
+                const db = it.dbNum ? ` <span class="cp__db">DB ${it.dbNum}</span>` : '';
+                return `<li class="cp__item">${statusIcon(it.status)}<span class="cp__label">${h(it.label)}${db}${sev}${refTxt}</span></li>`;
+              })
+              .join('')}
+          </ul>
+        </div>
+      `;
+        })
+        .join('')}
+    </div>
+  `;
+}
+
 function roomSection(
   state: State,
   roomId: string,
@@ -234,8 +308,10 @@ function roomSection(
     <section class="room">
       <div class="room__title">
         <h2>${h(room.label)}</h2>
-        <span class="meta">${st.inspected}/${st.total} inspected · ${st.issue} issues</span>
+        <span class="meta">${st.inspected}/${st.total} inspected · ${st.pass} pass · ${st.issue} issue · ${st.na} N/A</span>
       </div>
+      ${checkpointsBlock(room, roomSnags)}
+      <h3 class="room__findings-title">Findings</h3>
       ${roomSnags.map((s) => snagBlock(s, photos)).join('') || '<p class="meta">No issues recorded.</p>'}
     </section>
   `;
