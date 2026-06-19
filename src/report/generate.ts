@@ -132,6 +132,21 @@ function kpis(state: State, snags: SnagRecord[]): string {
   const inspectedRooms = state.roomOrder
     .map((id) => state.rooms[id])
     .filter((r): r is NonNullable<typeof r> => !!r && !r.excluded).length;
+
+  if (state.job.reportType === 'follow-up') {
+    const fixed = snags.filter((s) => s.rectification === 'fixed').length;
+    const open = snags.filter((s) => s.rectification === 'open' || !s.rectification).length;
+    const newOnes = snags.filter((s) => s.rectification === 'new').length;
+    return `
+      <div class="kpis">
+        <div class="kpi"><div class="kpi__n">${snags.length}</div><div class="kpi__l">Original snags</div></div>
+        <div class="kpi"><div class="kpi__n">${fixed}</div><div class="kpi__l">Fixed</div></div>
+        <div class="kpi"><div class="kpi__n">${open}</div><div class="kpi__l">Still open</div></div>
+        <div class="kpi"><div class="kpi__n">${newOnes}</div><div class="kpi__l">New issues</div></div>
+      </div>
+    `;
+  }
+
   const critical = snags.filter((s) => s.severity === 'critical').length;
   const major = snags.filter((s) => s.severity === 'major').length;
   return `
@@ -304,15 +319,23 @@ function roomSection(
   if (!room || room.excluded) return '';
   const roomSnags = snags.filter((s) => s.roomId === roomId);
   const st = statsForRoom(room);
+  const isFollowUp = state.job.reportType === 'follow-up';
+  // Follow-up closing reports skip the full checkpoint list — Pass / N/A items
+  // from the original inspection are noise here. The findings (each carrying
+  // its rectification block) show everything the customer needs.
   return `
     <section class="room">
       <div class="room__title">
         <h2>${h(room.label)}</h2>
-        <span class="meta">${st.inspected}/${st.total} inspected · ${st.pass} pass · ${st.issue} issue · ${st.na} N/A</span>
+        <span class="meta">${
+          isFollowUp
+            ? `${roomSnags.length} original snag${roomSnags.length === 1 ? '' : 's'} carried over`
+            : `${st.inspected}/${st.total} inspected · ${st.pass} pass · ${st.issue} issue · ${st.na} N/A`
+        }</span>
       </div>
-      ${checkpointsBlock(room, roomSnags)}
-      <h3 class="room__findings-title">Findings</h3>
-      ${roomSnags.map((s) => snagBlock(s, photos)).join('') || '<p class="meta">No issues recorded.</p>'}
+      ${isFollowUp ? '' : checkpointsBlock(room, roomSnags)}
+      ${isFollowUp ? '' : '<h3 class="room__findings-title">Findings</h3>'}
+      ${roomSnags.map((s) => snagBlock(s, photos)).join('') || `<p class="meta">${isFollowUp ? 'No original snags in this room.' : 'No issues recorded.'}</p>`}
     </section>
   `;
 }
@@ -342,9 +365,33 @@ function criticalSummary(snags: SnagRecord[], photos: Map<string, string>): stri
   `;
 }
 
+function rectificationSummary(snags: SnagRecord[], photos: Map<string, string>): string {
+  const fixed = snags.filter((s) => s.rectification === 'fixed');
+  const open = snags.filter((s) => s.rectification === 'open' || !s.rectification);
+  const newOnes = snags.filter((s) => s.rectification === 'new');
+
+  const block = (title: string, list: SnagRecord[]): string => {
+    if (list.length === 0) {
+      return `<h2>${h(title)}</h2><p class="meta">None.</p>`;
+    }
+    return `<h2>${h(title)} · ${list.length}</h2>${list.map((s) => snagBlock(s, photos)).join('')}`;
+  };
+
+  return `
+    <section class="page">
+      <h1>Rectification summary</h1>
+      <p class="meta">Status of every original snag at follow-up inspection.</p>
+      ${block('Still open', open)}
+      ${block('Fixed', fixed)}
+      ${block('New issues', newOnes)}
+    </section>
+  `;
+}
+
 export async function generateReportHtml(state: State): Promise<string> {
   const snags = collectSnags(state);
   const photos = await loadPhotoMap(state);
+  const isFollowUp = state.job.reportType === 'follow-up';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -355,10 +402,10 @@ export async function generateReportHtml(state: State): Promise<string> {
 </head>
 <body>
   ${coverPage(state, snags, photos)}
-  ${handoverPage()}
-  ${criticalSummary(snags, photos)}
+  ${isFollowUp ? rectificationSummary(snags, photos) : handoverPage()}
+  ${isFollowUp ? '' : criticalSummary(snags, photos)}
   <section class="page">
-    <h1>Room-by-room findings</h1>
+    <h1>${isFollowUp ? 'Room-by-room rectification' : 'Room-by-room findings'}</h1>
     ${notApplicableBlock(state)}
     ${state.roomOrder.map((id) => roomSection(state, id, snags, photos)).join('')}
   </section>
