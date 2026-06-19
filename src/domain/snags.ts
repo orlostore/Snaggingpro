@@ -127,3 +127,36 @@ export function statsForRoom(room: RoomState): RoomStats {
 export function isItemTouched(item: Item): boolean {
   return item.status !== 'pending';
 }
+
+/**
+ * An Issue item must have at least one observation that carries at least one
+ * photo. Used as a soft visual cue throughout the inspection and as a hard
+ * gate at report-generation time.
+ */
+export function issueMissingPhoto(item: Item): boolean {
+  if (item.status !== 'issue') return false;
+  if (item.observations.length === 0) return true;
+  return !item.observations.some((o) => o.photoIds.length > 0);
+}
+
+export function roomIssuesMissingPhotos(room: RoomState): Item[] {
+  return Object.values(room.items).filter(issueMissingPhoto);
+}
+
+export function discMissingPhotos(room: RoomState, disc: Item['disc']): number {
+  return Object.values(room.items).filter((i) => i.disc === disc && issueMissingPhoto(i)).length;
+}
+
+export function reportMissingPhotos(state: State): { roomLabel: string; itemLabel: string }[] {
+  const out: { roomLabel: string; itemLabel: string }[] = [];
+  for (const roomId of state.roomOrder) {
+    const room = state.rooms[roomId];
+    if (!room || room.excluded) continue;
+    for (const item of Object.values(room.items)) {
+      if (issueMissingPhoto(item)) {
+        out.push({ roomLabel: room.label, itemLabel: item.label });
+      }
+    }
+  }
+  return out;
+}
