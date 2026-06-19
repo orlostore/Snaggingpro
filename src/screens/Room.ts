@@ -4,6 +4,8 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/Button';
 import { PhotoAttach } from '@/components/PhotoAttach';
 import { confirmDialog } from '@/components/Confirm';
+import { promptDialog } from '@/components/Prompt';
+import { CHECKLISTS } from '@/domain/checklists';
 import { loadDraft, saveDraft } from '@/state/persist';
 import { DISC_LABELS, DISC_ICONS, type Discipline } from '@/domain/disciplines';
 import { Icon, type IconName } from '@/components/Icon';
@@ -313,9 +315,10 @@ export function Room(
               `;
             })}
           </div>
-          <ul class="item-list">
-            ${items.map((it) => itemRow(room, it))}
-          </ul>
+          ${room.dbInstances && room.dbInstances.length > 0
+            ? dbPanelGroups(room, active)
+            : html`<ul class="item-list">${items.map((it) => itemRow(room, it))}</ul>`}
+          ${room.dbInstances ? dbAddRow() : null}
           <div class="room__actions">
             ${Button({
               label: cameFromReport ? 'Back to report' : 'Back to dashboard',
@@ -387,6 +390,134 @@ export function Room(
       saveDraft(s);
       toast(`${count} item${count === 1 ? '' : 's'} reverted to pending`);
     }
+  }
+
+  function dbPanelGroups(room: RoomState, activeDisc: Discipline): TemplateResult {
+    const instances = room.dbInstances ?? [];
+    return html`
+      <div class="db-groups">
+        ${instances.map((inst) => {
+          const instItems = Object.values(room.items).filter(
+            (i) => i.dbNum === inst.num && i.disc === activeDisc,
+          );
+          const label = inst.location ? `DB ${inst.num} — ${inst.location}` : `DB ${inst.num}`;
+          return html`
+            <section class="db-group">
+              <header class="db-group__head">
+                <span class="db-group__label">${label}</span>
+                <div class="db-group__actions">
+                  <button
+                    class="btn btn--ghost btn--sm"
+                    title="Rename location"
+                    @click=${() => void renameDbLocation(inst.num)}
+                  >
+                    ${Icon({ name: 'pencil', size: 14 })}
+                  </button>
+                  ${instances.length > 1
+                    ? html`<button
+                        class="btn btn--ghost btn--sm"
+                        title="Remove DB Panel"
+                        @click=${() => void removeDbInstance(inst.num)}
+                      >
+                        ${Icon({ name: 'trash', size: 14 })}
+                      </button>`
+                    : null}
+                </div>
+              </header>
+              <ul class="item-list">${instItems.map((it) => itemRow(room, it))}</ul>
+            </section>
+          `;
+        })}
+      </div>
+    `;
+  }
+
+  function dbAddRow(): TemplateResult {
+    return html`
+      <div class="db-add">
+        <button class="btn btn--secondary btn--sm" @click=${() => void addDbInstance()}>
+          ${Icon({ name: 'plus', size: 14 })}<span>Add DB Panel</span>
+        </button>
+      </div>
+    `;
+  }
+
+  async function addDbInstance() {
+    const s = loadDraft();
+    const room = s?.rooms[roomId];
+    if (!s || !room || !room.dbInstances) return;
+    const location = await promptDialog({
+      title: 'Add DB Panel',
+      message: 'Where is this DB panel located? (e.g. GF, FF, Garage). Leave blank to skip.',
+      placeholder: 'Location',
+    });
+    if (location === null) return;
+    const nextNum = Math.max(0, ...room.dbInstances.map((d) => d.num)) + 1;
+    room.dbInstances.push({ num: nextNum, location: location.trim() });
+    // Create items for every discipline this room covers
+    for (const disc of room.discs) {
+      const labels = CHECKLISTS[room.clKey as keyof typeof CHECKLISTS]?.[disc] ?? [];
+      labels.forEach((label, idx) => {
+        const key = `${disc}_${idx}_db${nextNum}`;
+        room.items[key] = {
+          key,
+          label,
+          disc,
+          status: 'pending',
+          note: '',
+          observations: [],
+          dbNum: nextNum,
+        };
+      });
+    }
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    toast(`DB Panel ${nextNum} added`);
+    paint();
+  }
+
+  async function renameDbLocation(num: number) {
+    const s = loadDraft();
+    const room = s?.rooms[roomId];
+    const inst = room?.dbInstances?.find((d) => d.num === num);
+    if (!s || !inst) return;
+    const next = await promptDialog({
+      title: `DB Panel ${num} location`,
+      placeholder: 'GF / FF / Garage',
+      initial: inst.location,
+    });
+    if (next === null) return;
+    inst.location = next.trim();
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    paint();
+  }
+
+  async function removeDbInstance(num: number) {
+    const s = loadDraft();
+    const room = s?.rooms[roomId];
+    if (!s || !room || !room.dbInstances) return;
+    const ok = await confirmDialog({
+      title: `Remove DB Panel ${num}?`,
+      message: 'All items, observations, notes and photos for this panel will be deleted.',
+      destructive: true,
+      confirmLabel: 'Remove DB Panel',
+    });
+    if (!ok) return;
+    // Delete photos for items being removed
+    const toRemove = Object.values(room.items).filter((i) => i.dbNum === num);
+    for (const it of toRemove) {
+      for (const obs of it.observations) {
+        for (const pid of obs.photoIds) await deletePhoto(pid);
+        for (const pid of obs.rectification?.photoIds ?? []) await deletePhoto(pid);
+      }
+      delete room.items[it.key];
+    }
+    room.dbInstances = room.dbInstances.filter((d) => d.num !== num);
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    toast(`DB Panel ${num} removed`);
+    paint();
   }
 
   function itemRow(_room: RoomState, item: Item): TemplateResult {

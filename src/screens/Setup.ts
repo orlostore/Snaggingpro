@@ -5,6 +5,7 @@ import { Footer } from '@/components/Footer';
 import { Button } from '@/components/Button';
 import { Icon, type IconName } from '@/components/Icon';
 import { emptyState } from '@/state/init';
+import { nextJobSeq } from '@/state/jobRef';
 import { saveDraft } from '@/state/persist';
 import { go } from '@/lib/router';
 
@@ -71,9 +72,10 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     draft[field] = value;
   }
 
-  function next() {
+  async function next() {
     if (!draft.type) return;
-    const state = emptyState({ propType: draft.type, bedrooms: draft.bedrooms, jobSeq: 1 });
+    const jobSeq = await nextJobSeq();
+    const state = emptyState({ propType: draft.type, bedrooms: draft.bedrooms, jobSeq });
     state.client.name = draft.clientName;
     state.client.phone = draft.phone;
     state.client.email = draft.email;
@@ -231,7 +233,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
               full: true,
               size: 'lg',
               disabled: !draft.type,
-              onClick: next,
+              onClick: () => void next(),
             })}
           </div>
         </main>

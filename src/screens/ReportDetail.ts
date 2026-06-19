@@ -7,6 +7,7 @@ import { toast } from '@/components/Toast';
 import { reportsRepo } from '@/storage/reports';
 import { saveDraft } from '@/state/persist';
 import { cloneAsFollowUp } from '@/state/init';
+import { nextJobSeq } from '@/state/jobRef';
 import { generateReportHtml } from '@/report/generate';
 import { collectSnags } from '@/domain/snags';
 import { go } from '@/lib/router';
@@ -62,7 +63,9 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
       confirmLabel: 'Start follow-up',
     });
     if (!ok) return;
-    const next = cloneAsFollowUp(report, new Date(), 1);
+    const now = new Date();
+    const seq = await nextJobSeq(now);
+    const next = cloneAsFollowUp(report, now, seq);
     saveDraft(next);
     toast('Follow-up draft created');
     go('dashboard');
