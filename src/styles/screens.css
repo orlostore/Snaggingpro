@@ -591,6 +591,7 @@
 .disc-tab--on {
   background: var(--color-brand);
   border-color: var(--color-brand);
+  color: var(--color-text-inverse);
 }
 .item-list {
   display: flex;
@@ -644,10 +645,12 @@
 .item__btn--on {
   background: var(--color-pass);
   border-color: var(--color-pass);
+  color: var(--color-text-inverse);
 }
 .item__btn--issue {
   background: var(--color-issue);
   border-color: var(--color-issue);
+  color: var(--color-text-inverse);
 }
 .item__note {
   margin-top: var(--space-3);

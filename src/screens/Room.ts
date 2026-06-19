@@ -63,11 +63,12 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const pendingAfter = countPending(room, discBefore);
     if (pendingBefore > 0 && pendingAfter === 0) {
       const next = nextDisc(room, discBefore);
-      toast(
-        next
-          ? `${DISC_LABELS[discBefore]} complete ✓ — switch to ${DISC_LABELS[next]}`
-          : `${DISC_LABELS[discBefore]} complete ✓`,
-      );
+      if (next) {
+        view.activeDisc = next; // auto-advance — less tapping
+        toast(`${DISC_LABELS[discBefore]} complete ✓ — now on ${DISC_LABELS[next]}`);
+      } else {
+        toast(`${DISC_LABELS[discBefore]} complete ✓`);
+      }
     }
     const roomPendingAfter = countAllPending(room);
     if (roomPendingBefore > 0 && roomPendingAfter === 0) {
