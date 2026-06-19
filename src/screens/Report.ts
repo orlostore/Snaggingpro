@@ -6,7 +6,7 @@ import { loadDraft } from '@/state/persist';
 import { generateReportHtml } from '@/report/generate';
 import { reportsRepo } from '@/storage/reports';
 import { TYPO_RULES, scanText, type TypoIssue } from '@/domain/typoRules';
-import { collectSnags, reportIncompleteIssues } from '@/domain/snags';
+import { collectSnags, reportNeedsAttention } from '@/domain/snags';
 import { toast } from '@/components/Toast';
 import { go } from '@/lib/router';
 import { Icon } from '@/components/Icon';
@@ -51,8 +51,8 @@ export function Report(rootEl: HTMLElement): TemplateResult {
   async function open() {
     const s = loadDraft();
     if (!s) return;
-    if (reportIncompleteIssues(s).length > 0) {
-      toast('Add a note and photo to every issue before generating the report');
+    if (reportNeedsAttention(s).length > 0) {
+      toast('Finish every item before generating the report');
       return;
     }
     const win = window.open('', '_blank');
@@ -70,8 +70,8 @@ export function Report(rootEl: HTMLElement): TemplateResult {
   async function saveToLibrary() {
     const s = loadDraft();
     if (!s) return;
-    if (reportIncompleteIssues(s).length > 0) {
-      toast('Add a note and photo to every issue before saving');
+    if (reportNeedsAttention(s).length > 0) {
+      toast('Finish every item before saving');
       return;
     }
     s.job.status = 'completed';
@@ -90,7 +90,9 @@ export function Report(rootEl: HTMLElement): TemplateResult {
       return html``;
     }
     const snags = collectSnags(s);
-    const incomplete = reportIncompleteIssues(s);
+    const attention = reportNeedsAttention(s);
+    const pendingCount = attention.filter((a) => a.needsInspect).length;
+    const issueGapCount = attention.length - pendingCount;
     const found = issues.length ? issues : scan();
     issues.splice(0, issues.length, ...found);
 
@@ -104,19 +106,24 @@ export function Report(rootEl: HTMLElement): TemplateResult {
             <p>Critical: <strong>${snags.filter((s) => s.severity === 'critical').length}</strong></p>
           </div>
 
-          ${incomplete.length > 0
+          ${attention.length > 0
             ? html`
                 <div class="card report-screen__block">
                   <h2 class="section-title report-screen__block-title">
                     ${Icon({ name: 'alert', size: 18 })}
-                    ${incomplete.length} issue${incomplete.length === 1 ? '' : 's'} need attention
+                    ${attention.length} item${attention.length === 1 ? '' : 's'} need attention
                   </h2>
                   <p>
-                    Every snag must have both a written description and at least one photo. Fix each item
-                    below, then come back to generate the report.
+                    ${pendingCount > 0
+                      ? html`<strong>${pendingCount}</strong> still untouched (mark Pass / Issue / N/A).`
+                      : null}
+                    ${pendingCount > 0 && issueGapCount > 0 ? html`<br />` : null}
+                    ${issueGapCount > 0
+                      ? html`<strong>${issueGapCount}</strong> issue${issueGapCount === 1 ? '' : 's'} missing a note or photo.`
+                      : null}
                   </p>
                   <ul class="report-screen__missing">
-                    ${incomplete.slice(0, 50).map(
+                    ${attention.slice(0, 50).map(
                       (m) => html`
                         <li>
                           <button
@@ -134,6 +141,9 @@ export function Report(rootEl: HTMLElement): TemplateResult {
                               <span class="report-screen__missing-item">${m.itemLabel}</span>
                             </span>
                             <span class="report-screen__missing-tags">
+                              ${m.needsInspect
+                                ? html`<span class="report-screen__tag">${Icon({ name: 'eye', size: 12 })} inspect</span>`
+                                : null}
                               ${m.missingNote
                                 ? html`<span class="report-screen__tag">${Icon({ name: 'pencil', size: 12 })} note</span>`
                                 : null}
@@ -178,7 +188,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
               label: html`${Icon({ name: 'print', size: 18 })} Open print view`,
               full: true,
               size: 'lg',
-              disabled: incomplete.length > 0,
+              disabled: attention.length > 0,
               onClick: () => void open(),
             })}
             ${Button({
@@ -186,7 +196,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
               full: true,
               size: 'lg',
               variant: 'secondary',
-              disabled: incomplete.length > 0,
+              disabled: attention.length > 0,
               onClick: () => void saveToLibrary().then(paint),
             })}
             ${Button({
