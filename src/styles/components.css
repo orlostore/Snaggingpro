@@ -321,12 +321,8 @@
 .room-card--excluded {
   opacity: 0.4;
 }
-.room-card--complete {
-  border-color: var(--color-pass);
-}
-.room-card--issues {
-  border-color: var(--color-issue);
-}
+/* Card border stays neutral; status is signalled via the pills inside —
+   no aggressive coloured rings around the entire card. */
 
 .empty {
   padding: var(--space-8) var(--space-5);
