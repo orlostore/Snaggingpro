@@ -30,7 +30,12 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     if (!s) return;
     const room = s.rooms[roomId];
     const item = room?.items[itemKey];
-    if (!item) return;
+    if (!item || !room) return;
+
+    const discBefore = item.disc;
+    const pendingBefore = countPending(room, discBefore);
+    const roomPendingBefore = countAllPending(room);
+
     item.status = status;
     if (status === 'issue' && item.observations.length === 0) {
       item.observations.push({ id: newId(), text: item.note, photoIds: [] });
@@ -38,7 +43,38 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     }
     s.job.updatedAt = Date.now();
     saveDraft(s);
+
+    const pendingAfter = countPending(room, discBefore);
+    if (pendingBefore > 0 && pendingAfter === 0) {
+      const next = nextDisc(room, discBefore);
+      toast(
+        next
+          ? `${DISC_LABELS[discBefore]} complete ✓ — switch to ${DISC_LABELS[next]}`
+          : `${DISC_LABELS[discBefore]} complete ✓`,
+      );
+    }
+    const roomPendingAfter = countAllPending(room);
+    if (roomPendingBefore > 0 && roomPendingAfter === 0) {
+      toast('Room complete ✓');
+    }
+
     paint();
+  }
+
+  function countPending(room: RoomState, disc: Discipline): number {
+    return Object.values(room.items).filter((i) => i.disc === disc && i.status === 'pending')
+      .length;
+  }
+  function countAllPending(room: RoomState): number {
+    return Object.values(room.items).filter((i) => i.status === 'pending').length;
+  }
+  function nextDisc(room: RoomState, current: Discipline): Discipline | null {
+    const idx = room.discs.indexOf(current);
+    for (let i = idx + 1; i < room.discs.length; i++) {
+      const d = room.discs[i]!;
+      if (countPending(room, d) > 0) return d;
+    }
+    return null;
   }
 
   function updateObsText(itemKey: string, obsId: string, text: string) {
@@ -179,25 +215,40 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     if (!active) return html`<p class="empty">No disciplines for this room.</p>`;
 
     const items = Object.values(room.items).filter((i) => i.disc === active);
+    const allPending = countAllPending(room);
+    const allDone = room.discs.every((d) => countPending(room, d) === 0);
 
     return html`
       <section class="screen">
         ${Header({ title: room.label, back: () => go('dashboard') })}
         <main class="container room">
+          ${allDone
+            ? html`<div class="room-banner room-banner--ok">Room complete ✓</div>`
+            : html`
+                <div class="room-banner">
+                  ${allPending} item${allPending === 1 ? '' : 's'} pending across this room
+                </div>
+              `}
           <div class="disc-tabs">
-            ${discs.map(
-              (d) => html`
+            ${discs.map((d) => {
+              const pending = countPending(room, d);
+              return html`
                 <button
-                  class="disc-tab ${d === active ? 'disc-tab--on' : ''}"
+                  class="disc-tab ${d === active ? 'disc-tab--on' : ''} ${pending > 0
+                    ? 'disc-tab--pending'
+                    : 'disc-tab--done'}"
                   @click=${() => {
                     view.activeDisc = d;
                     paint();
                   }}
                 >
                   ${DISC_ICONS[d]} ${DISC_LABELS[d]}
+                  ${pending > 0
+                    ? html`<span class="disc-tab__pill">${pending}</span>`
+                    : html`<span class="disc-tab__pill disc-tab__pill--done">✓</span>`}
                 </button>
-              `,
-            )}
+              `;
+            })}
           </div>
           <ul class="item-list">
             ${items.map((it) => itemRow(room, it))}

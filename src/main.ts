@@ -19,6 +19,7 @@ import { Splash } from '@/screens/Splash';
 import { PinGate } from '@/screens/PinGate';
 import { Setup } from '@/screens/Setup';
 import { CoverPhotos } from '@/screens/CoverPhotos';
+import { RoomSetup } from '@/screens/RoomSetup';
 import { Dashboard } from '@/screens/Dashboard';
 import { Room } from '@/screens/Room';
 import { Report } from '@/screens/Report';
@@ -29,7 +30,16 @@ const rootEl = document.getElementById('app');
 if (!rootEl) throw new Error('#app missing');
 const root: HTMLElement = rootEl;
 
-const PROTECTED: RouteName[] = ['setup', 'cover', 'dashboard', 'room', 'report', 'library', 'report-detail'];
+const PROTECTED: RouteName[] = [
+  'setup',
+  'cover',
+  'room-setup',
+  'dashboard',
+  'room',
+  'report',
+  'library',
+  'report-detail',
+];
 
 function dispatch(route: Route) {
   if (PROTECTED.includes(route.name) && !auth.isUnlocked()) {
@@ -50,6 +60,9 @@ function dispatch(route: Route) {
       break;
     case 'cover':
       render(CoverPhotos(root), root);
+      break;
+    case 'room-setup':
+      render(RoomSetup(root), root);
       break;
     case 'dashboard':
       render(Dashboard(root), root);

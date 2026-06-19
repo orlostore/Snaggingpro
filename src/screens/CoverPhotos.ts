@@ -7,7 +7,6 @@ import { confirmDialog } from '@/components/Confirm';
 import { loadDraft, saveDraft } from '@/state/persist';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { go } from '@/lib/router';
-import { toast } from '@/components/Toast';
 
 const SLOTS = [
   { label: 'Building front', sub: 'External shot' },
@@ -99,19 +98,16 @@ export function CoverPhotos(rootEl: HTMLElement): TemplateResult {
 
           <div class="cover__actions">
             ${Button({
-              label: 'Start inspection →',
+              label: 'Continue → confirm rooms',
               full: true,
               size: 'lg',
-              onClick: () => {
-                toast('Inspection started');
-                go('dashboard');
-              },
+              onClick: () => go('room-setup'),
             })}
             ${Button({
               label: 'Skip cover photos for now',
               full: true,
               variant: 'ghost',
-              onClick: () => go('dashboard'),
+              onClick: () => go('room-setup'),
             })}
           </div>
         </main>
