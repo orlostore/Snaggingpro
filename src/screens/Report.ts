@@ -47,7 +47,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
     return out;
   }
 
-  function open() {
+  async function open() {
     const s = loadDraft();
     if (!s) return;
     if (reportIncompleteIssues(s).length > 0) {
@@ -59,8 +59,10 @@ export function Report(rootEl: HTMLElement): TemplateResult {
       toast('Popup blocked — allow popups to print');
       return;
     }
+    toast('Preparing report…');
+    const html = await generateReportHtml(s);
     win.document.open();
-    win.document.write(generateReportHtml(s));
+    win.document.write(html);
     win.document.close();
   }
 
@@ -160,7 +162,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
               full: true,
               size: 'lg',
               disabled: incomplete.length > 0,
-              onClick: open,
+              onClick: () => void open(),
             })}
             ${Button({
               label: 'Save to library',

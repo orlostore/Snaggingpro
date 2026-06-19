@@ -32,8 +32,10 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
       toast('Popup blocked');
       return;
     }
+    toast('Preparing report…');
+    const html = await generateReportHtml(report);
     w.document.open();
-    w.document.write(generateReportHtml(report));
+    w.document.write(html);
     w.document.close();
   }
 

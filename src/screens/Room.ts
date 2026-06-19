@@ -11,6 +11,7 @@ import { go } from '@/lib/router';
 import { toast } from '@/components/Toast';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { openAnnotator } from '@/components/PhotoAnnotate';
+import { openSeverityPicker } from '@/components/SeverityPicker';
 import { newId } from '@/lib/id';
 import {
   issueMissingPhoto,
@@ -18,6 +19,8 @@ import {
   issueIncomplete,
   discIncompleteIssues,
   roomIncompleteIssues,
+  SEVERITY_LABEL,
+  type Severity,
 } from '@/domain/snags';
 
 interface LocalView {
@@ -32,7 +35,7 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     render(render_(), rootEl);
   }
 
-  function setStatus(itemKey: string, status: Item['status']) {
+  function setStatus(itemKey: string, status: Item['status'], severity?: Severity) {
     const s = loadDraft();
     if (!s) return;
     const room = s.rooms[roomId];
@@ -44,9 +47,14 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const roomPendingBefore = countAllPending(room);
 
     item.status = status;
-    if (status === 'issue' && item.observations.length === 0) {
-      item.observations.push({ id: newId(), text: item.note, photoIds: [] });
-      item.note = '';
+    if (status === 'issue') {
+      if (severity) item.severity = severity;
+      if (item.observations.length === 0) {
+        item.observations.push({ id: newId(), text: item.note, photoIds: [] });
+        item.note = '';
+      }
+    } else {
+      delete (item as { severity?: Severity }).severity;
     }
     s.job.updatedAt = Date.now();
     saveDraft(s);
@@ -378,11 +386,24 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
           <button
             class="item__btn ${item.status === 'issue' ? 'item__btn--on item__btn--issue' : ''}"
             @click=${() => {
-              setStatus(item.key, 'issue');
-              toast('Marked as issue — add a note and photos');
+              openSeverityPicker({
+                itemLabel: item.label,
+                initial: item.severity ?? null,
+                onPick: (sev) => {
+                  setStatus(item.key, 'issue', sev);
+                  toast(`Marked ${SEVERITY_LABEL[sev]} — add note and photo`);
+                },
+                onCancel: () => {
+                  /* no change */
+                },
+              });
             }}
           >
-            ⚠ Issue
+            ⚠ Issue${item.status === 'issue' && item.severity
+              ? html`<span class="item__sev item__sev--${item.severity}"
+                  >${SEVERITY_LABEL[item.severity]}</span
+                >`
+              : null}
           </button>
           <button
             class="item__btn ${item.status === 'na' ? 'item__btn--on' : ''}"
