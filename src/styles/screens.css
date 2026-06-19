@@ -312,10 +312,9 @@
   font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
-.disc-tab--on .disc-tab__count {
-  background: rgba(255, 255, 255, 0.18);
-  color: var(--color-text-inverse);
-}
+/* When the tab is inactive (white card bg) the count pills get their
+   semantic colours. When the tab is active (navy bg) every inner pill
+   becomes white-on-translucent so nothing disappears against the navy. */
 .disc-tab__count--done {
   background: rgba(15, 122, 68, 0.12);
   color: var(--color-pass);
@@ -324,6 +323,12 @@
   background: rgba(182, 34, 27, 0.12);
   color: var(--color-critical);
   margin-left: var(--space-1);
+}
+.disc-tab--on .disc-tab__count,
+.disc-tab--on .disc-tab__count--done,
+.disc-tab--on .disc-tab__count--crit {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--color-text-inverse);
 }
 
 /* ============ Severity picker sheet ============ */
@@ -557,18 +562,21 @@
 }
 .photo-attach__btn {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
   background: var(--color-brand);
-  color: var(--color-text);
+  color: var(--color-text-inverse);
   border-radius: var(--radius-md);
   padding: var(--space-3);
   font-size: var(--text-sm);
+  font-weight: 500;
   cursor: pointer;
   min-height: var(--touch-min);
 }
 .photo-attach__btn--alt {
   background: var(--color-bg-elevated);
+  color: var(--color-text);
   border: 1px solid var(--color-border-strong);
 }
 
@@ -716,7 +724,7 @@
 .item__note {
   margin-top: var(--space-3);
   width: 100%;
-  background: var(--color-bg-sunken);
+  background: var(--color-bg-elevated);
   border: 1px solid var(--color-border-strong);
   border-radius: var(--radius-md);
   padding: var(--space-3);
@@ -724,6 +732,9 @@
   resize: vertical;
   min-height: 72px;
   color: var(--color-text);
+}
+.item__note::placeholder {
+  color: var(--color-text-dim);
 }
 .room__actions {
   margin: var(--space-6) 0 var(--space-10);
