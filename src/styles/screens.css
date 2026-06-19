@@ -929,6 +929,66 @@
   justify-content: flex-end;
 }
 
+/* ============ Follow-up rectification panel ============ */
+.rect {
+  margin-top: var(--space-3);
+  padding: var(--space-3);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+.rect__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+}
+.rect__statuses {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+.rect__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-2);
+  font-size: var(--text-sm);
+  min-height: 40px;
+  color: var(--color-text);
+}
+.rect__btn--open {
+  background: rgba(161, 98, 7, 0.10);
+  border-color: var(--color-warning);
+  color: var(--color-warning);
+}
+.rect__btn--fixed {
+  background: rgba(15, 122, 68, 0.10);
+  border-color: var(--color-pass);
+  color: var(--color-pass);
+}
+.rect__btn--new {
+  background: rgba(182, 34, 27, 0.10);
+  border-color: var(--color-critical);
+  color: var(--color-critical);
+}
+.rect__note {
+  margin-top: 0 !important;
+}
+.rect__photos {
+  margin-top: 0;
+}
+
 /* ============ Report screen ============ */
 .report-screen {
   padding-bottom: var(--space-10);

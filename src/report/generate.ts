@@ -60,6 +60,17 @@ const BRAND_CSS = `
   .handover h3 { color: var(--brand); border-bottom: 2px solid var(--brand); padding-bottom: 4px; }
   .footnote { font-style: italic; color: var(--grey); margin-top: 16px; }
   .not-applicable { background: #fff8e1; border: 1px solid #ffe082; border-radius: 8px; padding: 12px 16px; margin: 16px 0; font-size: 13px; color: #6b5d00; }
+  .rect-block { margin-top: 10px; padding: 10px 12px; background: #f6f9fb; border-left: 3px solid #2f6dbb; border-radius: 6px; }
+  .rect-block--fixed { border-left-color: #0f7a44; background: #f1faf4; }
+  .rect-block--new { border-left-color: #b6221b; background: #fbf3f3; }
+  .rect-block--open { border-left-color: #a16207; background: #fbf6ea; }
+  .rect-block__head { display: flex; gap: 10px; align-items: center; font-size: 12px; }
+  .rect-block__pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 10px; letter-spacing: 1px; font-weight: 700; color: white; }
+  .rect-block__pill--fixed { background: #0f7a44; }
+  .rect-block__pill--new { background: #b6221b; }
+  .rect-block__pill--open { background: #a16207; }
+  .rect-block__title { color: var(--grey); }
+  .rect-block__note { margin-top: 6px; }
   @media print { @page { size: A4; margin: 14mm; } .no-print { display: none; } }
 `;
 
@@ -161,15 +172,40 @@ function handoverPage(): string {
   `;
 }
 
+function photoGrid(ids: string[], photos: Map<string, string>, label: string): string {
+  if (ids.length === 0) return '';
+  const imgs = ids
+    .map((pid) => {
+      const url = photos.get(pid);
+      return url ? `<img src="${url}" alt="${h(label)}" />` : '';
+    })
+    .join('');
+  return `<div class="snag__photos">${imgs}</div>`;
+}
+
+const RECT_LABEL: Record<'fixed' | 'open' | 'new', string> = {
+  fixed: 'FIXED',
+  open: 'STILL OPEN',
+  new: 'NEW ISSUE',
+};
+
+function rectificationBlock(s: SnagRecord, photos: Map<string, string>): string {
+  if (!s.rectification) return '';
+  const note = s.rectificationNote?.trim() || '';
+  const photoIds = s.rectificationPhotoIds ?? [];
+  return `
+    <div class="rect-block rect-block--${s.rectification}">
+      <div class="rect-block__head">
+        <span class="rect-block__pill rect-block__pill--${s.rectification}">${RECT_LABEL[s.rectification]}</span>
+        <span class="rect-block__title">${s.rectification === 'fixed' ? 'Closeout' : s.rectification === 'new' ? 'New finding' : 'Still pending rectification'}</span>
+      </div>
+      ${note ? `<div class="rect-block__note">${h(note)}</div>` : ''}
+      ${photoGrid(photoIds, photos, 'Closeout photo')}
+    </div>
+  `;
+}
+
 function snagBlock(s: SnagRecord, photos: Map<string, string>): string {
-  const photoHtml = s.photoIds.length
-    ? `<div class="snag__photos">${s.photoIds
-        .map((pid) => {
-          const url = photos.get(pid);
-          return url ? `<img src="${url}" alt="Snag photo" />` : '';
-        })
-        .join('')}</div>`
-    : '';
   return `
     <div class="snag snag--${s.severity}">
       <div class="snag__head">
@@ -178,7 +214,8 @@ function snagBlock(s: SnagRecord, photos: Map<string, string>): string {
       </div>
       <div class="snag__title">${h(s.itemLabel)}</div>
       <div>${h(s.text || '—')}</div>
-      ${photoHtml}
+      ${photoGrid(s.photoIds, photos, 'Snag photo')}
+      ${rectificationBlock(s, photos)}
     </div>
   `;
 }

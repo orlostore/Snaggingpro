@@ -215,15 +215,17 @@ export function Room(
   }
 
   async function preloadPhotoUrls(room: RoomState) {
+    const ids = new Set<string>();
     for (const it of Object.values(room.items)) {
       for (const obs of it.observations) {
-        for (const pid of obs.photoIds) {
-          if (!view.photoUrls.has(pid)) {
-            const url = await getPhotoUrl(pid);
-            if (url) view.photoUrls.set(pid, url);
-          }
-        }
+        for (const pid of obs.photoIds) ids.add(pid);
+        for (const pid of obs.rectification?.photoIds ?? []) ids.add(pid);
       }
+    }
+    for (const pid of ids) {
+      if (view.photoUrls.has(pid)) continue;
+      const url = await getPhotoUrl(pid);
+      if (url) view.photoUrls.set(pid, url);
     }
     paint();
   }
@@ -451,6 +453,8 @@ export function Room(
   }
 
   function observationsBlock(item: Item): TemplateResult {
+    const s = loadDraft();
+    const isFollowUp = s?.job.reportType === 'follow-up';
     return html`
       <div class="obs-block">
         ${item.observations.map(
@@ -503,6 +507,8 @@ export function Room(
                 label: 'Add photo to this observation',
               })}
 
+              ${isFollowUp ? rectificationPanel(item, obs) : null}
+
               <div class="obs__actions">
                 <button
                   class="btn btn--ghost btn--sm"
@@ -520,6 +526,145 @@ export function Room(
         </button>
       </div>
     `;
+  }
+
+  function rectificationPanel(
+    item: Item,
+    obs: Item['observations'][number],
+  ): TemplateResult {
+    const r = obs.rectification ?? { status: 'open', note: '', photoIds: [] };
+    return html`
+      <div class="rect">
+        <div class="rect__head">
+          ${Icon({ name: 'check', size: 14 })}
+          <span>Rectification status</span>
+        </div>
+        <div class="rect__statuses">
+          <button
+            class="rect__btn ${r.status === 'open' ? 'rect__btn--open' : ''}"
+            @click=${() => setRectification(item.key, obs.id, 'open')}
+          >
+            ${Icon({ name: 'alert', size: 14 })}<span>Still open</span>
+          </button>
+          <button
+            class="rect__btn ${r.status === 'fixed' ? 'rect__btn--fixed' : ''}"
+            @click=${() => setRectification(item.key, obs.id, 'fixed')}
+          >
+            ${Icon({ name: 'check', size: 14 })}<span>Fixed</span>
+          </button>
+          <button
+            class="rect__btn ${r.status === 'new' ? 'rect__btn--new' : ''}"
+            @click=${() => setRectification(item.key, obs.id, 'new')}
+          >
+            ${Icon({ name: 'plus', size: 14 })}<span>New issue</span>
+          </button>
+        </div>
+        ${r.status === 'fixed' || r.status === 'new'
+          ? html`
+              <textarea
+                class="item__note rect__note"
+                placeholder=${r.status === 'fixed'
+                  ? 'Closeout notes — what was done to fix this?'
+                  : 'Describe the new issue…'}
+                .value=${r.note}
+                @input=${(e: Event) =>
+                  setRectificationNote(item.key, obs.id, (e.target as HTMLTextAreaElement).value)}
+              ></textarea>
+
+              ${r.photoIds.length > 0
+                ? html`
+                    <div class="obs__photos rect__photos">
+                      ${r.photoIds.map(
+                        (pid) => html`
+                          <div class="obs__photo">
+                            ${view.photoUrls.get(pid)
+                              ? html`<img src=${view.photoUrls.get(pid)!} alt="closeout photo" />`
+                              : html`<div class="obs__photo-loading">…</div>`}
+                            <button
+                              class="obs__photo-remove"
+                              aria-label="Remove closeout photo"
+                              @click=${() => void removeRectificationPhoto(item.key, obs.id, pid)}
+                            >
+                              ${Icon({ name: 'x', size: 14 })}
+                            </button>
+                          </div>
+                        `,
+                      )}
+                    </div>
+                  `
+                : null}
+
+              ${PhotoAttach({
+                onPicked: (f) => void addRectificationPhoto(item.key, obs.id, f),
+                label: r.status === 'fixed' ? 'Add closeout photo' : 'Add photo of new issue',
+              })}
+            `
+          : null}
+      </div>
+    `;
+  }
+
+  function setRectification(
+    itemKey: string,
+    obsId: string,
+    status: 'fixed' | 'open' | 'new',
+  ) {
+    const s = loadDraft();
+    if (!s) return;
+    const obs = s.rooms[roomId]?.items[itemKey]?.observations.find((o) => o.id === obsId);
+    if (!obs) return;
+    obs.rectification = obs.rectification ?? { status: 'open', note: '', photoIds: [] };
+    obs.rectification.status = status;
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    paint();
+  }
+
+  function setRectificationNote(itemKey: string, obsId: string, text: string) {
+    const s = loadDraft();
+    if (!s) return;
+    const obs = s.rooms[roomId]?.items[itemKey]?.observations.find((o) => o.id === obsId);
+    if (!obs) return;
+    obs.rectification = obs.rectification ?? { status: 'open', note: '', photoIds: [] };
+    obs.rectification.note = text;
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+  }
+
+  async function addRectificationPhoto(itemKey: string, obsId: string, file: File) {
+    const s = loadDraft();
+    if (!s) return;
+    const obs = s.rooms[roomId]?.items[itemKey]?.observations.find((o) => o.id === obsId);
+    if (!obs) return;
+    obs.rectification = obs.rectification ?? { status: 'fixed', note: '', photoIds: [] };
+    const webp = await reencodeToWebp(file);
+    const id = await storePhoto(webp, 'rectification', s.job.ref);
+    obs.rectification.photoIds.push(id);
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    const url = await getPhotoUrl(id);
+    if (url) view.photoUrls.set(id, url);
+    paint();
+  }
+
+  async function removeRectificationPhoto(itemKey: string, obsId: string, photoId: string) {
+    const ok = await confirmDialog({
+      title: 'Remove this closeout photo?',
+      message: 'The photo will be removed from the rectification record.',
+      destructive: true,
+      confirmLabel: 'Remove',
+    });
+    if (!ok) return;
+    const s = loadDraft();
+    if (!s) return;
+    const obs = s.rooms[roomId]?.items[itemKey]?.observations.find((o) => o.id === obsId);
+    if (!obs?.rectification) return;
+    obs.rectification.photoIds = obs.rectification.photoIds.filter((p) => p !== photoId);
+    await deletePhoto(photoId);
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    view.photoUrls.delete(photoId);
+    paint();
   }
 
   // Kick off photo preload for this room
