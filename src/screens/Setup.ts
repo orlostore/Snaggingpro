@@ -1,5 +1,5 @@
 import { html, render, type TemplateResult } from 'lit-html';
-import { PROP_OPTIONS, feeFor, type PropType } from '@/domain/pricing';
+import { PROP_OPTIONS, calcFee, feeBreakdown, type PropType } from '@/domain/pricing';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/Button';
@@ -53,7 +53,15 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     draft.type = type;
     draft.bedrooms = bedrooms;
     if (!draft.priceManuallyEdited) {
-      draft.price = feeFor(type, bedrooms);
+      draft.price = calcFee(type, bedrooms, draft.bua);
+    }
+    paint();
+  }
+
+  function setBua(value: number) {
+    draft.bua = value;
+    if (!draft.priceManuallyEdited && draft.type) {
+      draft.price = calcFee(draft.type, draft.bedrooms, value);
     }
     paint();
   }
@@ -78,6 +86,25 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     go('cover');
   }
 
+  function feeBreakdownLine(): TemplateResult | null {
+    if (!draft.type || draft.priceManuallyEdited) return null;
+    const b = feeBreakdown(draft.type, draft.bedrooms, draft.bua);
+    if (!b) return null;
+    if (b.overage > 0) {
+      return html`
+        <p class="field__breakdown">
+          Base AED ${b.base.toLocaleString()} + AED ${b.overage.toLocaleString()} overage
+          (${b.overageSqft.toLocaleString()} sqft above ${b.baseArea.toLocaleString()})
+        </p>
+      `;
+    }
+    return html`
+      <p class="field__breakdown">
+        Base AED ${b.base.toLocaleString()} · BUA within included ${b.baseArea.toLocaleString()} sqft
+      </p>
+    `;
+  }
+
   function view(): TemplateResult {
     return html`
       <section class="screen">
@@ -95,7 +122,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
                 >
                   <span class="prop-card__icon">${p.icon}</span>
                   <span class="prop-card__label">${p.label}</span>
-                  <span class="prop-card__price">AED ${p.fee.toLocaleString()}</span>
+                  <span class="prop-card__price">from AED ${p.base.toLocaleString()}</span>
                 </button>
               `,
             )}
@@ -173,14 +200,16 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
                 inputmode="numeric"
                 .value=${String(draft.bua || '')}
                 @input=${(e: Event) =>
-                  input('bua', Number((e.target as HTMLInputElement).value) || 0)}
+                  setBua(Number((e.target as HTMLInputElement).value) || 0)}
               />
             </label>
             <label class="field">
               <span class="field__label">
                 Inspection fee (AED) ${draft.optionKey && !draft.priceManuallyEdited
-                  ? html`<em class="field__hint">auto-filled from property type</em>`
-                  : null}
+                  ? html`<em class="field__hint">auto-calculated</em>`
+                  : draft.priceManuallyEdited
+                    ? html`<em class="field__hint field__hint--manual">manual override</em>`
+                    : null}
               </span>
               <input
                 class="field__input"
@@ -191,6 +220,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
                   input('price', Number((e.target as HTMLInputElement).value) || 0);
                 }}
               />
+              ${feeBreakdownLine()}
             </label>
           </div>
 
