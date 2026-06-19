@@ -90,22 +90,11 @@
   color: var(--color-text-muted);
   font-size: var(--text-sm);
 }
-.br-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: var(--space-2);
-}
-.br-btn {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  padding: var(--space-3);
-  font-size: var(--text-sm);
-  min-height: var(--touch-min);
-}
-.br-btn--on {
-  background: var(--color-brand);
-  border-color: var(--color-brand);
+.field__hint {
+  font-style: normal;
+  color: var(--color-pass);
+  margin-left: var(--space-2);
+  font-size: var(--text-xs);
 }
 .setup__actions {
   margin: var(--space-6) 0 var(--space-10);
