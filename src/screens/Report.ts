@@ -90,9 +90,16 @@ export function Report(rootEl: HTMLElement): TemplateResult {
       return html``;
     }
     const snags = collectSnags(s);
+    const isFollowUp = s.job.reportType === 'follow-up';
     const attention = reportNeedsAttention(s);
     const pendingCount = attention.filter((a) => a.needsInspect).length;
-    const issueGapCount = attention.length - pendingCount;
+    const reviewCount = attention.filter((a) => a.needsReview).length;
+    const closeoutGap = attention.filter(
+      (a) => a.missingCloseoutNote || a.missingCloseoutPhoto,
+    ).length;
+    const issueGapCount = attention.filter(
+      (a) => (a.missingNote || a.missingPhoto) && !a.needsInspect,
+    ).length;
     const found = issues.length ? issues : scan();
     issues.splice(0, issues.length, ...found);
 
@@ -115,11 +122,16 @@ export function Report(rootEl: HTMLElement): TemplateResult {
                   </h2>
                   <p>
                     ${pendingCount > 0
-                      ? html`<strong>${pendingCount}</strong> still untouched (mark Pass / Issue / N/A).`
+                      ? html`<strong>${pendingCount}</strong> still untouched (mark Pass / Issue / N/A).<br />`
                       : null}
-                    ${pendingCount > 0 && issueGapCount > 0 ? html`<br />` : null}
                     ${issueGapCount > 0
-                      ? html`<strong>${issueGapCount}</strong> issue${issueGapCount === 1 ? '' : 's'} missing a note or photo.`
+                      ? html`<strong>${issueGapCount}</strong> issue${issueGapCount === 1 ? '' : 's'} missing a note or photo.<br />`
+                      : null}
+                    ${isFollowUp && reviewCount > 0
+                      ? html`<strong>${reviewCount}</strong> snag${reviewCount === 1 ? '' : 's'} not yet reviewed (Still open / Fixed / New).<br />`
+                      : null}
+                    ${isFollowUp && closeoutGap > 0
+                      ? html`<strong>${closeoutGap}</strong> Fixed/New entr${closeoutGap === 1 ? 'y is' : 'ies are'} missing a closeout note or photo.`
                       : null}
                   </p>
                   <ul class="report-screen__missing">
@@ -149,6 +161,15 @@ export function Report(rootEl: HTMLElement): TemplateResult {
                                 : null}
                               ${m.missingPhoto
                                 ? html`<span class="report-screen__tag">${Icon({ name: 'camera', size: 12 })} photo</span>`
+                                : null}
+                              ${m.needsReview
+                                ? html`<span class="report-screen__tag">${Icon({ name: 'eye', size: 12 })} review</span>`
+                                : null}
+                              ${m.missingCloseoutNote
+                                ? html`<span class="report-screen__tag">${Icon({ name: 'pencil', size: 12 })} closeout note</span>`
+                                : null}
+                              ${m.missingCloseoutPhoto
+                                ? html`<span class="report-screen__tag">${Icon({ name: 'camera', size: 12 })} closeout photo</span>`
                                 : null}
                               ${Icon({ name: 'chevron-right', size: 16 })}
                             </span>
