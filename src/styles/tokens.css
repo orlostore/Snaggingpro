@@ -8,12 +8,12 @@
  */
 
 :root {
-  /* ------- Brand colours ------- */
-  --color-brand: #a8004d;            /* deeper, less neon than #d10165 */
-  --color-brand-hover: #87003c;
-  --color-brand-soft: rgba(168, 0, 77, 0.08);
-  --color-accent: #2f6dbb;
-  --color-accent-soft: rgba(47, 109, 187, 0.10);
+  /* ------- Brand colours — deep navy, no pink ------- */
+  --color-brand: #1e3a5f;            /* deep navy, premium */
+  --color-brand-hover: #152d4a;
+  --color-brand-soft: rgba(30, 58, 95, 0.08);
+  --color-accent: #b8923a;            /* warm gold, used sparingly */
+  --color-accent-soft: rgba(184, 146, 58, 0.10);
 
   /* ------- Surfaces ------- */
   --color-bg: #f7f7f8;               /* warm off-white app background */
@@ -66,18 +66,20 @@
   --font-display: 'Syne', system-ui, -apple-system, sans-serif;
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 
-  --text-xs: 12px;                   /* nudged up for readability */
-  --text-sm: 14px;
-  --text-base: 16px;
-  --text-md: 18px;
-  --text-lg: 22px;
-  --text-xl: 26px;
-  --text-2xl: 32px;
-  --text-3xl: 40px;
+  --text-xs: 13px;
+  --text-sm: 15px;
+  --text-base: 17px;                 /* body — comfortable mobile reading */
+  --text-md: 19px;
+  --text-lg: 24px;
+  --text-xl: 30px;
+  --text-2xl: 36px;
+  --text-3xl: 44px;
 
   --leading-tight: 1.2;
   --leading-normal: 1.55;
   --leading-loose: 1.7;
+  --tracking-tight: -0.01em;
+  --tracking-wide: 0.05em;
 
   /* ------- Touch targets ------- */
   --touch-min: 44px;

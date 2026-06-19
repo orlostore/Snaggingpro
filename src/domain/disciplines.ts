@@ -28,14 +28,14 @@ export const DISC_LABELS: Record<Discipline, string> = {
 };
 
 export const DISC_ICONS: Record<Discipline, string> = {
-  civil: '🧱',
-  electrical: '⚡',
-  hvac: '❄️',
-  plumbing: '🚰',
-  mechanical: '⚙️',
-  automation: '🏠',
-  landscaping: '🌿',
-  fire: '🔥',
+  civil: 'civil',
+  electrical: 'electrical',
+  hvac: 'hvac',
+  plumbing: 'plumbing',
+  mechanical: 'mechanical',
+  automation: 'automation',
+  landscaping: 'landscape',
+  fire: 'fire',
 };
 
 /** Canonical visit order — guided flow uses this. */

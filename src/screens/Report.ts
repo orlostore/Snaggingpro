@@ -9,6 +9,7 @@ import { TYPO_RULES, scanText, type TypoIssue } from '@/domain/typoRules';
 import { collectSnags, reportIncompleteIssues } from '@/domain/snags';
 import { toast } from '@/components/Toast';
 import { go } from '@/lib/router';
+import { Icon } from '@/components/Icon';
 
 export function Report(rootEl: HTMLElement): TemplateResult {
   const issues: TypoIssue[] = [];
@@ -107,7 +108,8 @@ export function Report(rootEl: HTMLElement): TemplateResult {
             ? html`
                 <div class="card report-screen__block">
                   <h2 class="section-title report-screen__block-title">
-                    ⚠ ${incomplete.length} issue${incomplete.length === 1 ? '' : 's'} need attention
+                    ${Icon({ name: 'alert', size: 18 })}
+                    ${incomplete.length} issue${incomplete.length === 1 ? '' : 's'} need attention
                   </h2>
                   <p>
                     Every snag must have both a written description and at least one photo. Fix each item
@@ -120,10 +122,10 @@ export function Report(rootEl: HTMLElement): TemplateResult {
                           <strong>${m.roomLabel}</strong> · ${m.itemLabel}
                           <span class="report-screen__missing-tags">
                             ${m.missingNote
-                              ? html`<span class="report-screen__tag">✎ note</span>`
+                              ? html`<span class="report-screen__tag">${Icon({ name: 'pencil', size: 12 })} note</span>`
                               : null}
                             ${m.missingPhoto
-                              ? html`<span class="report-screen__tag">📷 photo</span>`
+                              ? html`<span class="report-screen__tag">${Icon({ name: 'camera', size: 12 })} photo</span>`
                               : null}
                           </span>
                         </li>
@@ -158,14 +160,14 @@ export function Report(rootEl: HTMLElement): TemplateResult {
 
           <div class="report-screen__actions">
             ${Button({
-              label: '🖨 Open print view',
+              label: html`${Icon({ name: 'print', size: 18 })} Open print view`,
               full: true,
               size: 'lg',
               disabled: incomplete.length > 0,
               onClick: () => void open(),
             })}
             ${Button({
-              label: 'Save to library',
+              label: html`${Icon({ name: 'save', size: 18 })} Save to library`,
               full: true,
               size: 'lg',
               variant: 'secondary',
@@ -173,7 +175,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
               onClick: () => void saveToLibrary().then(paint),
             })}
             ${Button({
-              label: 'Reports library →',
+              label: html`${Icon({ name: 'library', size: 18 })} Reports library`,
               full: true,
               variant: 'ghost',
               onClick: () => go('library'),

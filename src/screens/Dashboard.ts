@@ -6,6 +6,7 @@ import { confirmDialog } from '@/components/Confirm';
 import { loadDraft, saveDraft } from '@/state/persist';
 import { statsForRoom } from '@/domain/snags';
 import { go } from '@/lib/router';
+import { Icon, IconOrFallback } from '@/components/Icon';
 
 export function Dashboard(rootEl: HTMLElement): TemplateResult {
   function paint() {
@@ -96,14 +97,14 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
                     : ''} ${st.pending > 0 && st.pending < st.total ? 'room-card--partial' : ''}"
                   @click=${() => go('room', { id: room.id })}
                 >
-                  <div class="room-card__icon">${room.icon}</div>
+                  <div class="room-card__icon">${IconOrFallback(room.icon, 'tag', 26)}</div>
                   <div class="room-card__label">${room.label}</div>
                   <div class="room-card__meta">
                     ${st.inspected}/${st.total} inspected
                   </div>
                   <div class="room-card__pills">
-                    ${complete
-                      ? html`<span class="pill pill--ok">✓ Complete</span>`
+                      ${complete
+                      ? html`<span class="pill pill--ok">${Icon({ name: 'check', size: 14 })} Complete</span>`
                       : st.pending > 0
                         ? html`<span class="pill pill--pending">${st.pending} pending</span>`
                         : null}
@@ -133,7 +134,8 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
                     ${hidden.map(
                       (r) => html`
                         <li class="hidden-rooms__chip">
-                          <span>${r.icon} ${r.label}</span>
+                          <span class="hidden-rooms__icon">${IconOrFallback(r.icon, 'tag', 18)}</span>
+                          <span>${r.label}</span>
                           <button class="btn btn--ghost btn--sm" @click=${() => restoreRoom(r.id)}>
                             Restore
                           </button>
@@ -147,7 +149,7 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
 
           <div class="dash-actions">
             ${Button({
-              label: '📋 Generate Report',
+              label: html`${Icon({ name: 'send', size: 18 })} Generate Report`,
               full: true,
               size: 'lg',
               onClick: () => go('report'),

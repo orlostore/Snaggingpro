@@ -6,6 +6,7 @@ import { PhotoAttach } from '@/components/PhotoAttach';
 import { confirmDialog } from '@/components/Confirm';
 import { loadDraft, saveDraft } from '@/state/persist';
 import { DISC_LABELS, DISC_ICONS, type Discipline } from '@/domain/disciplines';
+import { Icon, type IconName } from '@/components/Icon';
 import type { Item, RoomState } from '@/state/schema';
 import { go } from '@/lib/router';
 import { toast } from '@/components/Toast';
@@ -243,13 +244,16 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
         <main class="container room">
           ${allDone && incomplete === 0
             ? html`<div class="room-banner room-banner--ok">
-                <strong>✓ Room complete</strong> — every item inspected, every issue has a note and photo
+                ${Icon({ name: 'check', size: 18 })}
+                <strong>Room complete</strong>
+                <span class="room-banner__sub">every item inspected, every issue has a note and photo</span>
               </div>`
             : html`
                 <div class="room-banner room-banner--warn">
+                  ${Icon({ name: 'alert', size: 18 })}
                   <strong>${allPending} pending</strong>
                   ${incomplete > 0
-                    ? html` · <strong class="room-banner__crit">⚠ ${incomplete} issue${incomplete === 1 ? '' : 's'} missing note or photo</strong>`
+                    ? html`<span class="room-banner__sub room-banner__crit">${incomplete} issue${incomplete === 1 ? '' : 's'} missing note or photo</span>`
                     : null}
                 </div>
               `}
@@ -268,15 +272,16 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
                     paint();
                   }}
                 >
-                  ${DISC_ICONS[d]} ${DISC_LABELS[d]}
+                  ${Icon({ name: DISC_ICONS[d] as IconName, size: 16 })}
+                  <span>${DISC_LABELS[d]}</span>
                   ${ok
-                    ? html`<span class="disc-tab__pill disc-tab__pill--done">✓</span>`
+                    ? html`<span class="disc-tab__count disc-tab__count--done">${Icon({ name: 'check', size: 14 })}</span>`
                     : html`
                         ${pending > 0
-                          ? html`<span class="disc-tab__pill">${pending}</span>`
+                          ? html`<span class="disc-tab__count">${pending}</span>`
                           : null}
                         ${incompleteN > 0
-                          ? html`<span class="disc-tab__pill disc-tab__pill--crit">⚠ ${incompleteN}</span>`
+                          ? html`<span class="disc-tab__count disc-tab__count--crit">${incompleteN}</span>`
                           : null}
                       `}
                 </button>
@@ -384,7 +389,8 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
             class="item__btn ${item.status === 'pass' ? 'item__btn--on' : ''}"
             @click=${() => setStatus(item.key, 'pass')}
           >
-            ✓ Pass
+            ${Icon({ name: 'check', size: 16 })}
+            <span>Pass</span>
           </button>
           <button
             class="item__btn ${item.status === 'issue'
@@ -398,21 +404,21 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
                   setStatus(item.key, 'issue', sev);
                   toast(`Marked ${SEVERITY_LABEL[sev]} — add note and photo`);
                 },
-                onCancel: () => {
-                  /* no change */
-                },
+                onCancel: () => { /* no change */ },
               });
             }}
           >
-            ⚠ ${item.status === 'issue' && item.severity
+            ${Icon({ name: 'alert', size: 16 })}
+            <span>${item.status === 'issue' && item.severity
               ? SEVERITY_LABEL[item.severity]
-              : 'Issue'}
+              : 'Issue'}</span>
           </button>
           <button
             class="item__btn ${item.status === 'na' ? 'item__btn--on' : ''}"
             @click=${() => setStatus(item.key, 'na')}
           >
-            — N/A
+            ${Icon({ name: 'minus', size: 16 })}
+            <span>N/A</span>
           </button>
         </div>
         ${item.status === 'issue' ? observationsBlock(item) : null}
@@ -452,14 +458,14 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
                               aria-label="Annotate photo"
                               @click=${() => annotatePhoto(item.key, obs.id, pid)}
                             >
-                              ✎
+                              ${Icon({ name: 'pencil', size: 14 })}
                             </button>
                             <button
                               class="obs__photo-remove"
                               aria-label="Remove photo"
                               @click=${() => void removePhoto(item.key, obs.id, pid)}
                             >
-                              ×
+                              ${Icon({ name: 'x', size: 14 })}
                             </button>
                           </div>
                         `,

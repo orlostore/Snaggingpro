@@ -11,6 +11,7 @@ import { generateReportHtml } from '@/report/generate';
 import { collectSnags } from '@/domain/snags';
 import { go } from '@/lib/router';
 import { formatDateLong } from '@/lib/format';
+import { Icon } from '@/components/Icon';
 import type { State } from '@/state/schema';
 
 export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
@@ -91,15 +92,20 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
           </div>
 
           <div class="report-detail__actions">
-            ${Button({ label: '🖨 Print / PDF', full: true, size: 'lg', onClick: () => void openPrint() })}
             ${Button({
-              label: '✎ Edit this report',
+              label: html`${Icon({ name: 'print', size: 18 })} Print / PDF`,
+              full: true,
+              size: 'lg',
+              onClick: () => void openPrint(),
+            })}
+            ${Button({
+              label: html`${Icon({ name: 'pencil', size: 18 })} Edit this report`,
               full: true,
               variant: 'secondary',
               onClick: () => void editReport(),
             })}
             ${Button({
-              label: '🔁 Start follow-up inspection',
+              label: html`${Icon({ name: 'undo', size: 18 })} Start follow-up inspection`,
               full: true,
               variant: 'secondary',
               onClick: () => void startFollowUp(),

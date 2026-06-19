@@ -8,6 +8,7 @@
  */
 
 import { html, type TemplateResult } from 'lit-html';
+import { Icon } from './Icon';
 
 export interface PhotoAttachProps {
   onPicked: (file: File) => void;
@@ -24,17 +25,13 @@ export function PhotoAttach({ onPicked, label = 'Add photo' }: PhotoAttachProps)
   return html`
     <div class="photo-attach" role="group" aria-label=${label}>
       <label class="photo-attach__btn">
-        <span>📷 Take photo</span>
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          class="sr-only"
-          @change=${pick}
-        />
+        ${Icon({ name: 'camera', size: 18 })}
+        <span>Take photo</span>
+        <input type="file" accept="image/*" capture="environment" class="sr-only" @change=${pick} />
       </label>
       <label class="photo-attach__btn photo-attach__btn--alt">
-        <span>🖼 Attach from gallery</span>
+        ${Icon({ name: 'gallery', size: 18 })}
+        <span>From gallery</span>
         <input type="file" accept="image/*" class="sr-only" @change=${pick} />
       </label>
     </div>
