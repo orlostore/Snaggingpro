@@ -88,6 +88,11 @@ const BRAND_CSS = `
   .cp__ref { color: var(--grey); }
   .cp__db { display: inline-block; background: rgba(47,109,170,0.10); color: #2f6dbb; padding: 0 6px; border-radius: 99px; font-size: 10px; font-weight: 600; margin-right: 4px; }
   .room__findings-title { font-size: 14px; color: var(--dark); margin: 18px 0 6px; border-top: 1px solid #e2e4e9; padding-top: 12px; }
+  .ba { margin-top: 8px; }
+  .ba__label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--grey); margin-bottom: 4px; }
+  .ba--before .ba__label { color: #5a5d63; }
+  .ba--after  .ba__label { color: #0f7a44; }
+  .ba--new    .ba__label { color: #b6221b; }
   @media print { @page { size: A4; margin: 14mm; } .no-print { display: none; } }
 `;
 
@@ -215,6 +220,21 @@ function photoGrid(ids: string[], photos: Map<string, string>, label: string): s
   return `<div class="snag__photos">${imgs}</div>`;
 }
 
+function labelledPhotoGrid(
+  ids: string[],
+  photos: Map<string, string>,
+  label: string,
+  variant: 'before' | 'after' | 'new',
+): string {
+  if (ids.length === 0) return '';
+  return `
+    <div class="ba ba--${variant}">
+      <div class="ba__label">${h(label)}</div>
+      ${photoGrid(ids, photos, label)}
+    </div>
+  `;
+}
+
 const RECT_LABEL: Record<'fixed' | 'open' | 'new', string> = {
   fixed: 'FIXED',
   open: 'STILL OPEN',
@@ -225,19 +245,42 @@ function rectificationBlock(s: SnagRecord, photos: Map<string, string>): string 
   if (!s.rectification) return '';
   const note = s.rectificationNote?.trim() || '';
   const photoIds = s.rectificationPhotoIds ?? [];
+  const photoLabel =
+    s.rectification === 'fixed' ? 'After — closeout photos' :
+    s.rectification === 'new'   ? 'New finding — photos' :
+    '';
+  const sectionTitle =
+    s.rectification === 'fixed' ? 'Closeout' :
+    s.rectification === 'new'   ? 'New finding' :
+    'Still pending rectification';
   return `
     <div class="rect-block rect-block--${s.rectification}">
       <div class="rect-block__head">
         <span class="rect-block__pill rect-block__pill--${s.rectification}">${RECT_LABEL[s.rectification]}</span>
-        <span class="rect-block__title">${s.rectification === 'fixed' ? 'Closeout' : s.rectification === 'new' ? 'New finding' : 'Still pending rectification'}</span>
+        <span class="rect-block__title">${sectionTitle}</span>
       </div>
       ${note ? `<div class="rect-block__note">${h(note)}</div>` : ''}
-      ${photoGrid(photoIds, photos, 'Closeout photo')}
+      ${
+        photoIds.length
+          ? labelledPhotoGrid(
+              photoIds,
+              photos,
+              photoLabel,
+              s.rectification === 'fixed' ? 'after' : s.rectification === 'new' ? 'new' : 'before',
+            )
+          : ''
+      }
     </div>
   `;
 }
 
 function snagBlock(s: SnagRecord, photos: Map<string, string>): string {
+  // Show 'Before' label on the original photos only when this snag is part
+  // of a follow-up (i.e. it carries a rectification block underneath).
+  const photosHtml =
+    s.rectification != null
+      ? labelledPhotoGrid(s.photoIds, photos, 'Before — original snag', 'before')
+      : photoGrid(s.photoIds, photos, 'Snag photo');
   return `
     <div class="snag snag--${s.severity}">
       <div class="snag__head">
@@ -246,7 +289,7 @@ function snagBlock(s: SnagRecord, photos: Map<string, string>): string {
       </div>
       <div class="snag__title">${h(s.itemLabel)}</div>
       <div>${h(s.text || '—')}</div>
-      ${photoGrid(s.photoIds, photos, 'Snag photo')}
+      ${photosHtml}
       ${rectificationBlock(s, photos)}
     </div>
   `;
