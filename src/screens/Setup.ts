@@ -1,5 +1,5 @@
 import { html, render, type TemplateResult } from 'lit-html';
-import { PROP_TYPES, type PropType } from '@/domain/pricing';
+import { PROP_OPTIONS, feeFor, type PropType } from '@/domain/pricing';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/Button';
@@ -8,6 +8,7 @@ import { saveDraft } from '@/state/persist';
 import { go } from '@/lib/router';
 
 interface SetupDraft {
+  optionKey: string | null;
   type: PropType | null;
   bedrooms: number;
   clientName: string;
@@ -19,10 +20,16 @@ interface SetupDraft {
   floor: string;
   bua: number;
   price: number;
+  priceManuallyEdited: boolean;
+}
+
+function optionKey(type: PropType, bedrooms: number): string {
+  return `${type}_${bedrooms}`;
 }
 
 export function Setup(rootEl: HTMLElement): TemplateResult {
   const draft: SetupDraft = {
+    optionKey: null,
     type: null,
     bedrooms: 0,
     clientName: '',
@@ -34,19 +41,20 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     floor: '',
     bua: 0,
     price: 0,
+    priceManuallyEdited: false,
   };
 
   function paint() {
     render(view(), rootEl);
   }
 
-  function setType(t: PropType) {
-    draft.type = t;
-    paint();
-  }
-
-  function setBR(n: number) {
-    draft.bedrooms = n;
+  function selectOption(type: PropType, bedrooms: number) {
+    draft.optionKey = optionKey(type, bedrooms);
+    draft.type = type;
+    draft.bedrooms = bedrooms;
+    if (!draft.priceManuallyEdited) {
+      draft.price = feeFor(type, bedrooms);
+    }
     paint();
   }
 
@@ -75,31 +83,19 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
       <section class="screen">
         ${Header({ title: 'New Inspection', back: () => go('splash') })}
         <main class="container setup">
-          <h2 class="section-title">Property type</h2>
+          <h2 class="section-title">Property type & bedrooms</h2>
           <div class="prop-grid">
-            ${PROP_TYPES.map(
+            ${PROP_OPTIONS.map(
               (p) => html`
                 <button
-                  class="prop-card ${draft.type === p.id ? 'prop-card--on' : ''}"
-                  @click=${() => setType(p.id)}
+                  class="prop-card ${draft.optionKey === optionKey(p.id, p.bedrooms)
+                    ? 'prop-card--on'
+                    : ''}"
+                  @click=${() => selectOption(p.id, p.bedrooms)}
                 >
                   <span class="prop-card__icon">${p.icon}</span>
                   <span class="prop-card__label">${p.label}</span>
-                  <span class="prop-card__price">AED ${p.basePrice.toLocaleString()}</span>
-                </button>
-              `,
-            )}
-          </div>
-
-          <h2 class="section-title">Bedrooms</h2>
-          <div class="br-row">
-            ${[0, 1, 2, 3, 4, 5, 6].map(
-              (n) => html`
-                <button
-                  class="br-btn ${draft.bedrooms === n ? 'br-btn--on' : ''}"
-                  @click=${() => setBR(n)}
-                >
-                  ${n === 0 ? 'Studio' : `${n} BR`}
+                  <span class="prop-card__price">AED ${p.fee.toLocaleString()}</span>
                 </button>
               `,
             )}
@@ -181,13 +177,19 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
               />
             </label>
             <label class="field">
-              <span class="field__label">Inspection fee (AED)</span>
+              <span class="field__label">
+                Inspection fee (AED) ${draft.optionKey && !draft.priceManuallyEdited
+                  ? html`<em class="field__hint">auto-filled from property type</em>`
+                  : null}
+              </span>
               <input
                 class="field__input"
                 inputmode="numeric"
                 .value=${String(draft.price || '')}
-                @input=${(e: Event) =>
-                  input('price', Number((e.target as HTMLInputElement).value) || 0)}
+                @input=${(e: Event) => {
+                  draft.priceManuallyEdited = true;
+                  input('price', Number((e.target as HTMLInputElement).value) || 0);
+                }}
               />
             </label>
           </div>

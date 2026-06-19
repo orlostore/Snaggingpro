@@ -15,11 +15,7 @@ function migrateV0ToV1(legacy: AnyState): unknown {
   // Best-effort port of the v0 STATE shape used by legacy/index.html.
   // We don't try to recover photo dataURLs — they will be lost.
   const propTypeRaw = (legacy['propType'] as string) || 'villa3';
-  const propType = propTypeRaw.startsWith('villa')
-    ? 'villa'
-    : propTypeRaw === 'studio'
-      ? 'apartment'
-      : 'apartment';
+  const propType: 'apartment' | 'villa' = propTypeRaw.startsWith('villa') ? 'villa' : 'apartment';
   const bedrooms = propTypeRaw === 'studio'
     ? 0
     : propTypeRaw.startsWith('villa')

@@ -12,7 +12,7 @@ export const STATE_VERSION = 1 as const;
 const DisciplineZ = z.enum(DISCIPLINES);
 const SeverityZ = z.enum(SEVERITIES);
 
-const PropTypeZ = z.enum(['apartment', 'townhouse', 'villa', 'penthouse']);
+const PropTypeZ = z.enum(['apartment', 'villa']);
 const ReportTypeZ = z.enum(['original', 'follow-up']);
 const StatusZ = z.enum(['pending', 'pass', 'issue', 'na']);
 const RectificationZ = z.enum(['fixed', 'open', 'new']);

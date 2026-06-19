@@ -22,11 +22,20 @@ export function saveDraft(state: State): void {
 
 export const saveDraftDebounced = debounce(saveDraft, 250);
 
+/** Map any pre-pricing-rework property types onto the new {apartment, villa} pair. */
+function normalisePropType(input: unknown): unknown {
+  if (typeof input !== 'object' || input === null) return input;
+  const blob = input as { property?: { type?: unknown } };
+  if (blob.property?.type === 'townhouse') blob.property.type = 'villa';
+  if (blob.property?.type === 'penthouse') blob.property.type = 'apartment';
+  return blob;
+}
+
 export function loadDraft(): State | null {
   try {
     const raw = localStorage.getItem(DRAFT_KEY);
     if (raw) {
-      const parsed = StateZ.safeParse(JSON.parse(raw));
+      const parsed = StateZ.safeParse(normalisePropType(JSON.parse(raw)));
       if (parsed.success) return parsed.data;
     }
     const legacy = localStorage.getItem(LEGACY_KEY);

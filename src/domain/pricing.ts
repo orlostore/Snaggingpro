@@ -1,27 +1,48 @@
 /**
- * Property types and inspection pricing.
- * Single source of truth — UI reads from here, report reads from here.
+ * Property types and inspection pricing — modelled on the v0 fee schedule.
+ *
+ * Villa and Townhouse share one category (same prep, same MEP rooms, same fee).
+ * Apartment fee scales by bedrooms; Villa/TH fee scales by bedrooms too.
+ * The Setup screen auto-fills the fee from this table when both prop type and
+ * bedrooms are selected, but the field stays editable for one-off overrides.
  */
 
-export const PROP_TYPES = [
-  { id: 'apartment', label: 'Apartment', icon: '🏢', basePrice: 2500 },
-  { id: 'townhouse', label: 'Townhouse', icon: '🏘', basePrice: 3000 },
-  { id: 'villa', label: 'Villa', icon: '🏡', basePrice: 3355 },
-  { id: 'penthouse', label: 'Penthouse', icon: '🏙', basePrice: 3500 },
-] as const;
+export type PropType = 'apartment' | 'villa';
 
-export type PropType = (typeof PROP_TYPES)[number]['id'];
+export interface PropOption {
+  id: PropType;
+  bedrooms: number;
+  label: string;
+  icon: string;
+  fee: number;
+}
 
-export const PROP_LABEL: Record<PropType, string> = PROP_TYPES.reduce(
-  (acc, p) => ({ ...acc, [p.id]: p.label }),
-  {} as Record<PropType, string>,
-);
+/** The 9 buttons shown on the Setup screen — one per (type, bedrooms) combo. */
+export const PROP_OPTIONS: readonly PropOption[] = [
+  { id: 'apartment', bedrooms: 0, label: 'Studio Apt', icon: '🏢', fee: 1000 },
+  { id: 'apartment', bedrooms: 1, label: '1 BR Apartment', icon: '🏢', fee: 1000 },
+  { id: 'apartment', bedrooms: 2, label: '2 BR Apartment', icon: '🏢', fee: 1500 },
+  { id: 'apartment', bedrooms: 3, label: '3 BR Apartment', icon: '🏢', fee: 1700 },
+  { id: 'apartment', bedrooms: 4, label: '4 BR Apartment', icon: '🏢', fee: 1900 },
+  { id: 'villa', bedrooms: 3, label: 'Villa / TH 3BR', icon: '🏡', fee: 2500 },
+  { id: 'villa', bedrooms: 4, label: 'Villa / TH 4BR', icon: '🏡', fee: 2800 },
+  { id: 'villa', bedrooms: 5, label: 'Villa / TH 5BR', icon: '🏡', fee: 3400 },
+  { id: 'villa', bedrooms: 6, label: 'Villa / TH 6BR', icon: '🏡', fee: 3625 },
+];
 
-/** Property classes that get villa-only rooms (booster pump, water tanks, solar). */
-export const VILLA_LIKE: PropType[] = ['villa', 'townhouse'];
+/** Label per type for the report cover and dashboard meta. */
+export const PROP_LABEL: Record<PropType, string> = {
+  apartment: 'Apartment',
+  villa: 'Villa / Townhouse',
+};
 
 export function isVillaLike(t: PropType): boolean {
-  return VILLA_LIKE.includes(t);
+  return t === 'villa';
+}
+
+/** Look up the fee for a (type, bedrooms) combo. Returns 0 if not in the table. */
+export function feeFor(type: PropType, bedrooms: number): number {
+  return PROP_OPTIONS.find((o) => o.id === type && o.bedrooms === bedrooms)?.fee ?? 0;
 }
 
 export const FOLLOWUP_FEE = 2000;
