@@ -10,6 +10,7 @@ import type { Item, RoomState } from '@/state/schema';
 import { go } from '@/lib/router';
 import { toast } from '@/components/Toast';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
+import { reencodeToWebp } from '@/lib/imageEncode';
 import { openAnnotator } from '@/components/PhotoAnnotate';
 import { openSeverityPicker } from '@/components/SeverityPicker';
 import { newId } from '@/lib/id';
@@ -143,7 +144,8 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const item = s.rooms[roomId]?.items[itemKey];
     const obs = item?.observations.find((o) => o.id === obsId);
     if (!obs) return;
-    const id = await storePhoto(file, 'snag', s.job.ref);
+    const webp = await reencodeToWebp(file);
+    const id = await storePhoto(webp, 'snag', s.job.ref);
     obs.photoIds.push(id);
     s.job.updatedAt = Date.now();
     saveDraft(s);

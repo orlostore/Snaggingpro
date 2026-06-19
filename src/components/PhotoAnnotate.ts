@@ -165,9 +165,19 @@ export function openAnnotator(opts: AnnotateOptions): void {
     const canvas = host.querySelector<HTMLCanvasElement>('.annotate__canvas');
     if (!canvas) return;
     const blob: Blob | null = await new Promise((res) =>
-      canvas.toBlob((b) => res(b), 'image/jpeg', 0.92),
+      canvas.toBlob((b) => res(b), 'image/webp', 0.85),
     );
-    if (!blob) return;
+    if (!blob) {
+      // Fallback for browsers that can't encode WebP
+      const jpg: Blob | null = await new Promise((res) =>
+        canvas.toBlob((b) => res(b), 'image/jpeg', 0.92),
+      );
+      if (!jpg) return;
+      const newId = await storePhoto(jpg, 'annotated', opts.jobRef);
+      close();
+      opts.onSave(newId);
+      return;
+    }
     const newId = await storePhoto(blob, 'annotated', opts.jobRef);
     close();
     opts.onSave(newId);
