@@ -1,38 +1,42 @@
 /**
  * Design tokens — single source of truth.
+ * Light theme. Magenta is the brand identity, used as accent (not as the
+ * primary surface), so it shows up but doesn't shout.
+ *
  * Nothing else in the app defines colour, spacing, radius, or shadow.
  * Add new tokens here, then reference them via var(--...) everywhere else.
  */
 
 :root {
   /* ------- Brand colours ------- */
-  --color-brand: #d10165;
-  --color-brand-hover: #b80058;
-  --color-brand-soft: rgba(209, 1, 101, 0.12);
-  --color-accent: #3b6daa;
-  --color-accent-soft: rgba(59, 109, 170, 0.15);
+  --color-brand: #a8004d;            /* deeper, less neon than #d10165 */
+  --color-brand-hover: #87003c;
+  --color-brand-soft: rgba(168, 0, 77, 0.08);
+  --color-accent: #2f6dbb;
+  --color-accent-soft: rgba(47, 109, 187, 0.10);
 
   /* ------- Surfaces ------- */
-  --color-bg: #414242;
-  --color-bg-elevated: #2e2f2f;
-  --color-bg-sunken: #1a1b1b;
-  --color-bg-overlay: rgba(0, 0, 0, 0.6);
+  --color-bg: #f7f7f8;               /* warm off-white app background */
+  --color-bg-elevated: #ffffff;      /* cards, headers, sheets */
+  --color-bg-sunken: #ecedf0;        /* input backgrounds, sunken rows */
+  --color-bg-overlay: rgba(20, 22, 26, 0.45);
 
   /* ------- Text ------- */
-  --color-text: #ffffff;
-  --color-text-muted: #b7baba;
-  --color-text-dim: #7e8181;
+  --color-text: #1a1b1e;             /* near-black, warm, AAA on white */
+  --color-text-muted: #4f535b;       /* secondary text, ~AA on white */
+  --color-text-dim: #7e828a;         /* placeholders, captions */
+  --color-text-inverse: #ffffff;     /* for dark/coloured backgrounds */
 
   /* ------- Borders ------- */
-  --color-border: #333333;
-  --color-border-strong: #4a4b4b;
+  --color-border: #e2e4e9;
+  --color-border-strong: #c4c7ce;
 
   /* ------- Status ------- */
-  --color-pass: #2ecc71;
-  --color-issue: #ff8a3c;
-  --color-critical: #e74c3c;
-  --color-na: #7e8181;
-  --color-warning: #ffb020;
+  --color-pass: #138a4e;             /* deeper green, readable on white */
+  --color-issue: #c66509;            /* warm amber-orange */
+  --color-critical: #b6221b;         /* deeper red */
+  --color-na: #6b7280;
+  --color-warning: #a17806;
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;
@@ -54,25 +58,25 @@
   --radius-pill: 999px;
 
   /* ------- Shadows ------- */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
-  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.4);
+  --shadow-sm: 0 1px 2px rgba(15, 16, 20, 0.06);
+  --shadow-md: 0 4px 14px rgba(15, 16, 20, 0.08);
+  --shadow-lg: 0 16px 40px rgba(15, 16, 20, 0.15);
 
   /* ------- Typography ------- */
   --font-display: 'Syne', system-ui, -apple-system, sans-serif;
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 
-  --text-xs: 11px;
-  --text-sm: 13px;
-  --text-base: 15px;
-  --text-md: 17px;
-  --text-lg: 20px;
-  --text-xl: 24px;
-  --text-2xl: 30px;
-  --text-3xl: 38px;
+  --text-xs: 12px;                   /* nudged up for readability */
+  --text-sm: 14px;
+  --text-base: 16px;
+  --text-md: 18px;
+  --text-lg: 22px;
+  --text-xl: 26px;
+  --text-2xl: 32px;
+  --text-3xl: 40px;
 
   --leading-tight: 1.2;
-  --leading-normal: 1.5;
+  --leading-normal: 1.55;
   --leading-loose: 1.7;
 
   /* ------- Touch targets ------- */
