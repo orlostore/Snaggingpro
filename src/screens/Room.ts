@@ -33,13 +33,15 @@ interface LocalView {
 export function Room(
   rootEl: HTMLElement,
   roomId: string,
-  params: { focus?: string; disc?: Discipline } = {},
+  params: { focus?: string; disc?: Discipline; from?: 'report' | 'dashboard' } = {},
 ): TemplateResult {
   const view: LocalView = {
     activeDisc: params.disc ?? null,
     photoUrls: new Map(),
   };
   const focusKey = params.focus ?? null;
+  const cameFromReport = params.from === 'report';
+  const backRoute = cameFromReport ? 'report' : 'dashboard';
   let focusHandled = false;
 
   function paint() {
@@ -314,7 +316,7 @@ export function Room(
           </ul>
           <div class="room__actions">
             ${Button({
-              label: 'Back to dashboard',
+              label: cameFromReport ? 'Back to report' : 'Back to dashboard',
               full: true,
               variant: 'secondary',
               onClick: () => void tryLeave(),
@@ -330,7 +332,7 @@ export function Room(
     const s = loadDraft();
     const room = s?.rooms[roomId];
     if (!room) {
-      go('dashboard');
+      go(backRoute);
       return;
     }
     const pending = countAllPending(room);
@@ -347,7 +349,7 @@ export function Room(
       });
       if (!revert) return;
       revertIncompleteIssues();
-      go('dashboard');
+      go(backRoute);
       return;
     }
 
@@ -361,7 +363,7 @@ export function Room(
       });
       if (!ok) return;
     }
-    go('dashboard');
+    go(backRoute);
   }
 
   function revertIncompleteIssues() {

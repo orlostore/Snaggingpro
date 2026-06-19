@@ -76,9 +76,13 @@ function dispatch(route: Route) {
         discRaw && (DISCIPLINES as readonly string[]).includes(discRaw)
           ? (discRaw as Discipline)
           : undefined;
-      const params: { focus?: string; disc?: Discipline } = {};
+      const fromRaw = route.params['from'];
+      const from: 'report' | 'dashboard' | undefined =
+        fromRaw === 'report' || fromRaw === 'dashboard' ? fromRaw : undefined;
+      const params: { focus?: string; disc?: Discipline; from?: 'report' | 'dashboard' } = {};
       if (focus) params.focus = focus;
       if (disc) params.disc = disc;
+      if (from) params.from = from;
       render(Room(root, id, params), root);
       break;
     }

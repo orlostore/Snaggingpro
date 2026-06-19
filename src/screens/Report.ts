@@ -122,7 +122,12 @@ export function Report(rootEl: HTMLElement): TemplateResult {
                           <button
                             class="report-screen__missing-row"
                             @click=${() =>
-                              go('room', { id: m.roomId, focus: m.itemKey, disc: m.disc })}
+                              go('room', {
+                                id: m.roomId,
+                                focus: m.itemKey,
+                                disc: m.disc,
+                                from: 'report',
+                              })}
                           >
                             <span class="report-screen__missing-text">
                               <strong>${m.roomLabel}</strong>
