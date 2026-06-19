@@ -297,22 +297,55 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
       return;
     }
     const pending = countAllPending(room);
-    const incomplete = roomIncompleteIssues(room).length;
-    if (pending === 0 && incomplete === 0) {
+    const incompleteItems = roomIncompleteIssues(room);
+
+    // Hard case: items marked Issue but missing note or photo.
+    // You can't leave them in that state — either finish them or revert.
+    if (incompleteItems.length > 0) {
+      const revert = await confirmDialog({
+        title: 'Finish your snags or revert them?',
+        message: `${incompleteItems.length} item${incompleteItems.length === 1 ? ' is' : 's are'} marked as Issue but missing notes or photos. Add the details now, or remove the Issue mark so you can leave.`,
+        confirmLabel: 'Revert and leave',
+        cancelLabel: 'Stay and finish',
+      });
+      if (!revert) return;
+      revertIncompleteIssues();
       go('dashboard');
       return;
     }
-    const parts: string[] = [];
-    if (pending > 0) parts.push(`${pending} item${pending === 1 ? '' : 's'} pending`);
-    if (incomplete > 0)
-      parts.push(`${incomplete} issue${incomplete === 1 ? '' : 's'} missing note or photo`);
-    const ok = await confirmDialog({
-      title: 'Leave this room?',
-      message: `${room.label}: ${parts.join(' · ')}. You can come back any time — just confirming you want to step away.`,
-      confirmLabel: 'Leave anyway',
-      cancelLabel: 'Stay',
-    });
-    if (ok) go('dashboard');
+
+    // Soft case: untouched items only. Just confirm you mean to step away.
+    if (pending > 0) {
+      const ok = await confirmDialog({
+        title: 'Leave this room?',
+        message: `${room.label}: ${pending} item${pending === 1 ? '' : 's'} still untouched. You can come back any time.`,
+        confirmLabel: 'Leave anyway',
+        cancelLabel: 'Stay',
+      });
+      if (!ok) return;
+    }
+    go('dashboard');
+  }
+
+  function revertIncompleteIssues() {
+    const s = loadDraft();
+    if (!s) return;
+    const room = s.rooms[roomId];
+    if (!room) return;
+    let count = 0;
+    for (const item of Object.values(room.items)) {
+      if (issueIncomplete(item)) {
+        item.status = 'pending';
+        item.observations = [];
+        item.note = '';
+        count++;
+      }
+    }
+    if (count > 0) {
+      s.job.updatedAt = Date.now();
+      saveDraft(s);
+      toast(`${count} item${count === 1 ? '' : 's'} reverted to pending`);
+    }
   }
 
   function itemRow(_room: RoomState, item: Item): TemplateResult {
