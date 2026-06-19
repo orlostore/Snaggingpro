@@ -161,31 +161,45 @@ export function discIncompleteIssues(room: RoomState, disc: Item['disc']): numbe
   return Object.values(room.items).filter((i) => i.disc === disc && issueIncomplete(i)).length;
 }
 
-export interface MissingDetail {
+export interface AttentionDetail {
   roomId: string;
   roomLabel: string;
   itemKey: string;
   itemLabel: string;
   disc: Item['disc'];
+  /** Item has never been marked Pass/Issue/N/A. */
+  needsInspect: boolean;
+  /** Item is Issue but has no observation text. */
   missingNote: boolean;
+  /** Item is Issue but has no observation photo. */
   missingPhoto: boolean;
 }
 
-export function reportIncompleteIssues(state: State): MissingDetail[] {
-  const out: MissingDetail[] = [];
+/**
+ * Every item that's blocking the report:
+ *   - untouched pending items (need a Pass / Issue / N/A decision)
+ *   - issues with no note or no photo (need details)
+ *
+ * Used by the Report screen to disable Open-Print / Save until clean
+ * and to render a single tap-to-jump punch list.
+ */
+export function reportNeedsAttention(state: State): AttentionDetail[] {
+  const out: AttentionDetail[] = [];
   for (const roomId of state.roomOrder) {
     const room = state.rooms[roomId];
     if (!room || room.excluded) continue;
     for (const item of Object.values(room.items)) {
+      const needsInspect = item.status === 'pending';
       const missingNote = issueMissingNote(item);
       const missingPhoto = issueMissingPhoto(item);
-      if (missingNote || missingPhoto) {
+      if (needsInspect || missingNote || missingPhoto) {
         out.push({
           roomId,
           roomLabel: room.label,
           itemKey: item.key,
           itemLabel: item.label,
           disc: item.disc,
+          needsInspect,
           missingNote,
           missingPhoto,
         });
