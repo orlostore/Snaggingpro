@@ -6,7 +6,7 @@ import { loadDraft } from '@/state/persist';
 import { generateReportHtml } from '@/report/generate';
 import { reportsRepo } from '@/storage/reports';
 import { TYPO_RULES, scanText, type TypoIssue } from '@/domain/typoRules';
-import { collectSnags, reportMissingPhotos } from '@/domain/snags';
+import { collectSnags, reportIncompleteIssues } from '@/domain/snags';
 import { toast } from '@/components/Toast';
 import { go } from '@/lib/router';
 
@@ -50,8 +50,8 @@ export function Report(rootEl: HTMLElement): TemplateResult {
   function open() {
     const s = loadDraft();
     if (!s) return;
-    if (reportMissingPhotos(s).length > 0) {
-      toast('Add photos to every issue before generating the report');
+    if (reportIncompleteIssues(s).length > 0) {
+      toast('Add a note and photo to every issue before generating the report');
       return;
     }
     const win = window.open('', '_blank');
@@ -67,8 +67,8 @@ export function Report(rootEl: HTMLElement): TemplateResult {
   async function saveToLibrary() {
     const s = loadDraft();
     if (!s) return;
-    if (reportMissingPhotos(s).length > 0) {
-      toast('Add photos to every issue before saving');
+    if (reportIncompleteIssues(s).length > 0) {
+      toast('Add a note and photo to every issue before saving');
       return;
     }
     s.job.status = 'completed';
@@ -87,7 +87,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
       return html``;
     }
     const snags = collectSnags(s);
-    const missingPhotos = reportMissingPhotos(s);
+    const incomplete = reportIncompleteIssues(s);
     const found = issues.length ? issues : scan();
     issues.splice(0, issues.length, ...found);
 
@@ -101,21 +101,29 @@ export function Report(rootEl: HTMLElement): TemplateResult {
             <p>Critical: <strong>${snags.filter((s) => s.severity === 'critical').length}</strong></p>
           </div>
 
-          ${missingPhotos.length > 0
+          ${incomplete.length > 0
             ? html`
                 <div class="card report-screen__block">
                   <h2 class="section-title report-screen__block-title">
-                    📷 ${missingPhotos.length} issue${missingPhotos.length === 1 ? '' : 's'} missing photos
+                    ⚠ ${incomplete.length} issue${incomplete.length === 1 ? '' : 's'} need attention
                   </h2>
                   <p>
-                    A photo is required for every snag. Add one to each item below before generating the
-                    report.
+                    Every snag must have both a written description and at least one photo. Fix each item
+                    below, then come back to generate the report.
                   </p>
                   <ul class="report-screen__missing">
-                    ${missingPhotos.slice(0, 50).map(
+                    ${incomplete.slice(0, 50).map(
                       (m) => html`
                         <li>
                           <strong>${m.roomLabel}</strong> · ${m.itemLabel}
+                          <span class="report-screen__missing-tags">
+                            ${m.missingNote
+                              ? html`<span class="report-screen__tag">✎ note</span>`
+                              : null}
+                            ${m.missingPhoto
+                              ? html`<span class="report-screen__tag">📷 photo</span>`
+                              : null}
+                          </span>
                         </li>
                       `,
                     )}
@@ -151,7 +159,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
               label: '🖨 Open print view',
               full: true,
               size: 'lg',
-              disabled: missingPhotos.length > 0,
+              disabled: incomplete.length > 0,
               onClick: open,
             })}
             ${Button({
@@ -159,7 +167,7 @@ export function Report(rootEl: HTMLElement): TemplateResult {
               full: true,
               size: 'lg',
               variant: 'secondary',
-              disabled: missingPhotos.length > 0,
+              disabled: incomplete.length > 0,
               onClick: () => void saveToLibrary().then(paint),
             })}
             ${Button({

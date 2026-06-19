@@ -129,9 +129,13 @@ export function isItemTouched(item: Item): boolean {
 }
 
 /**
- * An Issue item must have at least one observation that carries at least one
- * photo. Used as a soft visual cue throughout the inspection and as a hard
- * gate at report-generation time.
+ * Each Issue item must have at least one observation that carries BOTH a
+ * note describing the snag AND at least one photo. Without either, the snag
+ * isn't actionable for the developer who has to rectify it.
+ *
+ * These predicates power both the soft visual cues during inspection
+ * (badges, banners, tab pills) and the hard gates at report-generation
+ * time (Generate Report / Save to Library disabled until clean).
  */
 export function issueMissingPhoto(item: Item): boolean {
   if (item.status !== 'issue') return false;
@@ -139,22 +143,41 @@ export function issueMissingPhoto(item: Item): boolean {
   return !item.observations.some((o) => o.photoIds.length > 0);
 }
 
-export function roomIssuesMissingPhotos(room: RoomState): Item[] {
-  return Object.values(room.items).filter(issueMissingPhoto);
+export function issueMissingNote(item: Item): boolean {
+  if (item.status !== 'issue') return false;
+  if (item.observations.length === 0) return true;
+  return !item.observations.some((o) => o.text.trim().length > 0);
 }
 
-export function discMissingPhotos(room: RoomState, disc: Item['disc']): number {
-  return Object.values(room.items).filter((i) => i.disc === disc && issueMissingPhoto(i)).length;
+export function issueIncomplete(item: Item): boolean {
+  return issueMissingPhoto(item) || issueMissingNote(item);
 }
 
-export function reportMissingPhotos(state: State): { roomLabel: string; itemLabel: string }[] {
-  const out: { roomLabel: string; itemLabel: string }[] = [];
+export function roomIncompleteIssues(room: RoomState): Item[] {
+  return Object.values(room.items).filter(issueIncomplete);
+}
+
+export function discIncompleteIssues(room: RoomState, disc: Item['disc']): number {
+  return Object.values(room.items).filter((i) => i.disc === disc && issueIncomplete(i)).length;
+}
+
+export interface MissingDetail {
+  roomLabel: string;
+  itemLabel: string;
+  missingNote: boolean;
+  missingPhoto: boolean;
+}
+
+export function reportIncompleteIssues(state: State): MissingDetail[] {
+  const out: MissingDetail[] = [];
   for (const roomId of state.roomOrder) {
     const room = state.rooms[roomId];
     if (!room || room.excluded) continue;
     for (const item of Object.values(room.items)) {
-      if (issueMissingPhoto(item)) {
-        out.push({ roomLabel: room.label, itemLabel: item.label });
+      const missingNote = issueMissingNote(item);
+      const missingPhoto = issueMissingPhoto(item);
+      if (missingNote || missingPhoto) {
+        out.push({ roomLabel: room.label, itemLabel: item.label, missingNote, missingPhoto });
       }
     }
   }
