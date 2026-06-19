@@ -10,6 +10,7 @@ import type { Item, RoomState } from '@/state/schema';
 import { go } from '@/lib/router';
 import { toast } from '@/components/Toast';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
+import { openAnnotator } from '@/components/PhotoAnnotate';
 import { newId } from '@/lib/id';
 
 interface LocalView {
@@ -98,6 +99,33 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const url = await getPhotoUrl(id);
     if (url) view.photoUrls.set(id, url);
     paint();
+  }
+
+  function annotatePhoto(itemKey: string, obsId: string, photoId: string) {
+    const s = loadDraft();
+    if (!s) return;
+    openAnnotator({
+      photoId,
+      jobRef: s.job.ref,
+      onSave: async (newPhotoId) => {
+        const s2 = loadDraft();
+        if (!s2) return;
+        const obs = s2.rooms[roomId]?.items[itemKey]?.observations.find((o) => o.id === obsId);
+        if (!obs) return;
+        obs.photoIds = obs.photoIds.map((p) => (p === photoId ? newPhotoId : p));
+        s2.job.updatedAt = Date.now();
+        saveDraft(s2);
+        await deletePhoto(photoId);
+        view.photoUrls.delete(photoId);
+        const url = await getPhotoUrl(newPhotoId);
+        if (url) view.photoUrls.set(newPhotoId, url);
+        paint();
+        toast('Annotation saved');
+      },
+      onCancel: () => {
+        /* no-op */
+      },
+    });
   }
 
   async function removePhoto(itemKey: string, obsId: string, photoId: string) {
@@ -244,8 +272,19 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
                         (pid) => html`
                           <div class="obs__photo">
                             ${view.photoUrls.get(pid)
-                              ? html`<img src=${view.photoUrls.get(pid)!} alt="snag photo" />`
+                              ? html`<img
+                                  src=${view.photoUrls.get(pid)!}
+                                  alt="snag photo"
+                                  @click=${() => annotatePhoto(item.key, obs.id, pid)}
+                                />`
                               : html`<div class="obs__photo-loading">…</div>`}
+                            <button
+                              class="obs__photo-annotate"
+                              aria-label="Annotate photo"
+                              @click=${() => annotatePhoto(item.key, obs.id, pid)}
+                            >
+                              ✎
+                            </button>
                             <button
                               class="obs__photo-remove"
                               aria-label="Remove photo"

@@ -365,19 +365,79 @@
   height: 100%;
   color: var(--color-text-muted);
 }
+.obs__photo img {
+  cursor: pointer;
+}
+.obs__photo-annotate,
 .obs__photo-remove {
   position: absolute;
   top: 4px;
-  right: 4px;
   background: rgba(0, 0, 0, 0.7);
   color: white;
-  width: 26px;
-  height: 26px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   font-size: var(--text-sm);
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.obs__photo-annotate {
+  right: 36px;
+}
+.obs__photo-remove {
+  right: 4px;
+}
+
+/* ============ Annotator ============ */
+.annotate {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  color: var(--color-text);
+}
+.annotate__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4) calc(var(--space-3) + env(safe-area-inset-top, 0));
+  background: var(--color-bg-elevated);
+  border-bottom: 1px solid var(--color-border);
+}
+.annotate__hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+.annotate__stage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  padding: var(--space-3);
+}
+.annotate__canvas {
+  max-width: 100%;
+  max-height: 100%;
+  height: auto;
+  width: auto;
+  border-radius: var(--radius-md);
+  touch-action: none;
+  background: #222;
+}
+.annotate__actions {
+  display: flex;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4) calc(var(--space-4) + env(safe-area-inset-bottom, 0));
+  background: var(--color-bg-elevated);
+  border-top: 1px solid var(--color-border);
+}
+.annotate__actions .btn {
+  flex: 1;
 }
 .obs__actions {
   display: flex;
