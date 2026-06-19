@@ -360,7 +360,7 @@
 }
 .sev-row--minor .sev-row__pill {
   background: var(--color-warning);
-  color: #111;
+  color: var(--color-text-inverse);
 }
 .sev-sheet__cancel {
   margin-top: var(--space-2);
@@ -390,7 +390,7 @@
 }
 .item__sev--minor {
   background: var(--color-warning);
-  color: #111;
+  color: var(--color-text-inverse);
 }
 
 /* ============ Per-item attention badges ============ */

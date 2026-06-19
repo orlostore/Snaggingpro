@@ -21,22 +21,22 @@
   --color-bg-sunken: #ecedf0;        /* input backgrounds, sunken rows */
   --color-bg-overlay: rgba(20, 22, 26, 0.45);
 
-  /* ------- Text ------- */
-  --color-text: #1a1b1e;             /* near-black, warm, AAA on white */
-  --color-text-muted: #4f535b;       /* secondary text, ~AA on white */
-  --color-text-dim: #7e828a;         /* placeholders, captions */
+  /* ------- Text (all WCAG AA on white) ------- */
+  --color-text: #1a1b1e;             /* 17:1 — AAA on white */
+  --color-text-muted: #4f535b;       /* 7.7:1 — AAA */
+  --color-text-dim: #6b6f76;         /* 5.1:1 — AA, was 3.9 (failed) */
   --color-text-inverse: #ffffff;     /* for dark/coloured backgrounds */
 
   /* ------- Borders ------- */
-  --color-border: #e2e4e9;
-  --color-border-strong: #c4c7ce;
+  --color-border: #e2e4e9;           /* decorative card edges */
+  --color-border-strong: #8e949c;    /* 3:1 — meets WCAG 1.4.11 for UI */
 
-  /* ------- Status ------- */
-  --color-pass: #138a4e;             /* deeper green, readable on white */
-  --color-issue: #c66509;            /* warm amber-orange */
-  --color-critical: #b6221b;         /* deeper red */
+  /* ------- Status (all AA on white, both as fg and as bg with white fg) ------- */
+  --color-pass: #0f7a44;             /* 5.4:1 — was 4.4 (just below) */
+  --color-issue: #a6540a;            /* 5.4:1 — was 4.0 (failed) */
+  --color-critical: #b6221b;         /* 6.5:1 */
   --color-na: #6b7280;
-  --color-warning: #a17806;
+  --color-warning: #8a6300;          /* 5.4:1 — was 4.0 (failed) */
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;
