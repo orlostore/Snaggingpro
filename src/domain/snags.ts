@@ -185,6 +185,12 @@ export interface AttentionDetail {
   missingNote: boolean;
   /** Item is Issue but has no observation photo. */
   missingPhoto: boolean;
+  /** Follow-up: this Issue observation has no rectification decision yet. */
+  needsReview?: boolean;
+  /** Follow-up: rectification is Fixed/New but no closeout note. */
+  missingCloseoutNote?: boolean;
+  /** Follow-up: rectification is Fixed/New but no closeout photo. */
+  missingCloseoutPhoto?: boolean;
 }
 
 /**
@@ -197,15 +203,43 @@ export interface AttentionDetail {
  */
 export function reportNeedsAttention(state: State): AttentionDetail[] {
   const out: AttentionDetail[] = [];
+  const isFollowUp = state.job.reportType === 'follow-up';
+
   for (const roomId of state.roomOrder) {
     const room = state.rooms[roomId];
     if (!room || room.excluded) continue;
+
     for (const item of Object.values(room.items)) {
       const needsInspect = item.status === 'pending';
       const missingNote = issueMissingNote(item);
       const missingPhoto = issueMissingPhoto(item);
-      if (needsInspect || missingNote || missingPhoto) {
-        out.push({
+
+      // Follow-up: every Issue observation must have a rectification
+      // decision; Fixed / New must carry closeout note + photo.
+      let needsReview = false;
+      let missingCloseoutNote = false;
+      let missingCloseoutPhoto = false;
+      if (isFollowUp && item.status === 'issue') {
+        for (const obs of item.observations) {
+          const r = obs.rectification;
+          if (!r) {
+            needsReview = true;
+          } else if (r.status === 'fixed' || r.status === 'new') {
+            if (!r.note.trim()) missingCloseoutNote = true;
+            if (r.photoIds.length === 0) missingCloseoutPhoto = true;
+          }
+        }
+      }
+
+      if (
+        needsInspect ||
+        missingNote ||
+        missingPhoto ||
+        needsReview ||
+        missingCloseoutNote ||
+        missingCloseoutPhoto
+      ) {
+        const detail: AttentionDetail = {
           roomId,
           roomLabel: room.label,
           itemKey: item.key,
@@ -214,7 +248,11 @@ export function reportNeedsAttention(state: State): AttentionDetail[] {
           needsInspect,
           missingNote,
           missingPhoto,
-        });
+        };
+        if (needsReview) detail.needsReview = true;
+        if (missingCloseoutNote) detail.missingCloseoutNote = true;
+        if (missingCloseoutPhoto) detail.missingCloseoutPhoto = true;
+        out.push(detail);
       }
     }
   }

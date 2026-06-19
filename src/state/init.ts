@@ -127,12 +127,14 @@ export function cloneAsFollowUp(source: State, now: Date, jobSeq: number): State
     parentReportId: source.job.ref,
     status: 'draft',
   };
-  // Mark every existing snag as "open" for rectification check
+  // Leave rectification undefined on every observation. The Room screen
+  // treats absence as "not yet reviewed" so we can gate the closing
+  // report on every snag having an explicit rectification status.
   for (const room of Object.values(next.rooms)) {
     for (const item of Object.values(room.items)) {
       for (const obs of item.observations) {
         obs.id = obs.id || newId();
-        obs.rectification = obs.rectification ?? { status: 'open', note: '', photoIds: [] };
+        delete (obs as { rectification?: unknown }).rectification;
       }
     }
   }
