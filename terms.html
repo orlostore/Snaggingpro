@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SnaggingPro — Terms of Engagement</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--dark:#414242;
+--card:#2e2f2f;
+--magenta:#d10165;
+--blue:#3b6daa;
+--grey:#b7baba;
+--light:#f4f4f4;
+--white:#ffffff;
+}
+body{
+background:var(--dark);
+color:var(--white);
+font-family:'DM Sans',sans-serif;
+font-size:15px;
+line-height:1.7;
+min-height:100vh;
+}
+.header{
+background:var(--card);
+padding:24px 20px;
+display:flex;
+align-items:center;
+gap:14px;
+border-bottom:2px solid var(--magenta);
+position:sticky;
+top:0;
+z-index:10;
+}
+.logo-icon{
+width:44px;height:44px;
+background:var(--dark);
+border-radius:8px;
+display:flex;align-items:center;justify-content:center;
+flex-shrink:0;
+}
+.logo-icon svg{width:28px;height:28px}
+.logo-text{font-family:'Syne',sans-serif}
+.logo-text .main{font-size:20px;font-weight:700;letter-spacing:-0.3px}
+.logo-text .main span{color:var(--magenta)}
+.logo-text .sub{font-size:10px;color:var(--grey);letter-spacing:2px;text-transform:uppercase}
+.hero{
+background:linear-gradient(135deg,#1a1b1b 0%,var(--card) 100%);
+padding:32px 20px 24px;
+border-bottom:1px solid #333;
+}
+.job-badge{
+display:inline-flex;
+align-items:center;
+gap:6px;
+background:rgba(59,109,170,0.15);
+border:1px solid rgba(59,109,170,0.3);
+color:var(--blue);
+padding:4px 12px;
+border-radius:20px;
+font-size:12px;
+letter-spacing:1px;
+text-transform:uppercase;
+margin-bottom:16px;
+}
+.hero h1{
+font-family:'Syne',sans-serif;
+font-size:26px;
+font-weight:700;
+line-height:1.2;
+margin-bottom:8px;
+}
+.hero h1 em{color:var(--magenta);font-style:normal}
+.hero p{color:var(--grey);font-size:14px;font-weight:300}
+.client-name{
+color:var(--white);
+font-weight:500;
+}
+.container{padding:0 20px 40px;max-width:640px;margin:0 auto}
+.section{
+background:var(--card);
+border-radius:12px;
+margin:20px 0;
+overflow:hidden;
+border:1px solid #333;
+}
+.section-header{
+background:rgba(59,109,170,0.1);
+border-bottom:1px solid rgba(59,109,170,0.2);
+padding:14px 18px;
+display:flex;
+align-items:center;
+gap:10px;
+}
+.section-num{
+width:24px;height:24px;
+background:var(--blue);
+border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+font-family:'Syne',sans-serif;
+font-size:12px;font-weight:700;
+flex-shrink:0;
+}
+.section-header h2{
+font-family:'Syne',sans-serif;
+font-size:14px;
+font-weight:600;
+letter-spacing:0.3px;
+}
+.section-body{padding:16px 18px}
+.section-body p{
+font-size:14px;
+color:#d0d0d0;
+line-height:1.75;
+}
+.section-body strong{color:var(--white);font-weight:500}
+.highlight{
+background:rgba(209,1,101,0.08);
+border-left:3px solid var(--magenta);
+padding:10px 14px;
+border-radius:0 6px 6px 0;
+margin-top:10px;
+font-size:13px;
+color:#e0e0e0;
+}
+.divider{height:1px;background:#333;margin:12px 0}
+.acceptance-box{
+background:var(--card);
+border:1px solid #333;
+border-radius:12px;
+margin:24px 0;
+overflow:hidden;
+}
+.acceptance-header{
+background:rgba(209,1,101,0.1);
+border-bottom:1px solid rgba(209,1,101,0.2);
+padding:14px 18px;
+}
+.acceptance-header h2{
+font-family:'Syne',sans-serif;
+font-size:15px;
+font-weight:700;
+color:var(--magenta);
+}
+.acceptance-header p{font-size:13px;color:var(--grey);margin-top:3px}
+.acceptance-body{padding:18px}
+label{
+display:block;
+font-size:12px;
+color:var(--grey);
+letter-spacing:1px;
+text-transform:uppercase;
+margin-bottom:8px;
+}
+input[type=text]{
+width:100%;
+background:#1a1b1b;
+border:1px solid #444;
+border-radius:8px;
+color:var(--white);
+font-family:'DM Sans',sans-serif;
+font-size:16px;
+padding:14px 16px;
+outline:none;
+transition:border-color 0.2s;
+}
+input[type=text]:focus{border-color:var(--magenta)}
+input[type=text]::placeholder{color:#555}
+.checkbox-row{
+display:flex;
+gap:12px;
+align-items:flex-start;
+margin:16px 0;
+}
+.checkbox-row input[type=checkbox]{
+width:20px;height:20px;
+flex-shrink:0;
+margin-top:2px;
+accent-color:var(--magenta);
+cursor:pointer;
+}
+.checkbox-row label{
+font-size:13px;
+color:#d0d0d0;
+text-transform:none;
+letter-spacing:0;
+margin-bottom:0;
+cursor:pointer;
+line-height:1.6;
+}
+.checkbox-row label strong{color:var(--white)}
+.btn-accept{
+width:100%;
+background:var(--magenta);
+color:var(--white);
+border:none;
+border-radius:10px;
+padding:18px;
+font-family:'Syne',sans-serif;
+font-size:16px;
+font-weight:700;
+letter-spacing:0.5px;
+cursor:pointer;
+transition:opacity 0.2s,transform 0.1s;
+margin-top:8px;
+display:flex;align-items:center;justify-content:center;gap:10px;
+}
+.btn-accept:active{transform:scale(0.98)}
+.btn-accept:disabled{opacity:0.3;cursor:not-allowed}
+.btn-accept svg{width:20px;height:20px}
+.timestamp{
+text-align:center;
+font-size:12px;
+color:#555;
+margin-top:16px;
+}
+.footer{
+text-align:center;
+padding:24px 20px 40px;
+color:#444;
+font-size:12px;
+}
+.footer span{color:var(--magenta)}
+.success-screen{
+display:none;
+text-align:center;
+padding:60px 30px;
+}
+.success-screen .tick{
+width:70px;height:70px;
+background:rgba(209,1,101,0.1);
+border:2px solid var(--magenta);
+border-radius:50%;
+display:flex;align-items:center;justify-content:center;
+margin:0 auto 24px;
+}
+.success-screen h2{
+font-family:'Syne',sans-serif;
+font-size:24px;font-weight:700;
+margin-bottom:12px;
+}
+.success-screen p{color:var(--grey);font-size:15px;line-height:1.7}
+.success-screen .ref{
+display:inline-block;
+background:rgba(59,109,170,0.15);
+border:1px solid rgba(59,109,170,0.3);
+color:var(--blue);
+padding:8px 16px;
+border-radius:20px;
+font-size:13px;
+margin-top:16px;
+letter-spacing:1px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-icon">
+    <svg viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 16L14 8L22 16" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M6 16V22H22V16" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+      <path d="M11 22V17H17V22" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round"/>
+      <circle cx="21" cy="21" r="6" fill="#d10165"/>
+      <path d="M18.5 21L20.2 22.8L23.5 19.2" stroke="#ffffff" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+  <div class="logo-text">
+    <div class="main">Snagging<span>Pro</span></div>
+    <div class="sub">Property Condition Assessment</div>
+  </div>
+</div>
+
+<div id="mainContent">
+
+<div class="hero">
+  <div class="job-badge">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><circle cx="5" cy="5" r="4" stroke="#3b6daa" stroke-width="1.2"/><path d="M5 3V5.5L6.5 7" stroke="#3b6daa" stroke-width="1.2" stroke-linecap="round"/></svg>
+    <span id="jobRef">Inspection Agreement</span>
+  </div>
+  <h1>Terms of <em>Engagement</em></h1>
+  <p>Dear <span class="client-name" id="clientNameDisplay">Valued Client</span>, please read and accept the following terms before your inspection proceeds.</p>
+</div>
+
+<div class="container">
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Site Readiness</h2>
+    </div>
+    <div class="section-body">
+      <p>The <strong>hirer shall ensure</strong> that water and electricity connections are fully operational in the unit on the date of inspection. These are essential for completing all MEP and functional checks.</p>
+      <div class="highlight">If the team arrives on-site and power or water is unavailable, the inspection will proceed on all accessible and possible items. <strong>No payment deduction shall be made</strong> for items that could not be tested due to utility unavailability.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Payment Terms</h2>
+    </div>
+    <div class="section-body">
+      <p>The <strong>full inspection fee is due in advance</strong> prior to the inspection date. No inspection will be conducted without confirmed full payment. Payment confirms acceptance of these terms.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Access Obligations</h2>
+    </div>
+    <div class="section-body">
+      <p>The hirer is <strong>responsible for providing full and unobstructed access</strong> to all areas of the unit on the agreed inspection date and time. This includes but is not limited to: all rooms, balconies, roof terrace, utility rooms, garage, and roof access where applicable.</p>
+      <div class="highlight">If the SnaggingPro team arrives on-site and access is not provided or is significantly delayed, <strong>no refund shall be issued</strong>. A re-inspection will be treated as a new booking at full fee.</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Scope of Inspection</h2>
+    </div>
+    <div class="section-body">
+      <p>The inspection covers <strong>all visible and accessible areas</strong> of the property. Concealed works, areas behind walls, above false ceilings, below raised floors, or underground elements are excluded unless specialist equipment is deployed by prior agreement.</p>
+      <div class="divider"></div>
+      <p>If the unit is furnished or any areas are obstructed by the developer, contractor, or hirer, SnaggingPro <strong>shall not be held responsible</strong> for defects in those inaccessible areas.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Liability & Best Effort</h2>
+    </div>
+    <div class="section-body">
+      <p>SnaggingPro operates on a <strong>best effort basis</strong>. While every reasonable measure is taken to identify defects, the hirer acknowledges that SnaggingPro cannot be held liable for any items that may have been missed during the inspection. The report does not constitute a structural survey or engineering certification.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Cancellation & Rescheduling</h2>
+    </div>
+    <div class="section-body">
+      <p>The hirer must provide a minimum of <strong>24 hours written notice</strong> to cancel or reschedule an appointment. Cancellations with less than 24 hours notice will incur a cancellation fee of <strong>50% of the agreed inspection fee</strong>. Same-day cancellations or no-shows are non-refundable.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Re-inspection</h2>
+    </div>
+    <div class="section-body">
+      <p>The initial inspection is the contracted scope. Any <strong>re-inspection</strong> conducted after developer or contractor rectification works is a separate service and will be charged at an agreed fee. Re-inspection is recommended to verify all snags have been properly resolved.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Report Validity & Ownership</h2>
+    </div>
+    <div class="section-body">
+      <p>The report reflects the <strong>condition of the property at the time and date of inspection only</strong>. SnaggingPro is not responsible for defects that develop, are introduced, or become apparent after the inspection date.</p>
+      <div class="divider"></div>
+      <p>The report is prepared exclusively for the hirer. SnaggingPro holds no liability if the report is shared with or relied upon by third parties.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Photography</h2>
+    </div>
+    <div class="section-body">
+      <p>By engaging SnaggingPro, the hirer <strong>consents to photographs</strong> being taken of all areas of the property for documentation and reporting purposes. Photos are used solely for the inspection report and are not shared publicly or with any third party without the hirer's consent.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Governing Law</h2>
+    </div>
+    <div class="section-body">
+      <p>These terms shall be governed by the <strong>laws of the United Arab Emirates</strong>. Any disputes arising from this engagement shall be subject to the jurisdiction of the <strong>Dubai Courts</strong>. SnaggingPro shall not be liable for any delays or failures caused by circumstances beyond its reasonable control.</p>
+    </div>
+  </div>
+
+  <div class="acceptance-box">
+    <div class="acceptance-header">
+      <h2>Client Acceptance</h2>
+      <p>Confirm your identity and accept the terms to proceed</p>
+    </div>
+    <div class="acceptance-body">
+      <label for="clientNameInput">Your full name</label>
+      <input type="text" id="clientNameInput" placeholder="Type your full name here" autocomplete="name">
+
+      <div class="checkbox-row" style="margin-top:18px">
+        <input type="checkbox" id="agreeCheck">
+        <label for="agreeCheck">I, <strong id="nameInCheck">the undersigned</strong>, confirm that I have read, understood, and agree to all terms of engagement set out above by <strong>SnaggingPro</strong>.</label>
+      </div>
+
+      <button class="btn-accept" id="acceptBtn" disabled onclick="handleAccept()">
+        <svg viewBox="0 0 20 20" fill="none"><path d="M4 10L8 14L16 6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Accept & Send Confirmation
+      </button>
+
+      <div class="timestamp" id="timestampDisplay"></div>
+    </div>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 <span>SnaggingPro</span> — Property Condition Assessment. UAE.
+  </div>
+
+</div>
+</div>
+
+<div class="success-screen" id="successScreen">
+  <div class="tick">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 16L13 23L26 9" stroke="#d10165" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  </div>
+  <h2>Terms Accepted</h2>
+  <p>Your acceptance has been recorded and sent via WhatsApp. SnaggingPro will confirm your inspection appointment shortly.</p>
+  <div class="ref" id="successRef"></div>
+  <p style="margin-top:24px;font-size:13px;color:#555">You may now close this page.</p>
+</div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const clientName = params.get('client') || '';
+const jobRef = params.get('job') || 'INV-000';
+const waNumber = params.get('wa') || '';
+
+if(clientName){
+  document.getElementById('clientNameDisplay').textContent = clientName;
+  document.getElementById('clientNameInput').value = clientName;
+}
+document.getElementById('jobRef').textContent = 'Job Ref: ' + jobRef;
+
+const nameInput = document.getElementById('clientNameInput');
+const agreeCheck = document.getElementById('agreeCheck');
+const acceptBtn = document.getElementById('acceptBtn');
+const nameInCheck = document.getElementById('nameInCheck');
+
+function updateBtn(){
+  const hasName = nameInput.value.trim().length > 2;
+  const hasCheck = agreeCheck.checked;
+  acceptBtn.disabled = !(hasName && hasCheck);
+  if(nameInput.value.trim().length > 0){
+    nameInCheck.textContent = nameInput.value.trim();
+  } else {
+    nameInCheck.textContent = 'the undersigned';
+  }
+}
+
+nameInput.addEventListener('input', updateBtn);
+agreeCheck.addEventListener('change', updateBtn);
+
+const now = new Date();
+document.getElementById('timestampDisplay').textContent =
+  'Acceptance timestamp: ' + now.toLocaleDateString('en-GB',{day:'2-digit',month:'long',year:'numeric'}) +
+  ' at ' + now.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'});
+
+function handleAccept(){
+  const name = nameInput.value.trim();
+  const timestamp = new Date().toLocaleString('en-GB',{
+    day:'2-digit',month:'long',year:'numeric',
+    hour:'2-digit',minute:'2-digit'
+  });
+  const message = encodeURIComponent(
+    `✅ *SnaggingPro — Terms Accepted*\n\n` +
+    `Client: ${name}\n` +
+    `Job Ref: ${jobRef}\n` +
+    `Date & Time: ${timestamp}\n\n` +
+    `I confirm I have read and agreed to all SnaggingPro Terms of Engagement for the above inspection job.\n\n` +
+    `_SnaggingPro.pages.dev_`
+  );
+  document.getElementById('mainContent').style.display = 'none';
+  document.getElementById('successScreen').style.display = 'block';
+  document.getElementById('successRef').textContent = 'Job Ref: ' + jobRef + ' · ' + name;
+  setTimeout(()=>{
+    window.location.href = waNumber 
+        ? `https://wa.me/${waNumber}?text=${message}`
+        : `https://wa.me/?text=${message}`;
+  }, 1500);
+}
+</script>
+</body>
+</html>
