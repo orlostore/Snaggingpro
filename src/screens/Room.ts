@@ -12,6 +12,7 @@ import { toast } from '@/components/Toast';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { openAnnotator } from '@/components/PhotoAnnotate';
 import { newId } from '@/lib/id';
+import { issueMissingPhoto, discMissingPhotos, roomIssuesMissingPhotos } from '@/domain/snags';
 
 interface LocalView {
   activeDisc: Discipline | null;
@@ -217,35 +218,48 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const items = Object.values(room.items).filter((i) => i.disc === active);
     const allPending = countAllPending(room);
     const allDone = room.discs.every((d) => countPending(room, d) === 0);
+    const photosMissing = roomIssuesMissingPhotos(room).length;
 
     return html`
       <section class="screen">
-        ${Header({ title: room.label, back: () => go('dashboard') })}
+        ${Header({ title: room.label, back: () => void tryLeave() })}
         <main class="container room">
-          ${allDone
-            ? html`<div class="room-banner room-banner--ok">Room complete ✓</div>`
+          ${allDone && photosMissing === 0
+            ? html`<div class="room-banner room-banner--ok">
+                <strong>✓ Room complete</strong> — every item inspected, every issue photographed
+              </div>`
             : html`
-                <div class="room-banner">
-                  ${allPending} item${allPending === 1 ? '' : 's'} pending across this room
+                <div class="room-banner room-banner--warn">
+                  <strong>${allPending} pending</strong>
+                  ${photosMissing > 0
+                    ? html` · <strong class="room-banner__crit">📷 ${photosMissing} issue${photosMissing === 1 ? '' : 's'} missing photo</strong>`
+                    : null}
                 </div>
               `}
           <div class="disc-tabs">
             ${discs.map((d) => {
               const pending = countPending(room, d);
+              const missing = discMissingPhotos(room, d);
+              const ok = pending === 0 && missing === 0;
               return html`
                 <button
-                  class="disc-tab ${d === active ? 'disc-tab--on' : ''} ${pending > 0
-                    ? 'disc-tab--pending'
-                    : 'disc-tab--done'}"
+                  class="disc-tab ${d === active ? 'disc-tab--on' : ''} ${ok
+                    ? 'disc-tab--done'
+                    : 'disc-tab--pending'}"
                   @click=${() => {
                     view.activeDisc = d;
                     paint();
                   }}
                 >
                   ${DISC_ICONS[d]} ${DISC_LABELS[d]}
-                  ${pending > 0
-                    ? html`<span class="disc-tab__pill">${pending}</span>`
-                    : html`<span class="disc-tab__pill disc-tab__pill--done">✓</span>`}
+                  ${ok
+                    ? html`<span class="disc-tab__pill disc-tab__pill--done">✓</span>`
+                    : html`
+                        <span class="disc-tab__pill">${pending}</span>
+                        ${missing > 0
+                          ? html`<span class="disc-tab__pill disc-tab__pill--crit">📷 ${missing}</span>`
+                          : null}
+                      `}
                 </button>
               `;
             })}
@@ -258,7 +272,7 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
               label: 'Back to dashboard',
               full: true,
               variant: 'secondary',
-              onClick: () => go('dashboard'),
+              onClick: () => void tryLeave(),
             })}
           </div>
         </main>
@@ -267,12 +281,45 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     `;
   }
 
+  async function tryLeave() {
+    const s = loadDraft();
+    const room = s?.rooms[roomId];
+    if (!room) {
+      go('dashboard');
+      return;
+    }
+    const pending = countAllPending(room);
+    const missing = roomIssuesMissingPhotos(room).length;
+    if (pending === 0 && missing === 0) {
+      go('dashboard');
+      return;
+    }
+    const parts: string[] = [];
+    if (pending > 0) parts.push(`${pending} item${pending === 1 ? '' : 's'} pending`);
+    if (missing > 0) parts.push(`${missing} issue${missing === 1 ? '' : 's'} missing photo`);
+    const ok = await confirmDialog({
+      title: 'Leave this room?',
+      message: `${room.label}: ${parts.join(' · ')}. You can come back any time — just confirming you want to step away.`,
+      confirmLabel: 'Leave anyway',
+      cancelLabel: 'Stay',
+    });
+    if (ok) go('dashboard');
+  }
+
   function itemRow(_room: RoomState, item: Item): TemplateResult {
+    const needsPhoto = issueMissingPhoto(item);
     return html`
-      <li class="item ${item.status !== 'pending' ? `item--${item.status}` : ''}">
+      <li
+        class="item ${item.status !== 'pending' ? `item--${item.status}` : ''} ${needsPhoto
+          ? 'item--needs-photo'
+          : ''}"
+      >
         <div class="item__label">
           ${item.dbNum ? html`<span class="item__db">DB ${item.dbNum}</span>` : null}
           ${item.label}
+          ${needsPhoto
+            ? html`<span class="item__needs-photo">📷 photo required</span>`
+            : null}
         </div>
         <div class="item__statuses">
           <button
