@@ -229,21 +229,19 @@
 .room-banner {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-text-dim);
   border-radius: var(--radius-md);
-  padding: var(--space-4);
+  padding: var(--space-3) var(--space-4);
   margin: var(--space-4) 0;
-  font-size: var(--text-base);
-  font-weight: 500;
+  font-size: var(--text-sm);
+  color: var(--color-text);
 }
 .room-banner--ok {
-  background: rgba(46, 204, 113, 0.18);
-  border: 2px solid var(--color-pass);
+  border-left-color: var(--color-pass);
   color: var(--color-pass);
 }
 .room-banner--warn {
-  background: rgba(255, 138, 60, 0.18);
-  border: 2px solid var(--color-issue);
-  color: var(--color-issue);
+  border-left-color: var(--color-issue);
 }
 .room-banner__crit {
   color: var(--color-critical);
@@ -254,7 +252,7 @@
   gap: var(--space-2);
 }
 .disc-tab--pending:not(.disc-tab--on) {
-  border-color: var(--color-issue);
+  border-color: var(--color-border-strong);
 }
 .disc-tab__pill {
   background: var(--color-bg-sunken);
@@ -371,27 +369,6 @@
   font-size: var(--text-sm);
 }
 
-/* Severity chip shown inside the ⚠ Issue button after a pick */
-.item__sev {
-  display: inline-block;
-  margin-left: var(--space-2);
-  border-radius: var(--radius-pill);
-  padding: 1px 8px;
-  font-size: var(--text-xs);
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  color: white;
-}
-.item__sev--critical {
-  background: var(--color-critical);
-}
-.item__sev--major {
-  background: var(--color-issue);
-}
-.item__sev--minor {
-  background: var(--color-warning);
-  color: var(--color-text-inverse);
-}
 
 /* ============ Per-item attention badges ============ */
 .item--needs-attention {
@@ -647,9 +624,19 @@
   border-color: var(--color-pass);
   color: var(--color-text-inverse);
 }
-.item__btn--issue {
+.item__btn--sev-minor {
+  background: var(--color-warning);
+  border-color: var(--color-warning);
+  color: var(--color-text-inverse);
+}
+.item__btn--sev-major {
   background: var(--color-issue);
   border-color: var(--color-issue);
+  color: var(--color-text-inverse);
+}
+.item__btn--sev-critical {
+  background: var(--color-critical);
+  border-color: var(--color-critical);
   color: var(--color-text-inverse);
 }
 .item__note {

@@ -32,11 +32,11 @@
   --color-border-strong: #8e949c;    /* 3:1 — meets WCAG 1.4.11 for UI */
 
   /* ------- Status (all AA on white, both as fg and as bg with white fg) ------- */
-  --color-pass: #0f7a44;             /* 5.4:1 — was 4.4 (just below) */
-  --color-issue: #a6540a;            /* 5.4:1 — was 4.0 (failed) */
-  --color-critical: #b6221b;         /* 6.5:1 */
+  --color-pass: #0f7a44;             /* 5.4:1 — green */
+  --color-issue: #c2410c;            /* 5.2:1 — vibrant pumpkin orange (was muddy) */
+  --color-critical: #b6221b;         /* 6.5:1 — deep red */
+  --color-warning: #a16207;          /* 4.9:1 — gold-amber (clearly distinct from issue) */
   --color-na: #6b7280;
-  --color-warning: #8a6300;          /* 5.4:1 — was 4.0 (failed) */
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;

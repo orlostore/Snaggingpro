@@ -387,7 +387,9 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
             ✓ Pass
           </button>
           <button
-            class="item__btn ${item.status === 'issue' ? 'item__btn--on item__btn--issue' : ''}"
+            class="item__btn ${item.status === 'issue'
+              ? `item__btn--on item__btn--sev-${item.severity ?? 'minor'}`
+              : ''}"
             @click=${() => {
               openSeverityPicker({
                 itemLabel: item.label,
@@ -402,11 +404,9 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
               });
             }}
           >
-            ⚠ Issue${item.status === 'issue' && item.severity
-              ? html`<span class="item__sev item__sev--${item.severity}"
-                  >${SEVERITY_LABEL[item.severity]}</span
-                >`
-              : null}
+            ⚠ ${item.status === 'issue' && item.severity
+              ? SEVERITY_LABEL[item.severity]
+              : 'Issue'}
           </button>
           <button
             class="item__btn ${item.status === 'na' ? 'item__btn--on' : ''}"
