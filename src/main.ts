@@ -14,6 +14,7 @@ import '@/styles/screens.css';
 
 import { auth } from '@/lib/auth';
 import { currentRoute, go, startRouter, subscribe, type Route, type RouteName } from '@/lib/router';
+import { DISCIPLINES, type Discipline } from '@/domain/disciplines';
 
 import { Splash } from '@/screens/Splash';
 import { PinGate } from '@/screens/PinGate';
@@ -67,9 +68,20 @@ function dispatch(route: Route) {
     case 'dashboard':
       render(Dashboard(root), root);
       break;
-    case 'room':
-      render(Room(root, route.params['id'] ?? ''), root);
+    case 'room': {
+      const id = route.params['id'] ?? '';
+      const focus = route.params['focus'];
+      const discRaw = route.params['disc'];
+      const disc: Discipline | undefined =
+        discRaw && (DISCIPLINES as readonly string[]).includes(discRaw)
+          ? (discRaw as Discipline)
+          : undefined;
+      const params: { focus?: string; disc?: Discipline } = {};
+      if (focus) params.focus = focus;
+      if (disc) params.disc = disc;
+      render(Room(root, id, params), root);
       break;
+    }
     case 'report':
       render(Report(root), root);
       break;
