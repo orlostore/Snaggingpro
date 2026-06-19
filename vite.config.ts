@@ -2,9 +2,14 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 import path from 'node:path';
 
+const BUILD_TIME = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
+
 export default defineConfig({
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },
+  },
+  define: {
+    __BUILD_TIME__: JSON.stringify(BUILD_TIME),
   },
   build: {
     target: 'es2022',
@@ -40,6 +45,16 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         cleanupOutdatedCaches: true,
+        // Take over immediately on new deploy — no waiting for all tabs to
+        // close. Critical for fast iteration; old CSS bundles must not get
+        // served once a new one has been precached.
+        skipWaiting: true,
+        clientsClaim: true,
+        // Use NetworkFirst for HTML so a fresh deploy is picked up on first
+        // navigation. JS/CSS still come from precache because they carry
+        // hashed filenames and are invalidated automatically.
+        navigateFallback: '/index.html',
+        navigateFallbackDenylist: [/^\/api\//],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
