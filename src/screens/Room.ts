@@ -12,7 +12,13 @@ import { toast } from '@/components/Toast';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { openAnnotator } from '@/components/PhotoAnnotate';
 import { newId } from '@/lib/id';
-import { issueMissingPhoto, discMissingPhotos, roomIssuesMissingPhotos } from '@/domain/snags';
+import {
+  issueMissingPhoto,
+  issueMissingNote,
+  issueIncomplete,
+  discIncompleteIssues,
+  roomIncompleteIssues,
+} from '@/domain/snags';
 
 interface LocalView {
   activeDisc: Discipline | null;
@@ -218,29 +224,29 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const items = Object.values(room.items).filter((i) => i.disc === active);
     const allPending = countAllPending(room);
     const allDone = room.discs.every((d) => countPending(room, d) === 0);
-    const photosMissing = roomIssuesMissingPhotos(room).length;
+    const incomplete = roomIncompleteIssues(room).length;
 
     return html`
       <section class="screen">
         ${Header({ title: room.label, back: () => void tryLeave() })}
         <main class="container room">
-          ${allDone && photosMissing === 0
+          ${allDone && incomplete === 0
             ? html`<div class="room-banner room-banner--ok">
-                <strong>✓ Room complete</strong> — every item inspected, every issue photographed
+                <strong>✓ Room complete</strong> — every item inspected, every issue has a note and photo
               </div>`
             : html`
                 <div class="room-banner room-banner--warn">
                   <strong>${allPending} pending</strong>
-                  ${photosMissing > 0
-                    ? html` · <strong class="room-banner__crit">📷 ${photosMissing} issue${photosMissing === 1 ? '' : 's'} missing photo</strong>`
+                  ${incomplete > 0
+                    ? html` · <strong class="room-banner__crit">⚠ ${incomplete} issue${incomplete === 1 ? '' : 's'} missing note or photo</strong>`
                     : null}
                 </div>
               `}
           <div class="disc-tabs">
             ${discs.map((d) => {
               const pending = countPending(room, d);
-              const missing = discMissingPhotos(room, d);
-              const ok = pending === 0 && missing === 0;
+              const incompleteN = discIncompleteIssues(room, d);
+              const ok = pending === 0 && incompleteN === 0;
               return html`
                 <button
                   class="disc-tab ${d === active ? 'disc-tab--on' : ''} ${ok
@@ -255,9 +261,11 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
                   ${ok
                     ? html`<span class="disc-tab__pill disc-tab__pill--done">✓</span>`
                     : html`
-                        <span class="disc-tab__pill">${pending}</span>
-                        ${missing > 0
-                          ? html`<span class="disc-tab__pill disc-tab__pill--crit">📷 ${missing}</span>`
+                        ${pending > 0
+                          ? html`<span class="disc-tab__pill">${pending}</span>`
+                          : null}
+                        ${incompleteN > 0
+                          ? html`<span class="disc-tab__pill disc-tab__pill--crit">⚠ ${incompleteN}</span>`
                           : null}
                       `}
                 </button>
@@ -289,14 +297,15 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
       return;
     }
     const pending = countAllPending(room);
-    const missing = roomIssuesMissingPhotos(room).length;
-    if (pending === 0 && missing === 0) {
+    const incomplete = roomIncompleteIssues(room).length;
+    if (pending === 0 && incomplete === 0) {
       go('dashboard');
       return;
     }
     const parts: string[] = [];
     if (pending > 0) parts.push(`${pending} item${pending === 1 ? '' : 's'} pending`);
-    if (missing > 0) parts.push(`${missing} issue${missing === 1 ? '' : 's'} missing photo`);
+    if (incomplete > 0)
+      parts.push(`${incomplete} issue${incomplete === 1 ? '' : 's'} missing note or photo`);
     const ok = await confirmDialog({
       title: 'Leave this room?',
       message: `${room.label}: ${parts.join(' · ')}. You can come back any time — just confirming you want to step away.`,
@@ -308,17 +317,22 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
 
   function itemRow(_room: RoomState, item: Item): TemplateResult {
     const needsPhoto = issueMissingPhoto(item);
+    const needsNote = issueMissingNote(item);
+    const flagged = issueIncomplete(item);
     return html`
       <li
-        class="item ${item.status !== 'pending' ? `item--${item.status}` : ''} ${needsPhoto
-          ? 'item--needs-photo'
+        class="item ${item.status !== 'pending' ? `item--${item.status}` : ''} ${flagged
+          ? 'item--needs-attention'
           : ''}"
       >
         <div class="item__label">
           ${item.dbNum ? html`<span class="item__db">DB ${item.dbNum}</span>` : null}
           ${item.label}
+          ${needsNote
+            ? html`<span class="item__needs item__needs--note">✎ note required</span>`
+            : null}
           ${needsPhoto
-            ? html`<span class="item__needs-photo">📷 photo required</span>`
+            ? html`<span class="item__needs item__needs--photo">📷 photo required</span>`
             : null}
         </div>
         <div class="item__statuses">
