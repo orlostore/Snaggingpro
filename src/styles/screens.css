@@ -96,6 +96,14 @@
   margin-left: var(--space-2);
   font-size: var(--text-xs);
 }
+.field__hint--manual {
+  color: var(--color-warning);
+}
+.field__breakdown {
+  margin-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
 .setup__actions {
   margin: var(--space-6) 0 var(--space-10);
 }
