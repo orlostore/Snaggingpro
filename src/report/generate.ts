@@ -22,7 +22,7 @@ import type { RoomState, State } from '@/state/schema';
 
 const BRAND_CSS = `
   :root {
-    --brand: #d10165;
+    --brand: #1e3a5f;
     --dark: #1a1b1b;
     --grey: #5a5d5d;
     --light: #f6f6f6;
