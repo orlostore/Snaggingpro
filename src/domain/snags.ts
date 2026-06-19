@@ -35,6 +35,8 @@ export function snagId(jobRef: string, ordinal: number): string {
  * Walk all rooms and return flat list of snags in document order.
  * A snag = one observation on an item with status 'issue', OR an item with status 'issue' and no observations.
  */
+export type Rectification = 'fixed' | 'open' | 'new';
+
 export interface SnagRecord {
   id: string;
   ordinal: number;
@@ -47,6 +49,10 @@ export interface SnagRecord {
   text: string;
   photoIds: string[];
   observationId: string | null;
+  /** Rectification status carried through from a follow-up inspection. */
+  rectification?: Rectification;
+  rectificationNote?: string;
+  rectificationPhotoIds?: string[];
 }
 
 export function collectSnags(state: State): SnagRecord[] {
@@ -76,7 +82,7 @@ export function collectSnags(state: State): SnagRecord[] {
       }
       for (const obs of item.observations) {
         ord++;
-        out.push({
+        const rec: SnagRecord = {
           id: snagId(state.job.ref, ord),
           ordinal: ord,
           roomId,
@@ -88,7 +94,13 @@ export function collectSnags(state: State): SnagRecord[] {
           text: obs.text,
           photoIds: obs.photoIds,
           observationId: obs.id,
-        });
+        };
+        if (obs.rectification) {
+          rec.rectification = obs.rectification.status;
+          rec.rectificationNote = obs.rectification.note;
+          rec.rectificationPhotoIds = obs.rectification.photoIds;
+        }
+        out.push(rec);
       }
     }
   }
