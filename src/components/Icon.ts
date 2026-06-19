@@ -106,6 +106,41 @@ export function isIconName(value: string): value is IconName {
   return value in ICONS;
 }
 
+/** Translates legacy emoji icons stored in older drafts to the new icon names. */
+const EMOJI_TO_ICON: Record<string, IconName> = {
+  '🍳': 'kitchen',
+  '🛏': 'bedroom',
+  '🛋': 'living',
+  '🚿': 'bathroom',
+  '🚽': 'bathroom',
+  '🌆': 'balcony',
+  '⚡': 'db',
+  '🏠': 'automation',
+  '🏗': 'facade',
+  '🚗': 'garage',
+  '🌿': 'landscape',
+  '🪜': 'staircase',
+  '🔧': 'utility',
+  '🌇': 'terrace',
+  '⚙️': 'pump',
+  '⚙': 'pump',
+  '💧': 'tank',
+  '🚰': 'tank-roof',
+  '☀️': 'solar',
+  '☀': 'solar',
+  '🔥': 'fire-room',
+  '🏢': 'apartment',
+  '🏡': 'villa',
+  '✎': 'pencil',
+  '📷': 'camera',
+  '🖼': 'gallery',
+};
+
+export function resolveIconName(value: string): IconName | null {
+  if (isIconName(value)) return value;
+  return EMOJI_TO_ICON[value] ?? null;
+}
+
 /**
  * Render an icon by name, or fall back to a default if the value is a
  * legacy emoji left over in saved state from earlier versions.
@@ -115,7 +150,7 @@ export function IconOrFallback(
   fallback: IconName,
   size = 20,
 ): TemplateResult {
-  return Icon({ name: isIconName(value) ? value : fallback, size });
+  return Icon({ name: resolveIconName(value) ?? fallback, size });
 }
 
 export function Icon({ name, size = 20, class: cls, stroke = 1.6 }: IconProps): TemplateResult {

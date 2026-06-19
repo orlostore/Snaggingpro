@@ -25,7 +25,7 @@ export default defineConfig({
         name: 'SnaggingPro',
         short_name: 'SnaggingPro',
         description: 'UAE property snagging inspections — handover & DLP',
-        theme_color: '#a8004d',
+        theme_color: '#1e3a5f',
         background_color: '#f7f7f8',
         display: 'standalone',
         orientation: 'portrait',
