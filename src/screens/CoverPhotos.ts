@@ -6,6 +6,7 @@ import { PhotoAttach } from '@/components/PhotoAttach';
 import { confirmDialog } from '@/components/Confirm';
 import { loadDraft, saveDraft } from '@/state/persist';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
+import { reencodeToWebp } from '@/lib/imageEncode';
 import { go } from '@/lib/router';
 
 const SLOTS = [
@@ -36,7 +37,8 @@ export function CoverPhotos(rootEl: HTMLElement): TemplateResult {
 
   async function pickPhoto(idx: number, file: File) {
     if (!state) return;
-    const id = await storePhoto(file, 'cover', state.job.ref);
+    const webp = await reencodeToWebp(file);
+    const id = await storePhoto(webp, 'cover', state.job.ref);
     state.coverPhotoIds[idx] = id;
     state.job.updatedAt = Date.now();
     saveDraft(state);
