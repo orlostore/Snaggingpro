@@ -3,6 +3,7 @@ import { PROP_OPTIONS, calcFee, feeBreakdown, type PropType } from '@/domain/pri
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/Button';
+import { Icon, type IconName } from '@/components/Icon';
 import { emptyState } from '@/state/init';
 import { saveDraft } from '@/state/persist';
 import { go } from '@/lib/router';
@@ -120,7 +121,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
                     : ''}"
                   @click=${() => selectOption(p.id, p.bedrooms)}
                 >
-                  <span class="prop-card__icon">${p.icon}</span>
+                  <span class="prop-card__icon">${Icon({ name: p.icon as IconName, size: 28 })}</span>
                   <span class="prop-card__label">${p.label}</span>
                   <span class="prop-card__price">from AED ${p.base.toLocaleString()}</span>
                 </button>

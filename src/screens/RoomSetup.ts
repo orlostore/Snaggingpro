@@ -9,6 +9,7 @@ import { CHECKLISTS, FIRE_PRESET, type ChecklistKey } from '@/domain/checklists'
 import { DISCIPLINES, DISC_LABELS, type Discipline } from '@/domain/disciplines';
 import { go } from '@/lib/router';
 import { newId } from '@/lib/id';
+import { Icon, IconOrFallback } from '@/components/Icon';
 
 interface AddRoomDraft {
   name: string;
@@ -93,7 +94,7 @@ export function RoomSetup(rootEl: HTMLElement): TemplateResult {
     s.rooms[id] = {
       id,
       label: name,
-      icon: '✎',
+      icon: template === 'fire' ? 'fire-room' : 'tag',
       clKey: template === 'blank' || template === 'fire' ? 'kitchen' : template,
       discs,
       custom: true,
@@ -192,13 +193,14 @@ export function RoomSetup(rootEl: HTMLElement): TemplateResult {
   function row(r: NonNullable<ReturnType<typeof loadDraft>>['rooms'][string], avail: boolean): TemplateResult {
     return html`
       <li class="room-setup__row">
-        <span class="room-setup__icon">${r.icon}</span>
+        <span class="room-setup__icon">${IconOrFallback(r.icon, 'tag', 22)}</span>
         <span class="room-setup__label">${r.label}</span>
         <button
           class="btn btn--sm ${avail ? 'btn--secondary' : 'btn--ghost'}"
           @click=${() => toggleExcluded(r.id)}
         >
-          ${avail ? '✗ Not available' : '✓ Restore'}
+          ${Icon({ name: avail ? 'x' : 'check', size: 14 })}
+          <span>${avail ? 'Not available' : 'Restore'}</span>
         </button>
       </li>
     `;

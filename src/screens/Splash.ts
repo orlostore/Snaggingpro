@@ -1,5 +1,6 @@
 import { html, type TemplateResult } from 'lit-html';
 import { Button } from '@/components/Button';
+import { Icon } from '@/components/Icon';
 import { go } from '@/lib/router';
 import { loadDraft } from '@/state/persist';
 
@@ -13,10 +14,15 @@ export function Splash(): TemplateResult {
         </div>
         <p class="splash__tagline">Professional property inspections, UAE.</p>
         <div class="splash__actions">
-          ${Button({ label: '+ New Inspection', full: true, size: 'lg', onClick: () => go('pin', { to: 'setup' }) })}
+          ${Button({
+            label: html`${Icon({ name: 'plus', size: 18 })} New Inspection`,
+            full: true,
+            size: 'lg',
+            onClick: () => go('pin', { to: 'setup' }),
+          })}
           ${draft
             ? Button({
-                label: 'Resume Last Session',
+                label: html`${Icon({ name: 'undo', size: 18 })} Resume Last Session`,
                 full: true,
                 size: 'lg',
                 variant: 'secondary',
@@ -24,7 +30,7 @@ export function Splash(): TemplateResult {
               })
             : null}
           ${Button({
-            label: 'Reports Library',
+            label: html`${Icon({ name: 'library', size: 18 })} Reports Library`,
             full: true,
             size: 'lg',
             variant: 'ghost',

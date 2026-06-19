@@ -12,9 +12,10 @@
 }
 .splash__logo {
   font-family: var(--font-display);
-  font-weight: 800;
-  font-size: var(--text-3xl);
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  font-size: var(--text-2xl);
+  letter-spacing: var(--tracking-tight);
+  color: var(--color-text);
 }
 .splash__logo em {
   color: var(--color-brand);
@@ -23,7 +24,7 @@
 .splash__tagline {
   color: var(--color-text-muted);
   font-size: var(--text-sm);
-  letter-spacing: 0.05em;
+  letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
 }
 .splash__actions {
@@ -81,7 +82,18 @@
   background: var(--color-brand-soft);
 }
 .prop-card__icon {
-  font-size: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-sunken);
+  color: var(--color-brand);
+}
+.prop-card--on .prop-card__icon {
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
 }
 .prop-card__label {
   font-weight: 600;
@@ -125,7 +137,15 @@
   padding: var(--space-3) var(--space-4);
 }
 .room-setup__icon {
-  font-size: var(--text-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-sunken);
+  color: var(--color-brand);
+  flex-shrink: 0;
 }
 .room-setup__label {
   flex: 1;
@@ -167,27 +187,30 @@
 }
 .room-card__pills {
   display: flex;
-  gap: var(--space-1);
+  gap: var(--space-2);
   flex-wrap: wrap;
-  margin-top: var(--space-1);
+  margin-top: var(--space-2);
 }
 .pill {
-  display: inline-block;
-  padding: 2px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
   border-radius: var(--radius-pill);
   font-size: var(--text-xs);
   font-weight: 500;
+  letter-spacing: 0.01em;
 }
 .pill--ok {
-  background: rgba(46, 204, 113, 0.15);
+  background: rgba(15, 122, 68, 0.10);
   color: var(--color-pass);
 }
 .pill--pending {
-  background: rgba(255, 138, 60, 0.15);
-  color: var(--color-issue);
+  background: var(--color-bg-sunken);
+  color: var(--color-text-muted);
 }
 .pill--issue {
-  background: rgba(231, 76, 60, 0.15);
+  background: rgba(182, 34, 27, 0.10);
   color: var(--color-critical);
 }
 .room-card--partial {
@@ -218,30 +241,55 @@
 .hidden-rooms__chip {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: var(--space-3);
   background: var(--color-bg-sunken);
   border-radius: var(--radius-md);
   padding: var(--space-2) var(--space-3);
   font-size: var(--text-sm);
 }
+.hidden-rooms__icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-text-muted);
+}
+.hidden-rooms__chip > span:nth-child(2) {
+  flex: 1;
+}
 
-/* ============ Room banner + disc tab pills ============ */
+/* ============ Room banner ============ */
 .room-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
-  border-left: 4px solid var(--color-text-dim);
+  border-left: 3px solid var(--color-text-dim);
   border-radius: var(--radius-md);
   padding: var(--space-3) var(--space-4);
   margin: var(--space-4) 0;
   font-size: var(--text-sm);
   color: var(--color-text);
+  box-shadow: var(--shadow-sm);
+}
+.room-banner strong {
+  font-weight: 600;
+}
+.room-banner__sub {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+  margin-left: auto;
 }
 .room-banner--ok {
   border-left-color: var(--color-pass);
+}
+.room-banner--ok > svg {
   color: var(--color-pass);
 }
 .room-banner--warn {
-  border-left-color: var(--color-issue);
+  border-left-color: var(--color-critical);
+}
+.room-banner--warn > svg {
+  color: var(--color-critical);
 }
 .room-banner__crit {
   color: var(--color-critical);
@@ -254,21 +302,29 @@
 .disc-tab--pending:not(.disc-tab--on) {
   border-color: var(--color-border-strong);
 }
-.disc-tab__pill {
+.disc-tab__count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   background: var(--color-bg-sunken);
   border-radius: var(--radius-pill);
-  padding: 1px 7px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
   font-size: var(--text-xs);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
-.disc-tab--on .disc-tab__pill {
-  background: rgba(255, 255, 255, 0.2);
+.disc-tab--on .disc-tab__count {
+  background: rgba(255, 255, 255, 0.18);
+  color: var(--color-text-inverse);
 }
-.disc-tab__pill--done {
-  background: rgba(46, 204, 113, 0.2);
+.disc-tab__count--done {
+  background: rgba(15, 122, 68, 0.12);
   color: var(--color-pass);
 }
-.disc-tab__pill--crit {
-  background: rgba(231, 76, 60, 0.2);
+.disc-tab__count--crit {
+  background: rgba(182, 34, 27, 0.12);
   color: var(--color-critical);
   margin-left: var(--space-1);
 }
@@ -558,12 +614,17 @@
 }
 .disc-tab {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-pill);
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
-  min-height: 38px;
+  font-weight: 500;
+  min-height: 42px;
+  color: var(--color-text);
 }
 .disc-tab--on {
   background: var(--color-brand);
@@ -619,25 +680,35 @@
   font-size: var(--text-sm);
   min-height: 40px;
 }
+/* Status buttons — neutral by default. When active, a subtle tint + bold
+   coloured border + matching icon/text colour signals the state. Premium
+   restrained — no heavy filled blocks. */
+.item__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-weight: 500;
+}
 .item__btn--on {
-  background: var(--color-pass);
+  background: rgba(15, 122, 68, 0.10);
   border-color: var(--color-pass);
-  color: var(--color-text-inverse);
+  color: var(--color-pass);
 }
 .item__btn--sev-minor {
-  background: var(--color-warning);
+  background: rgba(161, 98, 7, 0.10);
   border-color: var(--color-warning);
-  color: var(--color-text-inverse);
+  color: var(--color-warning);
 }
 .item__btn--sev-major {
-  background: var(--color-issue);
+  background: rgba(194, 65, 12, 0.10);
   border-color: var(--color-issue);
-  color: var(--color-text-inverse);
+  color: var(--color-issue);
 }
 .item__btn--sev-critical {
-  background: var(--color-critical);
+  background: rgba(182, 34, 27, 0.10);
   border-color: var(--color-critical);
-  color: var(--color-text-inverse);
+  color: var(--color-critical);
 }
 .item__note {
   margin-top: var(--space-3);

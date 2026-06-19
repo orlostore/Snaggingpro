@@ -15,10 +15,12 @@
   min-height: 64px;
 }
 .app-header__back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: var(--touch-min);
   height: var(--touch-min);
   border-radius: var(--radius-md);
-  font-size: var(--text-xl);
   color: var(--color-text);
   background: transparent;
 }
@@ -33,16 +35,18 @@
 .app-header__logo {
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: var(--text-lg);
+  font-size: var(--text-md);
+  letter-spacing: var(--tracking-tight);
 }
 .app-header__logo span {
   color: var(--color-brand);
 }
 .app-header__title {
-  font-size: var(--text-xs);
-  color: var(--color-text-muted);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: var(--tracking-tight);
 }
 .app-header__spacer {
   width: var(--touch-min);
@@ -197,6 +201,7 @@
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   padding: var(--space-5);
+  box-shadow: var(--shadow-sm);
 }
 .field {
   display: flex;
@@ -292,7 +297,19 @@
   border-color: var(--color-border-strong);
 }
 .room-card__icon {
-  font-size: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background: var(--color-bg-sunken);
+  color: var(--color-brand);
+  margin-bottom: var(--space-1);
+}
+.room-card--complete .room-card__icon {
+  background: rgba(15, 122, 68, 0.12);
+  color: var(--color-pass);
 }
 .room-card__label {
   font-weight: 500;

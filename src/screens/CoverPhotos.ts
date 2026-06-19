@@ -8,6 +8,7 @@ import { loadDraft, saveDraft } from '@/state/persist';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { reencodeToWebp } from '@/lib/imageEncode';
 import { go } from '@/lib/router';
+import { Icon } from '@/components/Icon';
 
 const SLOTS = [
   { label: 'Building front', sub: 'External shot' },
@@ -83,7 +84,7 @@ export function CoverPhotos(rootEl: HTMLElement): TemplateResult {
                             if (ok) void removePhoto(i);
                           }}
                         >
-                          ×
+                          ${Icon({ name: 'x', size: 18 })}
                         </button>
                       `
                     : html`
