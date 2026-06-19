@@ -8,6 +8,7 @@ export type RouteName =
   | 'pin'
   | 'setup'
   | 'cover'
+  | 'room-setup'
   | 'dashboard'
   | 'room'
   | 'report'
@@ -42,6 +43,8 @@ function parseHash(): Route {
       return { name: 'setup', params };
     case 'cover':
       return { name: 'cover', params };
+    case 'room-setup':
+      return { name: 'room-setup', params };
     case 'dashboard':
       return { name: 'dashboard', params };
     case 'room':

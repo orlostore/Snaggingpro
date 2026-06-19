@@ -2,6 +2,7 @@ import { html, render, type TemplateResult } from 'lit-html';
 import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Button } from '@/components/Button';
+import { confirmDialog } from '@/components/Confirm';
 import { loadDraft, saveDraft } from '@/state/persist';
 import { statsForRoom } from '@/domain/snags';
 import { go } from '@/lib/router';
@@ -11,15 +12,32 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
     render(view(), rootEl);
   }
 
-  function toggleExcluded(roomId: string) {
+  async function hideRoom(roomId: string) {
     const s = loadDraft();
     if (!s) return;
     const room = s.rooms[roomId];
     if (!room) return;
     const hasData = Object.values(room.items).some((i) => i.status !== 'pending');
-    if (!room.excluded && hasData && !confirm('This room has data. Mark as Not Applicable?'))
-      return;
-    room.excluded = !room.excluded;
+    if (hasData) {
+      const ok = await confirmDialog({
+        title: 'Mark this room as Not Applicable?',
+        message: 'This room has inspection data. It will be hidden from the dashboard but appear in the report under "Not applicable".',
+        confirmLabel: 'Mark N/A',
+      });
+      if (!ok) return;
+    }
+    room.excluded = true;
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    paint();
+  }
+
+  function restoreRoom(roomId: string) {
+    const s = loadDraft();
+    if (!s) return;
+    const room = s.rooms[roomId];
+    if (!room) return;
+    room.excluded = false;
     s.job.updatedAt = Date.now();
     saveDraft(s);
     paint();
@@ -33,14 +51,14 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
     }
 
     const rooms = s.roomOrder.map((id) => s.rooms[id]!).filter(Boolean);
-    const totalIssues = rooms
-      .filter((r) => !r.excluded)
-      .reduce((n, r) => n + statsForRoom(r).issue, 0);
-    const completed = rooms.filter((r) => {
-      if (r.excluded) return false;
+    const visible = rooms.filter((r) => !r.excluded);
+    const hidden = rooms.filter((r) => r.excluded);
+    const totalIssues = visible.reduce((n, r) => n + statsForRoom(r).issue, 0);
+    const completed = visible.filter((r) => {
       const st = statsForRoom(r);
       return st.pending === 0 && st.total > 0;
     }).length;
+    const pendingRooms = visible.length - completed;
 
     return html`
       <section class="screen">
@@ -56,56 +74,76 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
               </div>
             </div>
             <div class="dash-meta__stats">
-              <div><strong>${completed}</strong>/${rooms.filter((r) => !r.excluded).length} rooms</div>
-              <div class="dash-meta__issues">${totalIssues} issues</div>
+              <div>
+                <strong>${completed}</strong> / ${visible.length} rooms done
+              </div>
+              ${pendingRooms > 0
+                ? html`<div class="dash-meta__pending">${pendingRooms} pending</div>`
+                : null}
+              <div class="dash-meta__issues">${totalIssues} issues logged</div>
             </div>
           </div>
 
           <div class="room-grid">
-            ${rooms.map((room) => {
+            ${visible.map((room) => {
               const st = statsForRoom(room);
-              const complete = !room.excluded && st.total > 0 && st.pending === 0;
+              const complete = st.total > 0 && st.pending === 0;
+              const hasIssues = st.issue > 0;
               return html`
                 <div
-                  class="room-card ${room.excluded ? 'room-card--excluded' : ''} ${complete
-                    ? 'room-card--complete'
-                    : ''} ${st.issue > 0 ? 'room-card--issues' : ''}"
-                  @click=${() => (room.excluded ? toggleExcluded(room.id) : go('room', { id: room.id }))}
+                  class="room-card ${complete ? 'room-card--complete' : ''} ${hasIssues
+                    ? 'room-card--issues'
+                    : ''} ${st.pending > 0 && st.pending < st.total ? 'room-card--partial' : ''}"
+                  @click=${() => go('room', { id: room.id })}
                 >
                   <div class="room-card__icon">${room.icon}</div>
                   <div class="room-card__label">${room.label}</div>
                   <div class="room-card__meta">
-                    ${room.excluded
-                      ? 'Not applicable'
-                      : `${st.inspected}/${st.total} inspected · ${st.issue} issues`}
+                    ${st.inspected}/${st.total} inspected
                   </div>
-                  ${!room.excluded
-                    ? html`
-                        <button
-                          class="btn btn--ghost btn--sm"
-                          @click=${(e: Event) => {
-                            e.stopPropagation();
-                            toggleExcluded(room.id);
-                          }}
-                        >
-                          N/A
-                        </button>
-                      `
-                    : html`
-                        <button
-                          class="btn btn--ghost btn--sm"
-                          @click=${(e: Event) => {
-                            e.stopPropagation();
-                            toggleExcluded(room.id);
-                          }}
-                        >
-                          Restore
-                        </button>
-                      `}
+                  <div class="room-card__pills">
+                    ${complete
+                      ? html`<span class="pill pill--ok">✓ Complete</span>`
+                      : st.pending > 0
+                        ? html`<span class="pill pill--pending">${st.pending} pending</span>`
+                        : null}
+                    ${st.issue > 0
+                      ? html`<span class="pill pill--issue">${st.issue} issue${st.issue > 1 ? 's' : ''}</span>`
+                      : null}
+                  </div>
+                  <button
+                    class="btn btn--ghost btn--sm room-card__na"
+                    @click=${(e: Event) => {
+                      e.stopPropagation();
+                      void hideRoom(room.id);
+                    }}
+                  >
+                    N/A
+                  </button>
                 </div>
               `;
             })}
           </div>
+
+          ${hidden.length > 0
+            ? html`
+                <details class="hidden-rooms">
+                  <summary>Not applicable · ${hidden.length} hidden</summary>
+                  <ul class="hidden-rooms__list">
+                    ${hidden.map(
+                      (r) => html`
+                        <li class="hidden-rooms__chip">
+                          <span>${r.icon} ${r.label}</span>
+                          <button class="btn btn--ghost btn--sm" @click=${() => restoreRoom(r.id)}>
+                            Restore
+                          </button>
+                        </li>
+                      `,
+                    )}
+                  </ul>
+                </details>
+              `
+            : null}
 
           <div class="dash-actions">
             ${Button({
