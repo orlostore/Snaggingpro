@@ -119,15 +119,25 @@ export function Report(rootEl: HTMLElement): TemplateResult {
                     ${incomplete.slice(0, 50).map(
                       (m) => html`
                         <li>
-                          <strong>${m.roomLabel}</strong> · ${m.itemLabel}
-                          <span class="report-screen__missing-tags">
-                            ${m.missingNote
-                              ? html`<span class="report-screen__tag">${Icon({ name: 'pencil', size: 12 })} note</span>`
-                              : null}
-                            ${m.missingPhoto
-                              ? html`<span class="report-screen__tag">${Icon({ name: 'camera', size: 12 })} photo</span>`
-                              : null}
-                          </span>
+                          <button
+                            class="report-screen__missing-row"
+                            @click=${() =>
+                              go('room', { id: m.roomId, focus: m.itemKey, disc: m.disc })}
+                          >
+                            <span class="report-screen__missing-text">
+                              <strong>${m.roomLabel}</strong>
+                              <span class="report-screen__missing-item">${m.itemLabel}</span>
+                            </span>
+                            <span class="report-screen__missing-tags">
+                              ${m.missingNote
+                                ? html`<span class="report-screen__tag">${Icon({ name: 'pencil', size: 12 })} note</span>`
+                                : null}
+                              ${m.missingPhoto
+                                ? html`<span class="report-screen__tag">${Icon({ name: 'camera', size: 12 })} photo</span>`
+                                : null}
+                              ${Icon({ name: 'chevron-right', size: 16 })}
+                            </span>
+                          </button>
                         </li>
                       `,
                     )}

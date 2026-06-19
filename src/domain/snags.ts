@@ -162,8 +162,11 @@ export function discIncompleteIssues(room: RoomState, disc: Item['disc']): numbe
 }
 
 export interface MissingDetail {
+  roomId: string;
   roomLabel: string;
+  itemKey: string;
   itemLabel: string;
+  disc: Item['disc'];
   missingNote: boolean;
   missingPhoto: boolean;
 }
@@ -177,7 +180,15 @@ export function reportIncompleteIssues(state: State): MissingDetail[] {
       const missingNote = issueMissingNote(item);
       const missingPhoto = issueMissingPhoto(item);
       if (missingNote || missingPhoto) {
-        out.push({ roomLabel: room.label, itemLabel: item.label, missingNote, missingPhoto });
+        out.push({
+          roomId,
+          roomLabel: room.label,
+          itemKey: item.key,
+          itemLabel: item.label,
+          disc: item.disc,
+          missingNote,
+          missingPhoto,
+        });
       }
     }
   }

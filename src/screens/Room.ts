@@ -30,8 +30,17 @@ interface LocalView {
   photoUrls: Map<string, string>;
 }
 
-export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
-  const view: LocalView = { activeDisc: null, photoUrls: new Map() };
+export function Room(
+  rootEl: HTMLElement,
+  roomId: string,
+  params: { focus?: string; disc?: Discipline } = {},
+): TemplateResult {
+  const view: LocalView = {
+    activeDisc: params.disc ?? null,
+    photoUrls: new Map(),
+  };
+  const focusKey = params.focus ?? null;
+  let focusHandled = false;
 
   function paint() {
     render(render_(), rootEl);
@@ -230,6 +239,18 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     }
     const discs = room.discs;
     if (!view.activeDisc) view.activeDisc = discs[0] ?? null;
+    // First paint after a deep-link from Report: scroll the focused
+    // item into view and flash it. Only runs once per mount.
+    if (focusKey && !focusHandled) {
+      focusHandled = true;
+      requestAnimationFrame(() => {
+        const el = rootEl.querySelector<HTMLElement>(`[data-item-key="${focusKey}"]`);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add('item--focus-flash');
+        setTimeout(() => el.classList.remove('item--focus-flash'), 1800);
+      });
+    }
     const active = view.activeDisc;
     if (!active) return html`<p class="empty">No disciplines for this room.</p>`;
 
@@ -370,6 +391,7 @@ export function Room(rootEl: HTMLElement, roomId: string): TemplateResult {
     const flagged = issueIncomplete(item);
     return html`
       <li
+        data-item-key=${item.key}
         class="item ${item.status !== 'pending' ? `item--${item.status}` : ''} ${flagged
           ? 'item--needs-attention'
           : ''}"
