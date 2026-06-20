@@ -28,7 +28,7 @@ export function termsUrl(opts: {
   if (opts.job) params.set('job', opts.job);
   if (opts.unit) params.set('unit', opts.unit);
   const qs = params.toString();
-  return qs ? `${origin}/terms?${qs}` : `${origin}/terms`;
+  return qs ? `${origin}/terms/?${qs}` : `${origin}/terms/`;
 }
 
 export function sendTermsViaWhatsApp(opts: {
