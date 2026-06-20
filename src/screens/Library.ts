@@ -6,6 +6,8 @@ import { confirmDialog } from '@/components/Confirm';
 import { toast } from '@/components/Toast';
 import { reportsRepo } from '@/storage/reports';
 import { deletePhotosForJob } from '@/storage/photos';
+import { exportBackup, importBackup, triggerDownload } from '@/storage/backup';
+import { Icon } from '@/components/Icon';
 import { go } from '@/lib/router';
 import { formatDateLong } from '@/lib/format';
 import type { ReportSummary } from '@/state/schema';
@@ -20,6 +22,33 @@ export function Library(rootEl: HTMLElement): TemplateResult {
   async function load() {
     ctx.summaries = await reportsRepo.listSummaries();
     paint();
+  }
+
+  async function doExport() {
+    toast('Preparing backup…');
+    const bundle = await exportBackup();
+    triggerDownload(bundle);
+    toast(`Exported ${bundle.reports.length} report${bundle.reports.length === 1 ? '' : 's'}`);
+  }
+
+  async function pickAndImport(file: File) {
+    try {
+      const text = await file.text();
+      const bundle = JSON.parse(text);
+      const ok = await confirmDialog({
+        title: 'Restore from this backup?',
+        message:
+          'Reports and photos in the file will be added to your library. Existing reports with the same job reference will be overwritten.',
+        confirmLabel: 'Restore',
+      });
+      if (!ok) return;
+      const result = await importBackup(bundle);
+      toast(`Restored ${result.reportsImported} reports, ${result.photosImported} photos`);
+      await load();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Could not read backup file.';
+      toast(message);
+    }
   }
 
   async function remove(id: string) {
@@ -54,6 +83,24 @@ export function Library(rootEl: HTMLElement): TemplateResult {
       <section class="screen">
         ${Header({ title: 'Reports library', back: () => go('splash') })}
         <main class="container library">
+          <div class="library__tools">
+            <button class="btn btn--secondary btn--sm" @click=${() => void doExport()}>
+              ${Icon({ name: 'save', size: 16 })}<span>Backup</span>
+            </button>
+            <label class="btn btn--secondary btn--sm">
+              ${Icon({ name: 'undo', size: 16 })}<span>Restore</span>
+              <input
+                type="file"
+                accept=".json,application/json"
+                class="sr-only"
+                @change=${(e: Event) => {
+                  const f = (e.target as HTMLInputElement).files?.[0];
+                  if (f) void pickAndImport(f);
+                  (e.target as HTMLInputElement).value = '';
+                }}
+              />
+            </label>
+          </div>
           <input
             class="field__input"
             type="search"
