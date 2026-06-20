@@ -95,7 +95,15 @@ export const onRequestGet: PagesFunction<Env> = async ({ env, request }) => {
   const url = new URL(request.url);
   const jobRef = url.searchParams.get('jobRef');
   const id = url.searchParams.get('id');
-  if (!jobRef && !id) return err(400, 'jobRef or id required.');
+
+  // No filter → return every ack (most-recent first, capped). Used by the
+  // Library to decorate rows with a "Signed" badge without one query per row.
+  if (!jobRef && !id) {
+    const { results } = await env.DB.prepare(
+      'SELECT * FROM acknowledgements ORDER BY acknowledged_at DESC LIMIT 1000',
+    ).all<AcknowledgementRow>();
+    return json({ acknowledgements: results.map(rowToAck) });
+  }
 
   const stmt = id
     ? env.DB.prepare('SELECT * FROM acknowledgements WHERE id = ?1').bind(id)
