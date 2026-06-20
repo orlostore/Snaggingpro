@@ -1,0 +1,733 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1e3a5f" />
+  <title>Terms of Engagement — SnaggingPro</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --sunken: #ecedf0;
+      --text: #1a1b1e;
+      --muted: #4f535b;
+      --dim: #6b6f76;
+      --brand: #1e3a5f;
+      --brand-soft: rgba(30, 58, 95, 0.08);
+      --accent: #b8923a;
+      --border: #e2e4e9;
+      --border-strong: #8e949c;
+      --critical: #b6221b;
+      --pass: #0f7a44;
+      --pass-soft: rgba(15, 122, 68, 0.10);
+      --shadow-sm: 0 1px 2px rgba(20, 20, 30, 0.04), 0 1px 3px rgba(20, 20, 30, 0.06);
+      --shadow-md: 0 4px 16px rgba(20, 20, 30, 0.08), 0 2px 4px rgba(20, 20, 30, 0.06);
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+      min-height: 100dvh;
+    }
+    button { font-family: inherit; cursor: pointer; }
+    a { color: var(--brand); }
+
+    .header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 18px 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: saturate(160%) blur(8px);
+    }
+    .header-inner {
+      max-width: 760px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-mark {
+      width: 38px;
+      height: 38px;
+      background: var(--brand);
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: var(--shadow-sm);
+    }
+    .logo-mark svg { color: white; }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+      line-height: 1.1;
+    }
+    .logo-text span { color: var(--brand); }
+    .logo-sub {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .container { max-width: 760px; margin: 0 auto; padding: 24px 20px 120px; }
+
+    .hero {
+      background: linear-gradient(135deg, var(--card) 0%, #fbfbfd 100%);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 24px;
+      box-shadow: var(--shadow-md);
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 0; right: 0;
+      width: 180px; height: 100%;
+      background: radial-gradient(circle at top right, var(--brand-soft) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--brand-soft);
+      color: var(--brand);
+      padding: 5px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+    .hero-badge svg { width: 12px; height: 12px; }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1.12;
+      letter-spacing: -0.015em;
+      margin-bottom: 12px;
+    }
+    .hero h1 em { font-style: normal; color: var(--brand); }
+    .hero p { color: var(--muted); font-size: 16px; }
+    .hero strong { color: var(--text); }
+
+    .summary-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+    }
+    .summary-cell {
+      background: var(--sunken);
+      border-radius: 10px;
+      padding: 10px 12px;
+    }
+    .summary-cell-label {
+      font-size: 11px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--dim);
+      font-weight: 600;
+      margin-bottom: 2px;
+    }
+    .summary-cell-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+      margin-bottom: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .section h2::before {
+      content: attr(data-num);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--brand);
+      background: var(--brand-soft);
+      padding: 3px 9px;
+      border-radius: 99px;
+      flex-shrink: 0;
+    }
+    .section p { color: var(--muted); font-size: 15px; line-height: 1.6; }
+    .section p + p { margin-top: 10px; }
+    .section strong { color: var(--text); }
+    .callout {
+      margin-top: 12px;
+      background: rgba(184, 146, 58, 0.08);
+      border-left: 3px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    /* ===== Acknowledge form ===== */
+    .agree {
+      margin-top: 28px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-top: 4px solid var(--brand);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: var(--shadow-md);
+    }
+    .agree h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      margin-bottom: 6px;
+    }
+    .agree-sub { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+
+    .field { margin-bottom: 16px; }
+    .field-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 6px;
+      letter-spacing: 0.005em;
+    }
+    .field-hint {
+      font-size: 12px;
+      color: var(--dim);
+      margin-top: 4px;
+    }
+    .text-input {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border-strong);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text);
+      transition: border-color 0.15s, background 0.15s;
+    }
+    .text-input:focus {
+      outline: none;
+      border-color: var(--brand);
+      background: var(--card);
+    }
+
+    .sig-wrap {
+      position: relative;
+      background: var(--bg);
+      border: 1.5px dashed var(--border-strong);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .sig-wrap.has-ink { border-style: solid; border-color: var(--brand); }
+    .sig-canvas {
+      display: block;
+      width: 100%;
+      height: 180px;
+      touch-action: none;
+      cursor: crosshair;
+    }
+    .sig-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--dim);
+      font-size: 14px;
+      pointer-events: none;
+      letter-spacing: 0.02em;
+    }
+    .sig-wrap.has-ink .sig-placeholder { display: none; }
+    .sig-controls {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 8px;
+    }
+    .sig-clear {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+      padding: 6px 10px;
+      border-radius: 6px;
+    }
+    .sig-clear:hover { color: var(--brand); background: var(--brand-soft); }
+
+    .disclosure {
+      background: var(--sunken);
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 16px 0 18px;
+    }
+    .disclosure strong { color: var(--text); }
+
+    .btn-agree {
+      width: 100%;
+      background: var(--brand);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 16px;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      box-shadow: var(--shadow-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background 0.15s, transform 0.05s;
+    }
+    .btn-agree:not(:disabled):hover { background: #15294a; }
+    .btn-agree:not(:disabled):active { transform: scale(0.99); }
+    .btn-agree:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .form-error {
+      background: rgba(182, 34, 27, 0.10);
+      color: var(--critical);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      margin-top: 12px;
+      display: none;
+    }
+    .form-error.on { display: block; }
+
+    /* ===== Success state ===== */
+    .success {
+      display: none;
+      background: var(--card);
+      border: 1px solid var(--pass);
+      border-top: 4px solid var(--pass);
+      border-radius: 16px;
+      padding: 28px;
+      margin-top: 28px;
+      box-shadow: var(--shadow-md);
+    }
+    .success.on { display: block; }
+    .success-icon {
+      width: 56px;
+      height: 56px;
+      background: var(--pass-soft);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--pass);
+      margin-bottom: 14px;
+    }
+    .success h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .success p { color: var(--muted); font-size: 15px; }
+    .receipt {
+      margin-top: 16px;
+      background: var(--sunken);
+      border-radius: 10px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+    .receipt strong { color: var(--text); }
+    .receipt code {
+      font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+      background: var(--card);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--dim);
+      font-size: 13px;
+      padding: 24px 20px;
+    }
+    .footer span { color: var(--brand); font-weight: 600; }
+
+    @media (max-width: 480px) {
+      .container { padding: 18px 14px 100px; }
+      .hero { padding: 22px; }
+      .hero h1 { font-size: 26px; }
+      .section { padding: 18px 18px; }
+      .agree { padding: 22px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-mark">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 11l9-7 9 7" />
+          <path d="M5 9.5V21h14V9.5" />
+          <path d="M10 21v-7h4v7" />
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Snagging<span>Pro</span></div>
+        <div class="logo-sub">Property condition assessment</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" id="terms-content">
+    <section class="hero">
+      <span class="hero-badge">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        Inspection agreement
+      </span>
+      <h1>Terms of <em>Engagement</em></h1>
+      <p>Dear <strong id="client-name">Valued Client</strong>, please review and acknowledge the following terms before the inspection proceeds.</p>
+      <div class="summary-grid" id="summary-grid"></div>
+    </section>
+
+    <article class="section">
+      <h2 data-num="01">Site Readiness</h2>
+      <p>The <strong>hirer shall ensure</strong> that water and electricity connections are fully operational in the unit on the date of inspection. These are essential for completing all MEP and functional checks.</p>
+      <div class="callout">If the team arrives on-site and power or water is unavailable, the inspection will proceed on all accessible and possible items. <strong>No payment deduction</strong> shall be made for items that could not be tested due to utility unavailability.</div>
+    </article>
+
+    <article class="section">
+      <h2 data-num="02">Payment Terms</h2>
+      <p>The <strong>full inspection fee is due in advance</strong> prior to the inspection date. No inspection will be conducted without confirmed full payment. Payment confirms acceptance of these terms.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="03">Access Obligations</h2>
+      <p>The hirer is <strong>responsible for providing full and unobstructed access</strong> to all areas of the unit on the agreed inspection date and time. This includes but is not limited to: all rooms, balconies, roof terrace, utility rooms, garage, and roof access where applicable.</p>
+      <div class="callout">If the team arrives on-site and access is not provided or is significantly delayed, <strong>no refund shall be issued</strong>. A re-inspection will be treated as a new booking at the full fee.</div>
+    </article>
+
+    <article class="section">
+      <h2 data-num="04">Scope of Inspection</h2>
+      <p>The inspection covers <strong>all visible and accessible areas</strong> of the property. Concealed works, areas behind walls, above false ceilings, below raised floors, or underground elements are excluded unless specialist equipment is deployed by prior agreement.</p>
+      <p>If the unit is furnished or any areas are obstructed by the developer, contractor, or hirer, SnaggingPro <strong>shall not be held responsible</strong> for defects in those inaccessible areas.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="05">Liability &amp; Best Effort</h2>
+      <p>SnaggingPro operates on a <strong>best-effort basis</strong>. While every reasonable measure is taken to identify defects, the hirer acknowledges that SnaggingPro cannot be held liable for any items that may have been missed. The report does not constitute a structural survey or engineering certification.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="06">Cancellation &amp; Rescheduling</h2>
+      <p>The hirer must provide a minimum of <strong>24 hours' written notice</strong> to cancel or reschedule. Cancellations with less than 24 hours' notice incur a fee of <strong>50% of the agreed inspection fee</strong>. Same-day cancellations or no-shows are non-refundable.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="07">Re-inspection</h2>
+      <p>The initial inspection is the contracted scope. Any <strong>re-inspection</strong> conducted after developer or contractor rectification works is a separate service charged at an agreed fee. Re-inspection is recommended to verify all snags have been properly resolved.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="08">Report Validity &amp; Ownership</h2>
+      <p>The report reflects the <strong>condition of the property at the time and date of inspection only</strong>. SnaggingPro is not responsible for defects that develop, are introduced, or become apparent after the inspection date.</p>
+      <p>The report is prepared exclusively for the hirer. SnaggingPro holds no liability if the report is shared with or relied upon by third parties.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="09">Photography</h2>
+      <p>By engaging SnaggingPro, the hirer <strong>consents to photographs</strong> being taken of all areas of the property for documentation and reporting purposes. Photos are used solely for the inspection report and are not shared publicly or with any third party without the hirer's consent.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="10">Governing Law</h2>
+      <p>These terms shall be governed by the <strong>laws of the United Arab Emirates</strong>. Any disputes arising from this engagement shall be subject to the jurisdiction of the <strong>Dubai Courts</strong>. SnaggingPro shall not be liable for any delays or failures caused by circumstances beyond its reasonable control.</p>
+    </article>
+
+    <section class="agree" id="agree-card">
+      <h2>Acknowledge &amp; Sign</h2>
+      <p class="agree-sub">Please type your full name and sign below to confirm you have read and agree to the terms above.</p>
+
+      <div class="field">
+        <label class="field-label" for="typed-name">Full name (as on Emirates ID)</label>
+        <input
+          id="typed-name"
+          class="text-input"
+          type="text"
+          autocomplete="name"
+          autocapitalize="words"
+          placeholder="e.g. Mohamed Ahmed Al Maktoum"
+          maxlength="120"
+        />
+        <p class="field-hint">Type your legal name. This becomes part of the signed record.</p>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Signature</label>
+        <div class="sig-wrap" id="sig-wrap">
+          <canvas class="sig-canvas" id="sig-canvas"></canvas>
+          <div class="sig-placeholder">Draw your signature here with your finger</div>
+        </div>
+        <div class="sig-controls">
+          <button type="button" class="sig-clear" id="sig-clear">Clear signature</button>
+        </div>
+      </div>
+
+      <div class="disclosure">
+        <strong>What we record:</strong> your typed name, signature image, the time you tapped Agree, your approximate location (country/city from your network), IP address, and the device you used. This creates a verifiable record that you, the recipient of this link, agreed to these terms.
+      </div>
+
+      <button type="button" class="btn-agree" id="btn-agree" disabled>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+        I have read and agree to these terms
+      </button>
+
+      <div class="form-error" id="form-error"></div>
+    </section>
+  </main>
+
+  <section class="container" id="success-container" style="display:none">
+    <div class="success on">
+      <div class="success-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h2>Thank you, <span id="success-name">—</span>!</h2>
+      <p>Your agreement has been recorded. SnaggingPro will be in touch to confirm the inspection schedule.</p>
+      <div class="receipt" id="receipt"></div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    &copy; <span id="year"></span> <span>SnaggingPro</span> · Property condition assessment · UAE
+  </footer>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var client = (params.get('client') || '').trim();
+      var job = (params.get('job') || '').trim();
+      var unit = (params.get('unit') || '').trim();
+
+      if (client) {
+        document.getElementById('client-name').textContent = client;
+        document.title = 'Terms of Engagement — ' + client;
+      }
+
+      var grid = document.getElementById('summary-grid');
+      function cell(label, value) {
+        if (!value) return '';
+        return '<div class="summary-cell"><div class="summary-cell-label">' + label + '</div><div class="summary-cell-value">' + value.replace(/[&<>"']/g, function (c) {
+          return ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c];
+        }) + '</div></div>';
+      }
+      grid.innerHTML = cell('Reference', job) + cell('Unit', unit) + cell('Client', client);
+
+      document.getElementById('year').textContent = new Date().getFullYear();
+
+      // Already acknowledged? Show the receipt instead of the form.
+      var storageKey = job ? 'sp_ack_' + job : null;
+      if (storageKey) {
+        try {
+          var prev = JSON.parse(localStorage.getItem(storageKey) || 'null');
+          if (prev && prev.id && prev.acknowledgedAt) {
+            showSuccess(prev.typedName || client || 'Valued Client', prev);
+          }
+        } catch (e) { /* ignore */ }
+      }
+
+      // ===== Signature canvas =====
+      var canvas = document.getElementById('sig-canvas');
+      var ctx = canvas.getContext('2d');
+      var wrap = document.getElementById('sig-wrap');
+      var clearBtn = document.getElementById('sig-clear');
+      var hasInk = false;
+
+      function sizeCanvas() {
+        var dpr = window.devicePixelRatio || 1;
+        var rect = canvas.getBoundingClientRect();
+        canvas.width = Math.round(rect.width * dpr);
+        canvas.height = Math.round(rect.height * dpr);
+        ctx.setTransform(1, 0, 0, 1, 0, 0);
+        ctx.scale(dpr, dpr);
+        ctx.lineWidth = 2.4;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = '#1e3a5f';
+      }
+      sizeCanvas();
+      window.addEventListener('resize', function () {
+        var snapshot = hasInk ? canvas.toDataURL('image/png') : null;
+        sizeCanvas();
+        if (snapshot) {
+          var img = new Image();
+          img.onload = function () {
+            var rect = canvas.getBoundingClientRect();
+            ctx.drawImage(img, 0, 0, rect.width, rect.height);
+          };
+          img.src = snapshot;
+        }
+      });
+
+      var drawing = false;
+      var lastX = 0, lastY = 0;
+      function pos(e) {
+        var rect = canvas.getBoundingClientRect();
+        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      }
+      canvas.addEventListener('pointerdown', function (e) {
+        canvas.setPointerCapture(e.pointerId);
+        drawing = true;
+        var p = pos(e);
+        lastX = p.x; lastY = p.y;
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        ctx.lineTo(p.x + 0.1, p.y + 0.1);
+        ctx.stroke();
+        if (!hasInk) {
+          hasInk = true;
+          wrap.classList.add('has-ink');
+          updateButton();
+        }
+      });
+      canvas.addEventListener('pointermove', function (e) {
+        if (!drawing) return;
+        var p = pos(e);
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+        lastX = p.x; lastY = p.y;
+      });
+      function endStroke(e) {
+        drawing = false;
+        try { canvas.releasePointerCapture(e.pointerId); } catch (_) { /* ignore */ }
+      }
+      canvas.addEventListener('pointerup', endStroke);
+      canvas.addEventListener('pointercancel', endStroke);
+
+      clearBtn.addEventListener('click', function () {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        hasInk = false;
+        wrap.classList.remove('has-ink');
+        updateButton();
+      });
+
+      // ===== Form gating =====
+      var nameInput = document.getElementById('typed-name');
+      var btn = document.getElementById('btn-agree');
+      var errorEl = document.getElementById('form-error');
+
+      function updateButton() {
+        var name = nameInput.value.trim();
+        btn.disabled = !(name.length >= 2 && hasInk);
+      }
+      nameInput.addEventListener('input', updateButton);
+
+      // ===== Submit =====
+      btn.addEventListener('click', function () {
+        var typedName = nameInput.value.trim();
+        if (typedName.length < 2 || !hasInk) return;
+        btn.disabled = true;
+        btn.textContent = 'Recording…';
+        errorEl.classList.remove('on');
+
+        var signaturePng = canvas.toDataURL('image/png');
+        fetch('/api/acknowledgements', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jobRef: job || ('UNKNOWN-' + Date.now()),
+            clientName: client,
+            unit: unit,
+            typedName: typedName,
+            signaturePngBase64: signaturePng,
+          }),
+        })
+          .then(function (res) {
+            return res.json().then(function (body) {
+              if (!res.ok) throw new Error(body.error || ('HTTP ' + res.status));
+              return body;
+            });
+          })
+          .then(function (body) {
+            var record = {
+              id: body.id,
+              acknowledgedAt: body.acknowledgedAt,
+              typedName: typedName,
+            };
+            if (storageKey) {
+              try { localStorage.setItem(storageKey, JSON.stringify(record)); } catch (_) { /* ignore */ }
+            }
+            showSuccess(typedName, record);
+          })
+          .catch(function (err) {
+            errorEl.textContent = 'Could not record agreement: ' + err.message + '. Please try again, or contact SnaggingPro directly.';
+            errorEl.classList.add('on');
+            btn.disabled = false;
+            btn.innerHTML =
+              '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 13l4 4L19 7"/></svg>' +
+              ' I have read and agree to these terms';
+          });
+      });
+
+      function showSuccess(name, record) {
+        document.getElementById('terms-content').style.display = 'none';
+        document.getElementById('success-container').style.display = 'block';
+        document.getElementById('success-name').textContent = name;
+        var when = new Date(record.acknowledgedAt);
+        var rcpt = document.getElementById('receipt');
+        rcpt.innerHTML =
+          '<strong>Reference:</strong> <code>' + (record.id || '—') + '</code><br>' +
+          '<strong>Recorded:</strong> ' + when.toLocaleString('en-GB', { dateStyle: 'long', timeStyle: 'short' }) + '<br>' +
+          (job ? '<strong>Job:</strong> ' + job + '<br>' : '') +
+          'Keep this page or take a screenshot for your records.';
+      }
+    })();
+  </script>
+</body>
+</html>

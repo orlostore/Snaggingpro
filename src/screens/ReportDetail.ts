@@ -13,10 +13,17 @@ import { collectSnags } from '@/domain/snags';
 import { go } from '@/lib/router';
 import { formatDateLong } from '@/lib/format';
 import { Icon } from '@/components/Icon';
+import { ENV } from '@/lib/env';
+import { listAcknowledgements, getSignatureUrl, type AcknowledgementDto } from '@/lib/acknowledgements';
 import type { State } from '@/state/schema';
 
 export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
   let report: State | null = null;
+  const acks: { items: AcknowledgementDto[]; loading: boolean; sigUrls: Map<string, string> } = {
+    items: [],
+    loading: false,
+    sigUrls: new Map(),
+  };
 
   function paint() {
     render(view(), rootEl);
@@ -25,6 +32,32 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
   async function load() {
     report = (await reportsRepo.getReport(id)) ?? null;
     paint();
+    if (report && ENV.cloudEnabled) void loadAcks(report.job.ref);
+  }
+
+  async function loadAcks(jobRef: string) {
+    acks.loading = true;
+    paint();
+    try {
+      acks.items = await listAcknowledgements(jobRef);
+      for (const a of acks.items) {
+        if (a.signatureKey && !acks.sigUrls.has(a.id)) {
+          getSignatureUrl(a.id)
+            .then((url) => {
+              acks.sigUrls.set(a.id, url);
+              paint();
+            })
+            .catch(() => {
+              /* missing signature — receipt still shows */
+            });
+        }
+      }
+    } catch {
+      acks.items = [];
+    } finally {
+      acks.loading = false;
+      paint();
+    }
   }
 
   async function openPrint() {
@@ -71,6 +104,55 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
     go('dashboard');
   }
 
+  function acknowledgementsBlock(): TemplateResult {
+    return html`
+      <section class="ack-block">
+        <div class="ack-block__head">
+          ${Icon({ name: 'check', size: 16 })}
+          <span>Client agreement record</span>
+        </div>
+        ${acks.loading
+          ? html`<p class="meta">Loading…</p>`
+          : acks.items.length === 0
+            ? html`<p class="meta">
+                No agreement recorded for this job yet. When the client opens the T&amp;C link
+                and taps "I Agree", the signed record will appear here.
+              </p>`
+            : html`
+                <ul class="ack-list">
+                  ${acks.items.map(
+                    (a) => html`
+                      <li class="ack-row">
+                        <div class="ack-row__head">
+                          <strong>${a.typedName}</strong>
+                          <span class="meta">${new Date(a.acknowledgedAt).toLocaleString('en-GB', { dateStyle: 'long', timeStyle: 'short' })}</span>
+                        </div>
+                        ${acks.sigUrls.get(a.id)
+                          ? html`<img class="ack-sig" src=${acks.sigUrls.get(a.id)!} alt="Client signature" />`
+                          : a.signatureKey
+                            ? html`<div class="ack-sig ack-sig--loading">Loading signature…</div>`
+                            : null}
+                        <dl class="ack-meta">
+                          ${a.country || a.city
+                            ? html`<div><dt>Location</dt><dd>${[a.city, a.country].filter(Boolean).join(', ')}</dd></div>`
+                            : null}
+                          ${a.ipAddress
+                            ? html`<div><dt>IP address</dt><dd>${a.ipAddress}</dd></div>`
+                            : null}
+                          ${a.userAgent
+                            ? html`<div><dt>Device</dt><dd>${a.userAgent}</dd></div>`
+                            : null}
+                          <div><dt>Record ID</dt><dd><code>${a.id}</code></dd></div>
+                        </dl>
+                      </li>
+                    `,
+                  )}
+                </ul>
+              `}
+      </section>
+    `;
+  }
+
   function view(): TemplateResult {
     if (!report) {
       return html`<section class="screen"><div class="empty">Loading…</div></section>`;
@@ -114,6 +196,8 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
               onClick: () => void startFollowUp(),
             })}
           </div>
+
+          ${ENV.cloudEnabled ? acknowledgementsBlock() : null}
         </main>
         ${Footer()}
       </section>
