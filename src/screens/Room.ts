@@ -32,6 +32,9 @@ interface LocalView {
   photoUrls: Map<string, string>;
 }
 
+const FIXED_PHRASES = ['Done', 'Completed', 'Replaced', 'Repaired', 'Partially done'];
+const NEW_PHRASES = ['Damage observed', 'Not as per spec', 'Workmanship issue'];
+
 export function Room(
   rootEl: HTMLElement,
   roomId: string,
@@ -656,6 +659,19 @@ export function Room(
         </div>
         ${r.status === 'fixed' || r.status === 'new'
           ? html`
+              <div class="rect__chips">
+                ${(r.status === 'fixed' ? FIXED_PHRASES : NEW_PHRASES).map(
+                  (phrase) => html`
+                    <button
+                      type="button"
+                      class="rect__chip"
+                      @click=${() => setRectificationNote(item.key, obs.id, phrase)}
+                    >
+                      ${phrase}
+                    </button>
+                  `,
+                )}
+              </div>
               <textarea
                 class="item__note rect__note"
                 placeholder=${r.status === 'fixed'
