@@ -100,6 +100,9 @@ export function Library(rootEl: HTMLElement): TemplateResult {
                 }}
               />
             </label>
+            <button class="btn btn--secondary btn--sm" @click=${() => go('migrate')}>
+              ${Icon({ name: 'send', size: 16 })}<span>Migrate</span>
+            </button>
           </div>
           <input
             class="field__input"

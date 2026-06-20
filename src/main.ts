@@ -26,6 +26,7 @@ import { Dashboard } from '@/screens/Dashboard';
 import { Room } from '@/screens/Room';
 import { Report } from '@/screens/Report';
 import { Library } from '@/screens/Library';
+import { Migrate } from '@/screens/Migrate';
 import { ReportDetail } from '@/screens/ReportDetail';
 
 const rootEl = document.getElementById('app');
@@ -40,6 +41,7 @@ const PROTECTED: RouteName[] = [
   'room',
   'report',
   'library',
+  'migrate',
   'report-detail',
 ];
 
@@ -92,6 +94,9 @@ function dispatch(route: Route) {
       break;
     case 'library':
       render(Library(root), root);
+      break;
+    case 'migrate':
+      render(Migrate(root), root);
       break;
     case 'report-detail':
       render(ReportDetail(root, route.params['id'] ?? ''), root);
