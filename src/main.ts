@@ -15,6 +15,7 @@ import '@/styles/screens.css';
 import { auth } from '@/lib/auth';
 import { currentRoute, go, startRouter, subscribe, type Route, type RouteName } from '@/lib/router';
 import { DISCIPLINES, type Discipline } from '@/domain/disciplines';
+import { startSyncEngine } from '@/sync/syncEngine';
 
 import { Splash } from '@/screens/Splash';
 import { PinGate } from '@/screens/PinGate';
@@ -101,3 +102,4 @@ function dispatch(route: Route) {
 startRouter();
 subscribe(dispatch);
 dispatch(currentRoute());
+startSyncEngine();
