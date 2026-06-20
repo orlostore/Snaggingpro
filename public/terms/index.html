@@ -537,6 +537,7 @@
         <div class="sig-controls">
           <button type="button" class="sig-clear" id="sig-clear">Clear signature</button>
         </div>
+        <div id="sig-debug" style="margin-top:8px;font-family:ui-monospace,Menlo,monospace;font-size:11px;background:#0b0c10;color:#9ee493;padding:8px 10px;border-radius:6px;min-height:40px;line-height:1.5;white-space:pre-wrap;word-break:break-all">debug log will appear here</div>
       </div>
 
       <div class="disclosure">
@@ -613,13 +614,20 @@
       var drawing = false;
       var hasInk = false;
 
+      var debugEl = document.getElementById('sig-debug');
+      var debugLines = [];
       function logDebug(msg) {
         try {
           window._sigDebugLog = window._sigDebugLog || [];
           window._sigDebugLog.push(Date.now() + ': ' + msg);
           if (window._sigDebugLog.length > 200) window._sigDebugLog.shift();
+          debugLines.push(msg);
+          if (debugLines.length > 8) debugLines.shift();
+          if (debugEl) debugEl.textContent = debugLines.join('\n');
         } catch (_) { /* ignore */ }
       }
+      logDebug('script loaded · ua=' + (navigator.userAgent || '').slice(0, 60));
+      logDebug('hasPointer=' + !!window.PointerEvent + ' hasTouch=' + ('ontouchstart' in window));
 
       function configureContext() {
         // No setTransform — draw in canvas-internal pixels so getPos's
@@ -700,6 +708,14 @@
         ctx.closePath();
         logDebug('end');
       }
+
+      // Diagnostic: log every event the canvas receives, even if other
+      // handlers do their thing. If you tap the canvas and these don't fire,
+      // touches aren't reaching the canvas at all.
+      ['touchstart', 'touchmove', 'touchend', 'pointerdown', 'pointermove', 'pointerup', 'mousedown', 'mouseup', 'click']
+        .forEach(function (type) {
+          canvas.addEventListener(type, function () { logDebug('evt: ' + type); }, { capture: true, passive: true });
+        });
 
       // Touch (mobile) — passive:false so preventDefault actually stops scroll.
       canvas.addEventListener('touchstart', start, { passive: false });
