@@ -1,0 +1,21 @@
+name = "snaggingpro"
+pages_build_output_dir = "dist"
+compatibility_date = "2025-06-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Bindings below are placeholders — set the real database_id and bucket_name
+# in the Cloudflare Pages dashboard (Settings → Bindings) OR override here.
+# Local dev uses `wrangler pages dev` which auto-mounts these from this file.
+
+[[d1_databases]]
+binding = "DB"
+database_name = "snaggingpro"
+# database_id = "<paste the D1 database id after `wrangler d1 create snaggingpro`>"
+
+[[r2_buckets]]
+binding = "PHOTOS"
+bucket_name = "snaggingpro-photos"
+
+[vars]
+# Override with `wrangler pages secret put API_SECRET` for production.
+API_SECRET = "dev-secret-change-me"
