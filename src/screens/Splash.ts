@@ -1,6 +1,7 @@
 import { html, type TemplateResult } from 'lit-html';
 import { Button } from '@/components/Button';
 import { Icon } from '@/components/Icon';
+import { Footer } from '@/components/Footer';
 import { go } from '@/lib/router';
 import { loadDraft } from '@/state/persist';
 
@@ -38,6 +39,7 @@ export function Splash(): TemplateResult {
           })}
         </div>
       </div>
+      ${Footer()}
     </section>
   `;
 }
