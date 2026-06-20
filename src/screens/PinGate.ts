@@ -1,5 +1,6 @@
 import { html, render, type TemplateResult } from 'lit-html';
 import { auth } from '@/lib/auth';
+import { Footer } from '@/components/Footer';
 import { go, type RouteName } from '@/lib/router';
 
 interface PinState {
@@ -61,6 +62,7 @@ export function PinGate(rootEl: HTMLElement, next: RouteName = 'splash'): Templa
             <button class="pin__key" @click=${back} aria-label="Delete">⌫</button>
           </div>
         </div>
+        ${Footer()}
       </section>
     `;
   }
