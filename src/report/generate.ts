@@ -72,6 +72,21 @@ const BRAND_CSS = `
   .rect-block__pill--open { background: #a16207; }
   .rect-block__title { color: var(--grey); }
   .rect-block__note { margin-top: 6px; }
+  .sev-def { margin: 14px 0; padding: 14px 16px; background: #fafafa; border-left: 3px solid var(--minor); border-radius: 6px; page-break-inside: avoid; }
+  .sev-def--critical { border-left-color: var(--critical); }
+  .sev-def--major    { border-left-color: var(--major); }
+  .sev-def--minor    { border-left-color: var(--minor); }
+  .sev-def__head { margin-bottom: 6px; }
+  .insp { display: flex; flex-direction: column; gap: 14px; }
+  .insp__block { padding: 12px 14px; background: #fafafa; border-radius: 6px; border-left: 3px solid var(--brand); }
+  .insp__block h3 { font-size: 13px; color: var(--brand); margin-bottom: 4px; }
+  .insp__block p { font-size: 13px; line-height: 1.55; color: #333; }
+  .insp__sig { margin-top: 24px; padding-top: 30px; }
+  .insp__sig-line { border-top: 1px solid #888; width: 60%; }
+  .insp__sig-label { font-size: 11px; color: var(--grey); margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .insp__sig-meta  { font-size: 11px; color: var(--grey); margin-top: 2px; }
+  .page ul { padding-left: 18px; font-size: 13px; line-height: 1.55; color: #333; }
+  .page ul li { margin-bottom: 4px; }
   .checkpoints { background: var(--light); border-radius: 8px; padding: 14px 16px; margin: 12px 0 16px; }
   .checkpoints h3 { color: var(--dark); margin: 0; font-size: 14px; }
   .checkpoints .meta { font-size: 12px; margin-top: 2px; }
@@ -185,6 +200,92 @@ function coverPage(state: State, snags: SnagRecord[], photos: Map<string, string
       <p class="meta">Prepared for ${h(state.client.name || '—')} ${state.client.phone ? `· ${h(state.client.phone)}` : ''}</p>
       ${coverPhotosHtml(state, photos)}
       ${kpis(state, snags)}
+    </section>
+  `;
+}
+
+function severityDefinitionsPage(): string {
+  return `
+    <section class="page avoid-break">
+      <h1>Severity definitions</h1>
+      <p class="meta">How each snag is classified in this report.</p>
+
+      <div class="sev-def sev-def--critical">
+        <div class="sev-def__head"><span class="pill pill--critical">Critical</span></div>
+        <p>Safety risk, system non-functional, water or structural integrity compromised, fire or electrical hazard.
+        <strong>Must be rectified before handover acceptance.</strong></p>
+      </div>
+
+      <div class="sev-def sev-def--major">
+        <div class="sev-def__head"><span class="pill pill--major">Major</span></div>
+        <p>Significant defect affecting function, appearance, or longevity. <strong>Should be rectified during the Defects Liability Period (DLP).</strong></p>
+      </div>
+
+      <div class="sev-def sev-def--minor">
+        <div class="sev-def__head"><span class="pill">Minor</span></div>
+        <p>Cosmetic or workmanship issue. <strong>Recommended for rectification during DLP.</strong></p>
+      </div>
+    </section>
+  `;
+}
+
+function dlpGuidancePage(): string {
+  return `
+    <section class="page avoid-break">
+      <h1>Defects Liability Period (DLP)</h1>
+      <p class="meta">What to expect during the warranty window after handover.</p>
+
+      <h2>What is DLP?</h2>
+      <p>The Defects Liability Period is the period after handover during which the developer is contractually obliged to rectify defects in the property at no cost to the owner. In the UAE the standard DLP is <strong>12 months</strong> from the date of handover, though some projects extend longer for structural and waterproofing items.</p>
+
+      <h2>How to submit defects</h2>
+      <p>Defects identified in this report should be submitted to the developer or their facility management contractor in writing. Always retain a copy of:</p>
+      <ul>
+        <li>The submission email or letter, with the snag IDs from this report referenced.</li>
+        <li>The developer's acknowledgement and any rectification timeline they commit to.</li>
+        <li>Before-and-after photos for every rectification you accept.</li>
+      </ul>
+
+      <h2>Items typically covered</h2>
+      <p>Civil works, paint and finishes, ironmongery, plumbing leaks, electrical faults, HVAC performance, joinery and cabinetry, waterproofing, tile delamination, glazing seals and external facade workmanship.</p>
+
+      <h2>Items typically excluded</h2>
+      <p>Normal wear and tear, damage caused by the owner or their contractors, items installed by the owner after handover, and consumables (light bulbs, filters, batteries).</p>
+
+      <h2>Recommended timing for follow-up</h2>
+      <p>SnaggingPro recommends a <strong>follow-up inspection at month 11</strong> of the DLP — late enough to capture defects that develop with seasonal cycles, early enough to submit them before the warranty expires.</p>
+    </section>
+  `;
+}
+
+function inspectorPage(): string {
+  return `
+    <section class="page avoid-break">
+      <h1>Your inspector</h1>
+      <p class="meta">SnaggingPro is operated by a single qualified inspector — every report is signed in person.</p>
+
+      <div class="insp">
+        <div class="insp__block">
+          <h3>Experience</h3>
+          <p><strong>20+ years</strong> of facility management and MEP commissioning experience across major UAE residential, commercial and hospitality projects.</p>
+        </div>
+
+        <div class="insp__block">
+          <h3>Inspection scope</h3>
+          <p>Civil works, MEP (electrical, mechanical, HVAC, plumbing), home automation, fire alarm and fire fighting, external facade, landscaping and balconies — every snag in this report was visually verified on-site by the inspector.</p>
+        </div>
+
+        <div class="insp__block">
+          <h3>Methodology</h3>
+          <p>Visual inspection augmented with: socket polarity tester, IR thermometer, anemometer, TDS / water quality meter, moisture meter, spirit level. Power, water and AC must be live at the time of inspection — see Terms of Engagement.</p>
+        </div>
+
+        <div class="insp__sig">
+          <div class="insp__sig-line"></div>
+          <div class="insp__sig-label">Inspector signature</div>
+          <div class="insp__sig-meta">Date of inspection on cover page</div>
+        </div>
+      </div>
     </section>
   `;
 }
@@ -445,8 +546,11 @@ export async function generateReportHtml(state: State): Promise<string> {
 </head>
 <body>
   ${coverPage(state, snags, photos)}
+  ${severityDefinitionsPage()}
   ${isFollowUp ? rectificationSummary(snags, photos) : handoverPage()}
   ${isFollowUp ? '' : criticalSummary(snags, photos)}
+  ${isFollowUp ? '' : dlpGuidancePage()}
+  ${inspectorPage()}
   <section class="page">
     <h1>${isFollowUp ? 'Room-by-room rectification' : 'Room-by-room findings'}</h1>
     ${notApplicableBlock(state)}
