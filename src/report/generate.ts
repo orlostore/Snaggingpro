@@ -200,7 +200,7 @@ function coverPage(state: State, snags: SnagRecord[], photos: Map<string, string
       <h1>${h(followUp ? 'Follow-Up Inspection — DLP Review' : 'Property Condition Report')}</h1>
       <p class="meta">${h(state.job.ref)} · ${h(formatDateLong(state.job.date))}</p>
       <h2>${h(PROP_LABEL[state.property.type])}</h2>
-      <p>${h(state.property.developer)} · ${h(state.property.community)}${state.property.unit ? ` · Unit ${h(state.property.unit)}` : ''}</p>
+      <p>${h(state.property.developer)} · ${h(state.property.community)}${state.property.unit ? ` · Unit ${h(state.property.unit)}` : ''}${state.property.bedrooms > 0 ? ` · ${state.property.bedrooms} bedroom${state.property.bedrooms === 1 ? '' : 's'}` : ''}</p>
       <p class="meta">Prepared for ${h(state.client.name || '—')} ${state.client.phone ? `· ${h(state.client.phone)}` : ''}</p>
       ${coverPhotosHtml(state, photos)}
       ${kpis(state, snags)}
