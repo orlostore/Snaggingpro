@@ -85,6 +85,34 @@
   text-decoration-color: var(--color-brand);
   color: var(--color-brand);
 }
+.sync-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.sync-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background: var(--color-text-dim);
+}
+.sync-dot--idle { background: var(--color-pass); }
+.sync-dot--syncing {
+  background: var(--color-accent);
+  animation: sync-pulse 1.2s ease-in-out infinite;
+}
+.sync-dot--offline { background: var(--color-warning); }
+.sync-dot--error { background: var(--color-critical); }
+.sync-dot--disabled { background: var(--color-text-dim); }
+@keyframes sync-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.sync-status__label {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
 
 /* ============ Buttons ============ */
 .btn {

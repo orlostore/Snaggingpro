@@ -2,6 +2,7 @@ import { html, type TemplateResult } from 'lit-html';
 import { ENV } from '@/lib/env';
 import { confirmDialog } from './Confirm';
 import { forceRefresh } from '@/lib/forceRefresh';
+import { SyncStatusBadge } from './SyncStatus';
 
 async function onTapVersion() {
   const ok = await confirmDialog({
@@ -29,6 +30,8 @@ export function Footer(): TemplateResult {
         >
           v${ENV.buildVersion}
         </button>
+        <span class="app-footer__sep">·</span>
+        ${SyncStatusBadge()}
       </div>
     </footer>
   `;

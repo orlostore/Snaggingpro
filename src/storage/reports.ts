@@ -6,6 +6,8 @@
 
 import { getDB } from './idb';
 import { collectSnags } from '@/domain/snags';
+import { ENV } from '@/lib/env';
+import { enqueue } from '@/sync/outbox';
 import type { State, ReportSummary } from '@/state/schema';
 
 export interface ReportsRepository {
@@ -42,6 +44,9 @@ class IDBReportsRepository implements ReportsRepository {
     await tx.objectStore('reports').put(state);
     await tx.objectStore('summaries').put(summarise(state));
     await tx.done;
+    if (ENV.cloudEnabled) {
+      await enqueue({ type: 'saveReport', reportId: state.job.ref });
+    }
   }
 
   async getReport(id: string): Promise<State | undefined> {
@@ -61,6 +66,9 @@ class IDBReportsRepository implements ReportsRepository {
     await tx.objectStore('reports').delete(id);
     await tx.objectStore('summaries').delete(id);
     await tx.done;
+    if (ENV.cloudEnabled) {
+      await enqueue({ type: 'deleteReport', reportId: id });
+    }
   }
 }
 
