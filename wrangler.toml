@@ -18,3 +18,8 @@ compatibility_flags = ["nodejs_compat"]
 [[r2_buckets]]
 binding = "PHOTOS"
 bucket_name = "snaggingpro-photos"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "snaggingpro"
+database_id = "70d1a6e4-ba43-477f-ac80-79d4200d7eec"
