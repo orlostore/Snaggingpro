@@ -601,12 +601,16 @@
         } catch (e) { /* ignore */ }
       }
 
-      // ===== Signature canvas =====
+      // ===== Signature canvas (pure Touch + Mouse — no PointerEvent) =====
+      // Per DeepSeek/Gemini/GPT: Mi Browser ships a Chromium fork that mis-
+      // dispatches PointerEvents to canvases. Battle-tested signature pads
+      // avoid PointerEvent entirely. Coordinate math uses canvas-pixel scale
+      // factors so a CSS-scaled canvas still maps touches correctly.
       var canvas = document.getElementById('sig-canvas');
       var wrap = document.getElementById('sig-wrap');
       var clearBtn = document.getElementById('sig-clear');
-      var ctx = canvas.getContext('2d', { alpha: true });
-      var isDrawing = false;
+      var ctx = canvas.getContext('2d');
+      var drawing = false;
       var hasInk = false;
 
       function logDebug(msg) {
@@ -618,9 +622,12 @@
       }
 
       function configureContext() {
+        // No setTransform — draw in canvas-internal pixels so getPos's
+        // scaled coordinates map 1:1.
+        var dpr = window.devicePixelRatio || 1;
         ctx.strokeStyle = '#1e3a5f';
         ctx.fillStyle = '#1e3a5f';
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 2.5 * dpr;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
       }
@@ -631,94 +638,93 @@
         var dpr = window.devicePixelRatio || 1;
         canvas.width = Math.round(rect.width * dpr);
         canvas.height = Math.round(rect.height * dpr);
-        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         configureContext();
         hasInk = false;
         wrap.classList.remove('has-ink');
         updateButton();
-        logDebug('resize ' + rect.width.toFixed(0) + 'x' + rect.height.toFixed(0) + ' dpr=' + dpr);
+        logDebug('resize ' + canvas.width + 'x' + canvas.height + ' dpr=' + dpr);
         return true;
       }
 
-      function getCoords(e) {
+      function getPos(e) {
         var rect = canvas.getBoundingClientRect();
-        return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+        var scaleX = canvas.width / rect.width;
+        var scaleY = canvas.height / rect.height;
+        var clientX, clientY;
+        if (e.touches && e.touches.length > 0) {
+          clientX = e.touches[0].clientX;
+          clientY = e.touches[0].clientY;
+        } else if (e.changedTouches && e.changedTouches.length > 0) {
+          clientX = e.changedTouches[0].clientX;
+          clientY = e.changedTouches[0].clientY;
+        } else {
+          clientX = e.clientX;
+          clientY = e.clientY;
+        }
+        return {
+          x: (clientX - rect.left) * scaleX,
+          y: (clientY - rect.top) * scaleY,
+        };
       }
 
-      function startDrawing(e) {
-        if (e.button !== undefined && e.button !== 0) return;
-        isDrawing = true;
-        var p = getCoords(e);
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        // Dot for taps.
-        ctx.arc(p.x, p.y, ctx.lineWidth / 2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
+      function start(e) {
         if (e.cancelable) e.preventDefault();
-        logDebug('down ' + p.x.toFixed(1) + ',' + p.y.toFixed(1));
-      }
-
-      function draw(e) {
-        if (!isDrawing) return;
-        var p = getCoords(e);
-        ctx.lineTo(p.x, p.y);
+        drawing = true;
+        var p = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
+        // Single dot in case the user just taps (no move).
+        ctx.lineTo(p.x + 0.01, p.y + 0.01);
         ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(p.x, p.y);
         if (!hasInk) {
           hasInk = true;
           wrap.classList.add('has-ink');
           updateButton();
-          logDebug('ink detected');
         }
+        logDebug('start ' + p.x.toFixed(0) + ',' + p.y.toFixed(0));
+      }
+
+      function move(e) {
+        if (!drawing) return;
         if (e.cancelable) e.preventDefault();
+        var p = getPos(e);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
       }
 
-      function stopDrawing() {
-        if (!isDrawing) return;
-        isDrawing = false;
+      function end() {
+        if (!drawing) return;
+        drawing = false;
         ctx.closePath();
-        logDebug('up');
+        logDebug('end');
       }
 
-      if (window.PointerEvent) {
-        logDebug('binding PointerEvents');
-        canvas.addEventListener('pointerdown', startDrawing, { passive: false });
-        canvas.addEventListener('pointermove', draw, { passive: false });
-        canvas.addEventListener('pointerup', stopDrawing);
-        canvas.addEventListener('pointercancel', stopDrawing);
-        canvas.addEventListener('pointerleave', stopDrawing);
-      } else {
-        logDebug('binding Touch+Mouse fallback');
-        canvas.addEventListener('touchstart', function (e) {
-          if (e.touches.length > 0) startDrawing(e.touches[0]);
-          if (e.cancelable) e.preventDefault();
-        }, { passive: false });
-        canvas.addEventListener('touchmove', function (e) {
-          if (e.touches.length > 0) draw(e.touches[0]);
-          if (e.cancelable) e.preventDefault();
-        }, { passive: false });
-        canvas.addEventListener('touchend', stopDrawing);
-        canvas.addEventListener('touchcancel', stopDrawing);
-        canvas.addEventListener('mousedown', startDrawing);
-        canvas.addEventListener('mousemove', draw);
-        canvas.addEventListener('mouseup', stopDrawing);
-        canvas.addEventListener('mouseleave', stopDrawing);
-      }
+      // Touch (mobile) — passive:false so preventDefault actually stops scroll.
+      canvas.addEventListener('touchstart', start, { passive: false });
+      canvas.addEventListener('touchmove', move, { passive: false });
+      canvas.addEventListener('touchend', end);
+      canvas.addEventListener('touchcancel', end);
+
+      // Mouse (desktop).
+      canvas.addEventListener('mousedown', start);
+      canvas.addEventListener('mousemove', move);
+      canvas.addEventListener('mouseup', end);
+      canvas.addEventListener('mouseleave', end);
 
       clearBtn.addEventListener('click', function () {
         resizeCanvas();
-        logDebug('cleared by user');
+        logDebug('cleared');
       });
 
       window.addEventListener('resize', function () {
-        if (!isDrawing) resizeCanvas();
+        if (!drawing) resizeCanvas();
       });
       window.addEventListener('orientationchange', function () {
         setTimeout(resizeCanvas, 100);
       });
-
-      // Initial size — wait one tick for layout to settle.
+      // Wait one tick so font load / layout shifts don't leave canvas at 0×0.
       setTimeout(resizeCanvas, 50);
 
       // ===== Form gating =====
