@@ -129,6 +129,10 @@ async function loadPhotoMap(state: State): Promise<Map<string, string>> {
     for (const item of Object.values(room.items)) {
       for (const obs of item.observations) {
         for (const pid of obs.photoIds) ids.add(pid);
+        // Follow-up close-out photos — the very thing this map needs to
+        // surface in the rectification block. Forgetting this set was the
+        // reason closeout photos never rendered in the PDF.
+        for (const pid of obs.rectification?.photoIds ?? []) ids.add(pid);
       }
     }
   }
