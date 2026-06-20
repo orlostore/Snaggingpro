@@ -71,9 +71,12 @@ export function Library(rootEl: HTMLElement): TemplateResult {
     return ctx.summaries.filter(
       (s) =>
         s.clientName.toLowerCase().includes(q) ||
+        s.developer.toLowerCase().includes(q) ||
         s.community.toLowerCase().includes(q) ||
         s.unit.toLowerCase().includes(q) ||
-        s.jobRef.toLowerCase().includes(q),
+        s.jobRef.toLowerCase().includes(q) ||
+        s.date.toLowerCase().includes(q) ||
+        formatDateLong(s.date).toLowerCase().includes(q),
     );
   }
 
@@ -104,7 +107,7 @@ export function Library(rootEl: HTMLElement): TemplateResult {
           <input
             class="field__input"
             type="search"
-            placeholder="Search by client, project, unit, ref…"
+            placeholder="Search by client, developer, project, unit, ref, date…"
             .value=${ctx.query}
             @input=${(e: Event) => {
               ctx.query = (e.target as HTMLInputElement).value;
