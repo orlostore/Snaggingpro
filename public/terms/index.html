@@ -258,14 +258,21 @@
       border: 1.5px dashed var(--border-strong);
       border-radius: 10px;
       overflow: hidden;
+      touch-action: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      user-select: none;
     }
     .sig-wrap.has-ink { border-style: solid; border-color: var(--brand); }
     .sig-canvas {
       display: block;
       width: 100%;
-      height: 180px;
+      height: 200px;
       touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
       cursor: crosshair;
+      background: transparent;
     }
     .sig-placeholder {
       position: absolute;
@@ -580,7 +587,7 @@
         } catch (e) { /* ignore */ }
       }
 
-      // ===== Signature canvas =====
+      // ===== Signature canvas (universal — pointer, touch, and mouse) =====
       var canvas = document.getElementById('sig-canvas');
       var ctx = canvas.getContext('2d');
       var wrap = document.getElementById('sig-wrap');
@@ -588,97 +595,139 @@
       var hasInk = false;
 
       function sizeCanvas() {
-        var dpr = window.devicePixelRatio || 1;
-        var rect = canvas.getBoundingClientRect();
-        if (rect.width === 0) return;
-        canvas.width = Math.round(rect.width * dpr);
-        canvas.height = Math.round(rect.height * dpr);
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-        ctx.scale(dpr, dpr);
+        var dpr = Math.max(window.devicePixelRatio || 1, 1);
+        var w = canvas.offsetWidth;
+        var h = canvas.offsetHeight;
+        if (w === 0 || h === 0) return false;
+        // Snapshot before resize so a rotate doesn't wipe the drawing.
+        var snapshot = hasInk ? canvas.toDataURL('image/png') : null;
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.lineWidth = 2.4;
         ctx.lineCap = 'round';
         ctx.lineJoin = 'round';
         ctx.strokeStyle = '#1e3a5f';
-      }
-      // Defer until layout is settled — fonts/CSS shifts can leave width=0.
-      requestAnimationFrame(function () {
-        sizeCanvas();
-        requestAnimationFrame(sizeCanvas);
-      });
-      window.addEventListener('resize', function () {
-        var snapshot = hasInk ? canvas.toDataURL('image/png') : null;
-        sizeCanvas();
+        ctx.fillStyle = '#1e3a5f';
         if (snapshot) {
           var img = new Image();
-          img.onload = function () {
-            var rect = canvas.getBoundingClientRect();
-            ctx.drawImage(img, 0, 0, rect.width, rect.height);
-          };
+          img.onload = function () { ctx.drawImage(img, 0, 0, w, h); };
           img.src = snapshot;
         }
+        return true;
+      }
+      // Try sizing up to a few times — layout/font-shifts can leave w=0 initially.
+      var sizeAttempts = 0;
+      function trySize() {
+        if (sizeCanvas()) return;
+        if (++sizeAttempts < 20) requestAnimationFrame(trySize);
+      }
+      if (document.readyState === 'complete') trySize();
+      else window.addEventListener('load', trySize);
+      requestAnimationFrame(trySize);
+      window.addEventListener('resize', sizeCanvas);
+      window.addEventListener('orientationchange', function () {
+        setTimeout(sizeCanvas, 100);
       });
 
       var drawing = false;
       var lastX = 0, lastY = 0;
+      var activeId = null;
 
-      function pointFromEvent(e) {
+      function getPoint(clientX, clientY) {
         var rect = canvas.getBoundingClientRect();
-        var clientX, clientY;
-        if (e.touches && e.touches.length > 0) {
-          clientX = e.touches[0].clientX;
-          clientY = e.touches[0].clientY;
-        } else if (e.changedTouches && e.changedTouches.length > 0) {
-          clientX = e.changedTouches[0].clientX;
-          clientY = e.changedTouches[0].clientY;
-        } else {
-          clientX = e.clientX;
-          clientY = e.clientY;
-        }
         return { x: clientX - rect.left, y: clientY - rect.top };
       }
 
-      function startDraw(e) {
-        e.preventDefault();
-        if (canvas.width === 0) sizeCanvas();
-        drawing = true;
-        var p = pointFromEvent(e);
-        lastX = p.x; lastY = p.y;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, ctx.lineWidth / 2, 0, Math.PI * 2);
-        ctx.fillStyle = ctx.strokeStyle;
-        ctx.fill();
-        if (!hasInk) {
-          hasInk = true;
-          wrap.classList.add('has-ink');
-          updateButton();
-        }
-      }
-      function moveDraw(e) {
-        if (!drawing) return;
-        e.preventDefault();
-        var p = pointFromEvent(e);
-        ctx.beginPath();
-        ctx.moveTo(lastX, lastY);
-        ctx.lineTo(p.x, p.y);
-        ctx.stroke();
-        lastX = p.x; lastY = p.y;
-      }
-      function endDraw(e) {
-        if (!drawing) return;
-        if (e && e.preventDefault) e.preventDefault();
-        drawing = false;
+      function markInk() {
+        if (hasInk) return;
+        hasInk = true;
+        wrap.classList.add('has-ink');
+        updateButton();
       }
 
-      // Touch (mobile)
-      canvas.addEventListener('touchstart', startDraw, { passive: false });
-      canvas.addEventListener('touchmove', moveDraw, { passive: false });
-      canvas.addEventListener('touchend', endDraw, { passive: false });
-      canvas.addEventListener('touchcancel', endDraw, { passive: false });
-      // Mouse (desktop)
-      canvas.addEventListener('mousedown', startDraw);
-      canvas.addEventListener('mousemove', moveDraw);
-      canvas.addEventListener('mouseup', endDraw);
-      canvas.addEventListener('mouseleave', endDraw);
+      function strokeStart(x, y) {
+        if (canvas.width === 0) sizeCanvas();
+        drawing = true;
+        lastX = x; lastY = y;
+        ctx.beginPath();
+        ctx.arc(x, y, ctx.lineWidth / 2, 0, Math.PI * 2);
+        ctx.fill();
+        markInk();
+      }
+      function strokeMove(x, y) {
+        if (!drawing) return;
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+        lastX = x; lastY = y;
+      }
+      function strokeEnd() {
+        drawing = false;
+        activeId = null;
+      }
+
+      // Pointer events (modern: covers stylus + touch + mouse).
+      if (window.PointerEvent) {
+        canvas.style.touchAction = 'none';
+        canvas.addEventListener('pointerdown', function (e) {
+          if (activeId !== null) return;
+          activeId = e.pointerId;
+          try { canvas.setPointerCapture(e.pointerId); } catch (_) {}
+          var p = getPoint(e.clientX, e.clientY);
+          strokeStart(p.x, p.y);
+          e.preventDefault();
+        });
+        canvas.addEventListener('pointermove', function (e) {
+          if (e.pointerId !== activeId) return;
+          var p = getPoint(e.clientX, e.clientY);
+          strokeMove(p.x, p.y);
+          e.preventDefault();
+        });
+        var onPointerEnd = function (e) {
+          if (e.pointerId !== activeId) return;
+          strokeEnd();
+          try { canvas.releasePointerCapture(e.pointerId); } catch (_) {}
+          e.preventDefault();
+        };
+        canvas.addEventListener('pointerup', onPointerEnd);
+        canvas.addEventListener('pointercancel', onPointerEnd);
+        canvas.addEventListener('pointerleave', function () { /* keep drawing */ });
+      } else {
+        // Touch fallback (older Android/iOS without PointerEvent).
+        canvas.addEventListener('touchstart', function (e) {
+          if (e.touches.length === 0) return;
+          var t = e.touches[0];
+          var p = getPoint(t.clientX, t.clientY);
+          strokeStart(p.x, p.y);
+          e.preventDefault();
+        }, { passive: false });
+        canvas.addEventListener('touchmove', function (e) {
+          if (e.touches.length === 0) return;
+          var t = e.touches[0];
+          var p = getPoint(t.clientX, t.clientY);
+          strokeMove(p.x, p.y);
+          e.preventDefault();
+        }, { passive: false });
+        var endTouch = function (e) {
+          strokeEnd();
+          e.preventDefault();
+        };
+        canvas.addEventListener('touchend', endTouch, { passive: false });
+        canvas.addEventListener('touchcancel', endTouch, { passive: false });
+        // Mouse fallback for desktop browsers without PointerEvent.
+        canvas.addEventListener('mousedown', function (e) {
+          var p = getPoint(e.clientX, e.clientY);
+          strokeStart(p.x, p.y);
+        });
+        canvas.addEventListener('mousemove', function (e) {
+          var p = getPoint(e.clientX, e.clientY);
+          strokeMove(p.x, p.y);
+        });
+        canvas.addEventListener('mouseup', strokeEnd);
+        canvas.addEventListener('mouseleave', strokeEnd);
+      }
 
       clearBtn.addEventListener('click', function () {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
