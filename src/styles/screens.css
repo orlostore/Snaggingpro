@@ -1122,6 +1122,29 @@
 }
 .library__title {
   font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+.ack-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  text-transform: none;
+}
+.ack-pill--signed {
+  background: rgba(15, 122, 68, 0.10);
+  color: var(--color-pass);
+}
+.ack-pill--pending {
+  background: var(--color-bg-sunken);
+  color: var(--color-text-dim);
 }
 .library__sub {
   font-size: var(--text-sm);

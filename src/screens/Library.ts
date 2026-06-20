@@ -10,10 +10,16 @@ import { exportBackup, importBackup, triggerDownload } from '@/storage/backup';
 import { Icon } from '@/components/Icon';
 import { go } from '@/lib/router';
 import { formatDateLong } from '@/lib/format';
+import { ENV } from '@/lib/env';
+import { loadAckIndex } from '@/lib/acknowledgements';
 import type { ReportSummary } from '@/state/schema';
 
 export function Library(rootEl: HTMLElement): TemplateResult {
-  const ctx: { summaries: ReportSummary[]; query: string } = { summaries: [], query: '' };
+  const ctx: {
+    summaries: ReportSummary[];
+    query: string;
+    acks: Map<string, number>;
+  } = { summaries: [], query: '', acks: new Map() };
 
   function paint() {
     render(view(), rootEl);
@@ -22,6 +28,10 @@ export function Library(rootEl: HTMLElement): TemplateResult {
   async function load() {
     ctx.summaries = await reportsRepo.listSummaries();
     paint();
+    if (ENV.cloudEnabled) {
+      ctx.acks = await loadAckIndex();
+      paint();
+    }
   }
 
   async function doExport() {
@@ -121,14 +131,24 @@ export function Library(rootEl: HTMLElement): TemplateResult {
             ? html`<div class="empty">No reports saved yet.</div>`
             : html`
                 <ul class="library__list">
-                  ${rows.map(
-                    (s) => html`
+                  ${rows.map((s) => {
+                    const signedAt = ctx.acks.get(s.jobRef);
+                    return html`
                       <li class="library__row">
                         <button
                           class="library__main"
                           @click=${() => go('report-detail', { id: s.id })}
                         >
-                          <div class="library__title">${s.clientName || 'Unnamed client'}</div>
+                          <div class="library__title">
+                            ${s.clientName || 'Unnamed client'}
+                            ${ENV.cloudEnabled
+                              ? signedAt
+                                ? html`<span class="ack-pill ack-pill--signed"
+                                    >${Icon({ name: 'check', size: 12 })} Signed</span
+                                  >`
+                                : html`<span class="ack-pill ack-pill--pending">Pending T&amp;C</span>`
+                              : null}
+                          </div>
                           <div class="library__sub">
                             ${s.jobRef} · ${formatDateLong(s.date)}
                             ${s.reportType === 'follow-up' ? html` · <em>follow-up</em>` : null}
@@ -145,8 +165,8 @@ export function Library(rootEl: HTMLElement): TemplateResult {
                           onClick: () => void remove(s.id),
                         })}
                       </li>
-                    `,
-                  )}
+                    `;
+                  })}
                 </ul>
               `}
         </main>
