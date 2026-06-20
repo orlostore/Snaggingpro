@@ -413,15 +413,6 @@ export function Room(
                   >
                     ${Icon({ name: 'pencil', size: 14 })}
                   </button>
-                  ${instances.length > 1
-                    ? html`<button
-                        class="btn btn--ghost btn--sm"
-                        title="Remove DB Panel"
-                        @click=${() => void removeDbInstance(inst.num)}
-                      >
-                        ${Icon({ name: 'trash', size: 14 })}
-                      </button>`
-                    : null}
                 </div>
               </header>
               <ul class="item-list">${instItems.map((it) => itemRow(room, it))}</ul>
@@ -490,33 +481,6 @@ export function Room(
     inst.location = next.trim();
     s.job.updatedAt = Date.now();
     saveDraft(s);
-    paint();
-  }
-
-  async function removeDbInstance(num: number) {
-    const s = loadDraft();
-    const room = s?.rooms[roomId];
-    if (!s || !room || !room.dbInstances) return;
-    const ok = await confirmDialog({
-      title: `Remove DB Panel ${num}?`,
-      message: 'All items, observations, notes and photos for this panel will be deleted.',
-      destructive: true,
-      confirmLabel: 'Remove DB Panel',
-    });
-    if (!ok) return;
-    // Delete photos for items being removed
-    const toRemove = Object.values(room.items).filter((i) => i.dbNum === num);
-    for (const it of toRemove) {
-      for (const obs of it.observations) {
-        for (const pid of obs.photoIds) await deletePhoto(pid);
-        for (const pid of obs.rectification?.photoIds ?? []) await deletePhoto(pid);
-      }
-      delete room.items[it.key];
-    }
-    room.dbInstances = room.dbInstances.filter((d) => d.num !== num);
-    s.job.updatedAt = Date.now();
-    saveDraft(s);
-    toast(`DB Panel ${num} removed`);
     paint();
   }
 
