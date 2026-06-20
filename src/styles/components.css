@@ -69,6 +69,22 @@
 .app-footer__sep {
   opacity: 0.6;
 }
+.app-footer__ver {
+  background: transparent;
+  border: none;
+  font: inherit;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--color-border-strong);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+.app-footer__ver:hover {
+  text-decoration-color: var(--color-brand);
+  color: var(--color-brand);
+}
 
 /* ============ Buttons ============ */
 .btn {
