@@ -1138,6 +1138,93 @@
   margin-top: var(--space-5);
 }
 
+/* ============ Acknowledgement record ============ */
+.ack-block {
+  margin-top: var(--space-6);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4);
+}
+.ack-block__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+.ack-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.ack-row {
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-pass);
+  border-radius: var(--radius-md);
+  padding: var(--space-3);
+}
+.ack-row__head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-2);
+}
+.ack-sig {
+  display: block;
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+  background: white;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  margin: var(--space-2) 0;
+}
+.ack-sig--loading {
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-dim);
+  font-size: var(--text-sm);
+}
+.ack-meta {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 4px var(--space-3);
+  font-size: var(--text-xs);
+  margin: var(--space-2) 0 0;
+}
+.ack-meta > div {
+  display: contents;
+}
+.ack-meta dt {
+  color: var(--color-text-dim);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-size: 11px;
+}
+.ack-meta dd {
+  color: var(--color-text);
+  word-break: break-all;
+}
+.ack-meta code {
+  font-family: ui-monospace, 'SF Mono', Menlo, monospace;
+  background: var(--color-bg-sunken);
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
 /* ============ Migrate ============ */
 .migrate {
   padding-bottom: var(--space-10);

@@ -28,9 +28,22 @@ async function timingSafeEqual(a: string, b: string): Promise<boolean> {
   return diff === 0;
 }
 
+/**
+ * Public endpoints — no X-SP-Secret required.
+ * Used for client-facing forms (Terms of Engagement acknowledgement)
+ * where the client has no app credentials.
+ */
+const PUBLIC_ROUTES: Array<{ method: string; path: string }> = [
+  { method: 'POST', path: '/api/acknowledgements' },
+];
+
 export const onRequest: PagesFunction<Env> = async ({ request, env, next }) => {
   const url = new URL(request.url);
   if (!url.pathname.startsWith('/api/')) return next();
+
+  const isPublic = PUBLIC_ROUTES.some(
+    (r) => r.path === url.pathname && r.method === request.method,
+  );
 
   if (request.method === 'OPTIONS') {
     return new Response(null, {
@@ -44,12 +57,14 @@ export const onRequest: PagesFunction<Env> = async ({ request, env, next }) => {
     });
   }
 
-  if (!env.API_SECRET) {
-    return err(500, 'API_SECRET not configured on the server.');
+  if (!isPublic) {
+    if (!env.API_SECRET) {
+      return err(500, 'API_SECRET not configured on the server.');
+    }
+    const provided = request.headers.get('X-SP-Secret') ?? '';
+    const ok = await timingSafeEqual(provided, env.API_SECRET);
+    if (!ok) return err(401, 'Unauthorized.');
   }
-  const provided = request.headers.get('X-SP-Secret') ?? '';
-  const ok = await timingSafeEqual(provided, env.API_SECRET);
-  if (!ok) return err(401, 'Unauthorized.');
 
   try {
     return await next();

@@ -83,3 +83,49 @@ export function json(body: unknown, init: ResponseInit = {}): Response {
 export function err(status: number, message: string): Response {
   return json({ error: message }, { status });
 }
+
+export interface AcknowledgementRow {
+  id: string;
+  job_ref: string;
+  client_name: string;
+  unit: string;
+  typed_name: string;
+  signature_key: string | null;
+  eid_front_key: string | null;
+  eid_back_key: string | null;
+  ip_address: string | null;
+  user_agent: string | null;
+  country: string | null;
+  city: string | null;
+  acknowledged_at: number;
+}
+
+export interface AcknowledgementDto {
+  id: string;
+  jobRef: string;
+  clientName: string;
+  unit: string;
+  typedName: string;
+  signatureKey: string | null;
+  ipAddress: string | null;
+  userAgent: string | null;
+  country: string | null;
+  city: string | null;
+  acknowledgedAt: number;
+}
+
+export function rowToAck(r: AcknowledgementRow): AcknowledgementDto {
+  return {
+    id: r.id,
+    jobRef: r.job_ref,
+    clientName: r.client_name,
+    unit: r.unit,
+    typedName: r.typed_name,
+    signatureKey: r.signature_key,
+    ipAddress: r.ip_address,
+    userAgent: r.user_agent,
+    country: r.country,
+    city: r.city,
+    acknowledgedAt: r.acknowledged_at,
+  };
+}
