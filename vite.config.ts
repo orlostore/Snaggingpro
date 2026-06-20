@@ -54,7 +54,10 @@ export default defineConfig({
         // navigation. JS/CSS still come from precache because they carry
         // hashed filenames and are invalidated automatically.
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api\//],
+        navigateFallbackDenylist: [/^\/api\//, /^\/terms($|\/)/],
+        // Don't precache the standalone /terms page — it lives outside the
+        // app shell and must always be fetched fresh from the network.
+        globIgnores: ['**/terms/**'],
         runtimeCaching: [
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,

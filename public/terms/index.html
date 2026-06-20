@@ -424,6 +424,12 @@
 </head>
 <body>
 
+  <!-- Hidden CSP/JS health probe. If you ever see "JS NOT RUNNING" rendered
+       on the page, inline scripts are being blocked (likely a CSP issue). -->
+  <noscript><div style="background:#fffbe6;color:#92400e;padding:12px;text-align:center;font-family:sans-serif;border-bottom:1px solid #fcd34d">JavaScript is disabled. The signature pad needs JavaScript to work.</div></noscript>
+  <div id="js-probe" style="display:none;background:#fee2e2;color:#991b1b;padding:12px;text-align:center;font-family:sans-serif;border-bottom:1px solid #fecaca">JS NOT RUNNING — inline scripts blocked. Tell SnaggingPro.</div>
+  <script>document.getElementById('js-probe').remove();</script>
+
   <header class="header">
     <div class="header-inner">
       <div class="logo-mark">
