@@ -6,6 +6,8 @@ import { Button } from '@/components/Button';
 import { Icon, type IconName } from '@/components/Icon';
 import { emptyState } from '@/state/init';
 import { nextJobSeq } from '@/state/jobRef';
+import { sendTermsViaWhatsApp } from '@/lib/share';
+import { jobRefFromDate } from '@/domain/snags';
 import { saveDraft } from '@/state/persist';
 import { go } from '@/lib/router';
 
@@ -228,6 +230,19 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
           </div>
 
           <div class="setup__actions">
+            ${Button({
+              label: html`${Icon({ name: 'send', size: 18 })} Send T&C to client via WhatsApp`,
+              full: true,
+              variant: 'secondary',
+              disabled: !draft.clientName.trim() || !draft.phone.trim(),
+              onClick: () =>
+                sendTermsViaWhatsApp({
+                  clientName: draft.clientName.trim(),
+                  clientPhone: draft.phone.trim(),
+                  jobRef: jobRefFromDate(new Date(), 1),
+                  unit: draft.unit.trim() || undefined,
+                }),
+            })}
             ${Button({
               label: 'Continue →',
               full: true,

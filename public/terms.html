@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#1e3a5f" />
+  <title>Terms of Engagement — SnaggingPro</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700&family=DM+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --sunken: #ecedf0;
+      --text: #1a1b1e;
+      --muted: #4f535b;
+      --dim: #6b6f76;
+      --brand: #1e3a5f;
+      --accent: #b8923a;
+      --border: #e2e4e9;
+      --critical: #b6221b;
+      --pass: #0f7a44;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      line-height: 1.55;
+      min-height: 100dvh;
+    }
+    .header {
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .header-inner {
+      max-width: 720px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-mark {
+      width: 36px;
+      height: 36px;
+      background: var(--brand);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .logo-mark svg { color: white; }
+    .logo-text {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 19px;
+      letter-spacing: -0.01em;
+    }
+    .logo-text span { color: var(--brand); }
+    .logo-sub {
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+    }
+
+    .container { max-width: 720px; margin: 0 auto; padding: 24px 20px 80px; }
+
+    .hero {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--brand);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(30, 58, 95, 0.08);
+      color: var(--brand);
+      padding: 4px 10px;
+      border-radius: 99px;
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .hero h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 30px;
+      font-weight: 700;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      margin-bottom: 10px;
+    }
+    .hero p { color: var(--muted); font-size: 15px; }
+    .hero strong { color: var(--text); }
+
+    .section {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      margin-bottom: 14px;
+    }
+    .section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 700;
+      letter-spacing: -0.005em;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .section h2::before {
+      content: attr(data-num);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--brand);
+      background: rgba(30, 58, 95, 0.08);
+      padding: 3px 9px;
+      border-radius: 99px;
+      flex-shrink: 0;
+    }
+    .section p { color: var(--muted); font-size: 15px; line-height: 1.55; }
+    .section p + p { margin-top: 10px; }
+    .section strong { color: var(--text); }
+    .callout {
+      margin-top: 12px;
+      background: rgba(184, 146, 58, 0.08);
+      border-left: 3px solid var(--accent);
+      padding: 12px 14px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: var(--text);
+    }
+
+    .footer {
+      text-align: center;
+      color: var(--dim);
+      font-size: 13px;
+      padding: 24px 20px;
+    }
+    .footer span { color: var(--brand); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 11l9-7 9 7" />
+          <path d="M5 9.5V21h14V9.5" />
+          <path d="M10 21v-7h4v7" />
+        </svg>
+      </div>
+      <div>
+        <div class="logo-text">Snagging<span>Pro</span></div>
+        <div class="logo-sub">Property condition assessment</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <span class="hero-badge" id="job-badge">Inspection agreement</span>
+      <h1>Terms of <em style="font-style:normal;color:var(--brand)">Engagement</em></h1>
+      <p>Dear <strong id="client-name">Valued Client</strong>, please review the following terms before the inspection proceeds.</p>
+    </section>
+
+    <article class="section">
+      <h2 data-num="01">Site Readiness</h2>
+      <p>The <strong>hirer shall ensure</strong> that water and electricity connections are fully operational in the unit on the date of inspection. These are essential for completing all MEP and functional checks.</p>
+      <div class="callout">If the team arrives on-site and power or water is unavailable, the inspection will proceed on all accessible and possible items. <strong>No payment deduction</strong> shall be made for items that could not be tested due to utility unavailability.</div>
+    </article>
+
+    <article class="section">
+      <h2 data-num="02">Payment Terms</h2>
+      <p>The <strong>full inspection fee is due in advance</strong> prior to the inspection date. No inspection will be conducted without confirmed full payment. Payment confirms acceptance of these terms.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="03">Access Obligations</h2>
+      <p>The hirer is <strong>responsible for providing full and unobstructed access</strong> to all areas of the unit on the agreed inspection date and time. This includes but is not limited to: all rooms, balconies, roof terrace, utility rooms, garage, and roof access where applicable.</p>
+      <div class="callout">If the team arrives on-site and access is not provided or is significantly delayed, <strong>no refund shall be issued</strong>. A re-inspection will be treated as a new booking at the full fee.</div>
+    </article>
+
+    <article class="section">
+      <h2 data-num="04">Scope of Inspection</h2>
+      <p>The inspection covers <strong>all visible and accessible areas</strong> of the property. Concealed works, areas behind walls, above false ceilings, below raised floors, or underground elements are excluded unless specialist equipment is deployed by prior agreement.</p>
+      <p>If the unit is furnished or any areas are obstructed by the developer, contractor, or hirer, SnaggingPro <strong>shall not be held responsible</strong> for defects in those inaccessible areas.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="05">Liability & Best Effort</h2>
+      <p>SnaggingPro operates on a <strong>best-effort basis</strong>. While every reasonable measure is taken to identify defects, the hirer acknowledges that SnaggingPro cannot be held liable for any items that may have been missed. The report does not constitute a structural survey or engineering certification.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="06">Cancellation & Rescheduling</h2>
+      <p>The hirer must provide a minimum of <strong>24 hours' written notice</strong> to cancel or reschedule. Cancellations with less than 24 hours' notice incur a fee of <strong>50% of the agreed inspection fee</strong>. Same-day cancellations or no-shows are non-refundable.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="07">Re-inspection</h2>
+      <p>The initial inspection is the contracted scope. Any <strong>re-inspection</strong> conducted after developer or contractor rectification works is a separate service charged at an agreed fee. Re-inspection is recommended to verify all snags have been properly resolved.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="08">Report Validity & Ownership</h2>
+      <p>The report reflects the <strong>condition of the property at the time and date of inspection only</strong>. SnaggingPro is not responsible for defects that develop, are introduced, or become apparent after the inspection date.</p>
+      <p>The report is prepared exclusively for the hirer. SnaggingPro holds no liability if the report is shared with or relied upon by third parties.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="09">Photography</h2>
+      <p>By engaging SnaggingPro, the hirer <strong>consents to photographs</strong> being taken of all areas of the property for documentation and reporting purposes. Photos are used solely for the inspection report and are not shared publicly or with any third party without the hirer's consent.</p>
+    </article>
+
+    <article class="section">
+      <h2 data-num="10">Governing Law</h2>
+      <p>These terms shall be governed by the <strong>laws of the United Arab Emirates</strong>. Any disputes arising from this engagement shall be subject to the jurisdiction of the <strong>Dubai Courts</strong>. SnaggingPro shall not be liable for any delays or failures caused by circumstances beyond its reasonable control.</p>
+    </article>
+  </main>
+
+  <footer class="footer">
+    &copy; <span id="year"></span> <span>SnaggingPro</span> · Property condition assessment · UAE
+  </footer>
+
+  <script>
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var client = (params.get('client') || '').trim();
+      var job = (params.get('job') || '').trim();
+      var unit = (params.get('unit') || '').trim();
+
+      if (client) {
+        document.getElementById('client-name').textContent = client;
+        document.title = 'Terms of Engagement — ' + client;
+      }
+      var badge = document.getElementById('job-badge');
+      var label = 'Inspection agreement';
+      if (job) label += ' · ' + job;
+      if (unit) label += ' · Unit ' + unit;
+      badge.textContent = label;
+      document.getElementById('year').textContent = new Date().getFullYear();
+    })();
+  </script>
+</body>
+</html>
