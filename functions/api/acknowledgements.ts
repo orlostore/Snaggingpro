@@ -57,10 +57,19 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     const bytes = decodeBase64Png(body.signaturePngBase64);
     if (!bytes) return err(400, 'signaturePngBase64 must be a data:image/png;base64 URL.');
     if (bytes.byteLength > 512 * 1024) return err(400, 'Signature exceeds 512KB.');
-    signatureKey = `signatures/${id}.png`;
-    await env.PHOTOS.put(signatureKey, bytes, {
-      httpMetadata: { contentType: 'image/png' },
-    });
+    // R2 binding may not be configured yet — record the ack anyway so the
+    // signing event is still captured. The signature image is then missing
+    // from the audit trail until the binding is added.
+    if (env.PHOTOS) {
+      try {
+        signatureKey = `signatures/${id}.png`;
+        await env.PHOTOS.put(signatureKey, bytes, {
+          httpMetadata: { contentType: 'image/png' },
+        });
+      } catch {
+        signatureKey = null;
+      }
+    }
   }
 
   const cf = (request as unknown as { cf?: { country?: string; city?: string } }).cf ?? {};
