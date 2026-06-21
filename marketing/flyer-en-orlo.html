@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>SnaggingPro · Services & Pricing 2025</title>
+  <meta name="theme-color" content="#1e3a5f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand: #1e3a5f;
+      --brand-soft: rgba(30, 58, 95, 0.08);
+      --accent: #b8923a;
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --sunken: #ecedf0;
+      --text: #1a1b1e;
+      --muted: #4f535b;
+      --dim: #6b6f76;
+      --border: #e2e4e9;
+      --pass: #0f7a44;
+      --critical: #b6221b;
+    }
+    html, body {
+      background: #fff;
+      color: var(--text);
+      font-family: 'DM Sans', system-ui, sans-serif;
+      font-size: 9.4pt;
+      line-height: 1.4;
+    }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 11mm 11mm 9mm;
+      margin: 0 auto;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 5mm;
+    }
+
+    /* ===== Hero ===== */
+    .hero {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: end;
+      gap: 6mm;
+      padding-bottom: 4mm;
+      border-bottom: 2px solid var(--brand);
+    }
+    .brand-wordmark {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26pt;
+      letter-spacing: -0.015em;
+      line-height: 1;
+      color: var(--text);
+    }
+    .brand-wordmark em { color: var(--brand); font-style: normal; }
+    .brand-sub {
+      font-size: 7.5pt;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 1.5mm;
+    }
+    .meta {
+      text-align: right;
+      font-size: 8.5pt;
+    }
+    .meta-pill {
+      display: inline-block;
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+      padding: 1.5mm 3mm;
+      border-radius: 99px;
+      font-size: 7.5pt;
+      letter-spacing: 0.06em;
+    }
+    .meta-phone {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 13pt;
+      color: var(--brand);
+      margin-top: 2mm;
+      letter-spacing: -0.01em;
+    }
+    .meta-rep {
+      color: var(--muted);
+      font-size: 8pt;
+      margin-top: 0.5mm;
+    }
+
+    /* ===== Tagline ===== */
+    .tagline {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 4mm;
+      align-items: center;
+    }
+    .tagline h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: 22pt;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      color: var(--text);
+    }
+    .tagline h1 em { color: var(--brand); font-style: normal; }
+    .tagline p {
+      color: var(--muted);
+      font-size: 9.5pt;
+      margin-top: 1mm;
+    }
+    .badge-24h {
+      background: var(--accent);
+      color: white;
+      padding: 3mm 5mm;
+      border-radius: 6mm;
+      text-align: center;
+      font-weight: 700;
+      line-height: 1.15;
+      box-shadow: 0 2px 6px rgba(184, 146, 58, 0.3);
+    }
+    .badge-24h .big {
+      font-family: 'Syne', sans-serif;
+      font-size: 13pt;
+      letter-spacing: 0.01em;
+      display: block;
+    }
+    .badge-24h .small {
+      font-size: 7pt;
+      letter-spacing: 0.1em;
+      font-weight: 600;
+      opacity: 0.92;
+      display: block;
+      margin-top: 0.5mm;
+    }
+
+    /* ===== Section heads ===== */
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4mm;
+      margin-top: 1mm;
+    }
+    .section-head h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: 11.5pt;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--brand);
+    }
+    .section-head .note {
+      font-size: 8pt;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+    }
+
+    /* ===== Disciplines grid ===== */
+    .disc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+    }
+    .disc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 2.5px solid var(--brand);
+      border-radius: 2.5mm;
+      padding: 3mm 3.5mm;
+    }
+    .disc h3 {
+      font-family: 'Syne', sans-serif;
+      font-size: 9.5pt;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.15;
+    }
+    .disc .scope {
+      font-size: 6.8pt;
+      letter-spacing: 0.06em;
+      color: var(--dim);
+      text-transform: uppercase;
+      font-weight: 600;
+      margin: 1mm 0 2mm;
+    }
+    .disc ul {
+      list-style: none;
+      font-size: 7.6pt;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    .disc li {
+      padding-left: 3mm;
+      position: relative;
+      margin-bottom: 0.6mm;
+    }
+    .disc li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 1.4mm;
+      width: 1.4mm;
+      height: 1.4mm;
+      background: var(--brand);
+      border-radius: 50%;
+    }
+
+    /* ===== Pricing ===== */
+    .pricing {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3mm;
+      padding: 4mm;
+    }
+    .price-row {
+      display: grid;
+      grid-template-columns: auto repeat(5, 1fr);
+      align-items: center;
+      gap: 3mm;
+    }
+    .price-row + .price-row { margin-top: 3mm; padding-top: 3mm; border-top: 1px dashed var(--border); }
+    .price-label {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      color: var(--brand);
+      font-size: 10pt;
+      line-height: 1.1;
+    }
+    .price-label .sub { display: block; font-family: 'DM Sans', sans-serif; font-size: 7pt; color: var(--dim); margin-top: 0.5mm; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; }
+    .price-cell {
+      background: var(--sunken);
+      border-radius: 2mm;
+      padding: 2.5mm 2mm;
+      text-align: center;
+    }
+    .price-cell .br {
+      font-size: 7pt;
+      color: var(--dim);
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+    .price-cell .amount {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 11pt;
+      color: var(--text);
+      margin-top: 0.5mm;
+    }
+    .price-cell .size {
+      font-size: 6.8pt;
+      color: var(--muted);
+      margin-top: 0.5mm;
+    }
+    .price-cell--villas { grid-column: span 1; }
+    .villa-row .price-cell { background: var(--brand-soft); }
+    .villa-row .price-row { grid-template-columns: auto repeat(4, 1fr); }
+    .overage {
+      margin-top: 3mm;
+      padding: 2.5mm 3mm;
+      background: rgba(184, 146, 58, 0.08);
+      border-left: 2px solid var(--accent);
+      border-radius: 2mm;
+      font-size: 8pt;
+      color: var(--muted);
+    }
+    .overage strong { color: var(--text); }
+
+    /* ===== Deliverables ===== */
+    .deliverables {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+    }
+    .deliv {
+      background: var(--brand);
+      color: white;
+      border-radius: 2.5mm;
+      padding: 3.5mm;
+    }
+    .deliv h4 {
+      font-family: 'Syne', sans-serif;
+      font-size: 9.5pt;
+      font-weight: 700;
+      line-height: 1.15;
+    }
+    .deliv p {
+      font-size: 7.8pt;
+      opacity: 0.85;
+      margin-top: 1mm;
+      line-height: 1.4;
+    }
+
+    /* ===== Footer ===== */
+    .footer {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 4mm;
+      padding-top: 3mm;
+      border-top: 1px solid var(--border);
+      font-size: 8pt;
+      color: var(--muted);
+    }
+    .cta {
+      text-align: right;
+    }
+    .cta-line {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: 12pt;
+      color: var(--brand);
+      letter-spacing: -0.005em;
+    }
+    .cta-rep {
+      color: var(--muted);
+      font-size: 8pt;
+      margin-top: 0.5mm;
+    }
+
+    @page { size: A4; margin: 0; }
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <header class="hero">
+      <div>
+        <div class="brand-wordmark">Snagging<em>Pro</em></div>
+        <div class="brand-sub">Property condition assessment</div>
+      </div>
+      <div class="meta">
+        <div class="meta-pill">SERVICES &amp; PRICING · 2025</div>
+        <div class="meta-phone">+971 55 547 7206</div>
+        <div class="meta-rep">Orlo · Sales</div>
+      </div>
+    </header>
+
+    <section class="tagline">
+      <div>
+        <h1>Spot every <em>defect</em><br/>before you sign.</h1>
+        <p>Independent UAE snagging inspections · Apartments · Villas · Townhouses</p>
+      </div>
+      <div class="badge-24h">
+        <span class="big">24-HOUR</span>
+        <span class="small">PDF REPORT</span>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <h2>Services we perform</h2>
+      <span class="note">8 inspection disciplines · room-by-room</span>
+    </div>
+    <section class="disc-grid">
+      <div class="disc">
+        <h3>Civil &amp; finishes</h3>
+        <div class="scope">APT · TH · VILLA</div>
+        <ul>
+          <li>Walls, ceilings, tiles, lippage</li>
+          <li>Doors, windows, joinery, hinges</li>
+          <li>Paint, sealants, glazing, skirting</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>Electrical &amp; DB panel</h3>
+        <div class="scope">APT · TH · VILLA</div>
+        <ul>
+          <li>DB panel, MCB labels, RCD test</li>
+          <li>Polarity, earth bonding, sockets</li>
+          <li>Lighting, smoke detectors, isolators</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>HVAC</h3>
+        <div class="scope">APT · TH · VILLA</div>
+        <ul>
+          <li>FCUs, airflow, drain trays</li>
+          <li>Thermostat, zoning, comfort cooling</li>
+          <li>Filters, grilles, AHU access</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>Plumbing &amp; sanitary</h3>
+        <div class="scope">APT · TH · VILLA</div>
+        <ul>
+          <li>Hot/cold pressure, leaks, drainage</li>
+          <li>Mixers, toilets, water heater</li>
+          <li>Kitchen &amp; laundry connections</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>Home automation</h3>
+        <div class="scope">APT · TH · VILLA</div>
+        <ul>
+          <li>Smart switches, panels, scenes</li>
+          <li>AC control, intercom, dimming</li>
+          <li>Curtain motors, sensors, doorbell</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>External &amp; façade</h3>
+        <div class="scope">TH · VILLA ONLY</div>
+        <ul>
+          <li>Cladding, paint, weatherproofing</li>
+          <li>Window seals, flashings, glazing</li>
+          <li>Driveway, external steps, mailbox</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>Landscape &amp; pool</h3>
+        <div class="scope">TH · VILLA ONLY</div>
+        <ul>
+          <li>Irrigation, sprinkler zones, timers</li>
+          <li>Pool tile, coping, light, skimmer</li>
+          <li>Pump room, filtration, outdoor lights</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>Garage, stairs &amp; roof</h3>
+        <div class="scope">TH · VILLA ONLY</div>
+        <ul>
+          <li>Roller door, remote, mechanism</li>
+          <li>Handrails, balustrades, treads</li>
+          <li>Roof waterproofing, drainage, hatch</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <h2>Service pricing</h2>
+      <span class="note">all-inclusive · no hidden fees · AED</span>
+    </div>
+    <section class="pricing">
+      <div class="price-row">
+        <div class="price-label">Apartments<span class="sub">5 sizes</span></div>
+        <div class="price-cell"><div class="br">Studio</div><div class="amount">AED 1,000</div><div class="size">≤ 1,000 sqft</div></div>
+        <div class="price-cell"><div class="br">1 BR</div><div class="amount">AED 1,000</div><div class="size">≤ 1,000 sqft</div></div>
+        <div class="price-cell"><div class="br">2 BR</div><div class="amount">AED 1,500</div><div class="size">≤ 1,500 sqft</div></div>
+        <div class="price-cell"><div class="br">3 BR</div><div class="amount">AED 1,700</div><div class="size">≤ 1,700 sqft</div></div>
+        <div class="price-cell"><div class="br">4 BR</div><div class="amount">AED 1,900</div><div class="size">≤ 1,900 sqft</div></div>
+      </div>
+      <div class="villa-row">
+        <div class="price-row" style="grid-template-columns: auto repeat(4, 1fr)">
+          <div class="price-label">Villas &amp; TH<span class="sub">4 sizes</span></div>
+          <div class="price-cell"><div class="br">3 BR</div><div class="amount">AED 2,500</div><div class="size">≤ 2,200 sqft</div></div>
+          <div class="price-cell"><div class="br">4 BR</div><div class="amount">AED 2,800</div><div class="size">≤ 2,400 sqft</div></div>
+          <div class="price-cell"><div class="br">5 BR</div><div class="amount">AED 3,400</div><div class="size">≤ 3,000 sqft</div></div>
+          <div class="price-cell"><div class="br">6 BR</div><div class="amount">AED 3,625</div><div class="size">≤ 3,250 sqft</div></div>
+        </div>
+      </div>
+      <div class="overage">
+        <strong>Overage:</strong> Areas above the stated base are charged at AED 1 per additional sqft. Final fee confirmed before inspection from the BUA you provide.
+      </div>
+    </section>
+
+    <div class="section-head">
+      <h2>What you receive</h2>
+      <span class="note">delivered within 24 hours of inspection</span>
+    </div>
+    <section class="deliverables">
+      <div class="deliv">
+        <h4>Professional PDF</h4>
+        <p>Developer-ready report formatted for handover submission.</p>
+      </div>
+      <div class="deliv">
+        <h4>Photo evidence</h4>
+        <p>Annotated, room-by-room photos for every snag.</p>
+      </div>
+      <div class="deliv">
+        <h4>Severity grading</h4>
+        <p>Critical · Major · Minor classification on every item.</p>
+      </div>
+      <div class="deliv">
+        <h4>Snag ID system</h4>
+        <p>Every defect tracked with a unique ID for follow-up.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div>
+        Apartments · Villas · Townhouses · UAE<br/>
+        Pricing valid 2025 · all prices in AED
+      </div>
+      <div class="cta">
+        <div>Book your inspection</div>
+        <div class="cta-line">+971 55 547 7206</div>
+        <div class="cta-rep">Orlo · Sales</div>
+      </div>
+    </footer>
+
+  </main>
+</body>
+</html>
