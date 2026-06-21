@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <title>SnaggingPro · الخدمات والأسعار 2025</title>
+  <meta name="theme-color" content="#1e3a5f" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --brand: #1e3a5f;
+      --brand-soft: rgba(30, 58, 95, 0.08);
+      --accent: #b8923a;
+      --bg: #f7f7f8;
+      --card: #ffffff;
+      --sunken: #ecedf0;
+      --text: #1a1b1e;
+      --muted: #4f535b;
+      --dim: #6b6f76;
+      --border: #e2e4e9;
+    }
+    html, body {
+      background: #fff;
+      color: var(--text);
+      font-family: 'Cairo', system-ui, sans-serif;
+      font-size: 9.4pt;
+      line-height: 1.5;
+    }
+    .page {
+      width: 210mm;
+      min-height: 297mm;
+      padding: 11mm 11mm 9mm;
+      margin: 0 auto;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      gap: 5mm;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: end;
+      gap: 6mm;
+      padding-bottom: 4mm;
+      border-bottom: 2px solid var(--brand);
+    }
+    .brand-wordmark {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 26pt;
+      letter-spacing: -0.015em;
+      line-height: 1;
+      color: var(--text);
+      direction: ltr;
+    }
+    .brand-wordmark em { color: var(--brand); font-style: normal; }
+    .brand-sub {
+      font-size: 7.5pt;
+      letter-spacing: 0.04em;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 1.5mm;
+    }
+    .meta { text-align: left; font-size: 8.5pt; }
+    .meta-pill {
+      display: inline-block;
+      background: var(--brand);
+      color: white;
+      font-weight: 700;
+      padding: 1.5mm 3mm;
+      border-radius: 99px;
+      font-size: 7.5pt;
+      letter-spacing: 0.04em;
+    }
+    .meta-phone {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 700;
+      font-size: 13pt;
+      color: var(--brand);
+      margin-top: 2mm;
+      letter-spacing: 0;
+      direction: ltr;
+    }
+    .meta-rep {
+      color: var(--muted);
+      font-size: 8pt;
+      margin-top: 0.5mm;
+    }
+
+    .tagline {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 4mm;
+      align-items: center;
+    }
+    .tagline h1 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 22pt;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1.25;
+      color: var(--text);
+    }
+    .tagline h1 em { color: var(--brand); font-style: normal; }
+    .tagline p {
+      color: var(--muted);
+      font-size: 9.5pt;
+      margin-top: 1mm;
+    }
+    .badge-24h {
+      background: var(--accent);
+      color: white;
+      padding: 3mm 5mm;
+      border-radius: 6mm;
+      text-align: center;
+      font-weight: 800;
+      line-height: 1.2;
+      box-shadow: 0 2px 6px rgba(184, 146, 58, 0.3);
+    }
+    .badge-24h .big {
+      font-family: 'Cairo', sans-serif;
+      font-size: 11.5pt;
+      display: block;
+    }
+    .badge-24h .small {
+      font-size: 7.5pt;
+      font-weight: 600;
+      opacity: 0.92;
+      display: block;
+      margin-top: 0.5mm;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 4mm;
+      margin-top: 1mm;
+    }
+    .section-head h2 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 11.5pt;
+      font-weight: 800;
+      color: var(--brand);
+    }
+    .section-head .note {
+      font-size: 8pt;
+      color: var(--muted);
+    }
+
+    .disc-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+    }
+    .disc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-right: 2.5px solid var(--brand);
+      border-radius: 2.5mm;
+      padding: 3mm 3.5mm;
+    }
+    .disc h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 9.8pt;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    .disc .scope {
+      font-size: 7pt;
+      letter-spacing: 0.04em;
+      color: var(--dim);
+      font-weight: 600;
+      margin: 1mm 0 2mm;
+    }
+    .disc ul {
+      list-style: none;
+      font-size: 7.8pt;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .disc li {
+      padding-right: 3mm;
+      position: relative;
+      margin-bottom: 0.6mm;
+    }
+    .disc li::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 1.6mm;
+      width: 1.4mm;
+      height: 1.4mm;
+      background: var(--brand);
+      border-radius: 50%;
+    }
+
+    .pricing {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 3mm;
+      padding: 4mm;
+    }
+    .price-row {
+      display: grid;
+      grid-template-columns: auto repeat(5, 1fr);
+      align-items: center;
+      gap: 3mm;
+    }
+    .price-row + .price-row { margin-top: 3mm; padding-top: 3mm; border-top: 1px dashed var(--border); }
+    .villa-row .price-row { grid-template-columns: auto repeat(4, 1fr); }
+    .price-label {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 800;
+      color: var(--brand);
+      font-size: 10pt;
+      line-height: 1.15;
+    }
+    .price-label .sub { display: block; font-size: 7pt; color: var(--dim); margin-top: 0.5mm; font-weight: 500; }
+    .price-cell {
+      background: var(--sunken);
+      border-radius: 2mm;
+      padding: 2.5mm 2mm;
+      text-align: center;
+    }
+    .price-cell .br {
+      font-size: 7.5pt;
+      color: var(--dim);
+      font-weight: 600;
+    }
+    .price-cell .amount {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 800;
+      font-size: 11pt;
+      color: var(--text);
+      margin-top: 0.5mm;
+      direction: ltr;
+    }
+    .price-cell .size {
+      font-size: 7pt;
+      color: var(--muted);
+      margin-top: 0.5mm;
+      direction: ltr;
+    }
+    .villa-row .price-cell { background: var(--brand-soft); }
+    .overage {
+      margin-top: 3mm;
+      padding: 2.5mm 3mm;
+      background: rgba(184, 146, 58, 0.08);
+      border-right: 2px solid var(--accent);
+      border-radius: 2mm;
+      font-size: 8.2pt;
+      color: var(--muted);
+    }
+    .overage strong { color: var(--text); }
+
+    .deliverables {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 3mm;
+    }
+    .deliv {
+      background: var(--brand);
+      color: white;
+      border-radius: 2.5mm;
+      padding: 3.5mm;
+    }
+    .deliv h4 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 9.8pt;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+    .deliv p {
+      font-size: 8pt;
+      opacity: 0.9;
+      margin-top: 1mm;
+      line-height: 1.5;
+    }
+
+    .footer {
+      margin-top: auto;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 4mm;
+      padding-top: 3mm;
+      border-top: 1px solid var(--border);
+      font-size: 8pt;
+      color: var(--muted);
+    }
+    .cta { text-align: left; }
+    .cta-line {
+      font-family: 'Cairo', sans-serif;
+      font-weight: 800;
+      font-size: 12pt;
+      color: var(--brand);
+      direction: ltr;
+    }
+    .cta-rep {
+      color: var(--muted);
+      font-size: 8pt;
+      margin-top: 0.5mm;
+    }
+
+    @page { size: A4; margin: 0; }
+    @media print {
+      body { background: white; }
+      .page { box-shadow: none; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+
+    <header class="hero">
+      <div class="meta">
+        <div class="meta-pill">الخدمات والأسعار · 2025</div>
+        <div class="meta-phone">__PHONE__</div>
+        <div class="meta-rep">__REP_LABEL__</div>
+      </div>
+      <div style="text-align: left;">
+        <div class="brand-wordmark">Snagging<em>Pro</em></div>
+        <div class="brand-sub">تقييم حالة العقار</div>
+      </div>
+    </header>
+
+    <section class="tagline">
+      <div class="badge-24h">
+        <span class="big">24 ساعة</span>
+        <span class="small">تقرير PDF</span>
+      </div>
+      <div>
+        <h1>اكتشف كل <em>عيب</em><br/>قبل أن توقّع.</h1>
+        <p>تفتيش مستقل للعقارات في الإمارات · شقق · فلل · تاون هاوس</p>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <span class="note">8 تخصصات للفحص · غرفة بغرفة</span>
+      <h2>الخدمات التي نقدّمها</h2>
+    </div>
+    <section class="disc-grid">
+      <div class="disc">
+        <h3>الأعمال المدنية والتشطيبات</h3>
+        <div class="scope">شقق · تاون هاوس · فلل</div>
+        <ul>
+          <li>الجدران والأسقف والبلاط والاستواء</li>
+          <li>الأبواب والنوافذ والأعمال الخشبية والمفصلات</li>
+          <li>الدهان والمواد العازلة والزجاج والوزرات</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>الكهرباء ولوحة التوزيع</h3>
+        <div class="scope">شقق · تاون هاوس · فلل</div>
+        <ul>
+          <li>لوحة التوزيع والقواطع واختبار RCD</li>
+          <li>القطبية والتأريض والمقابس</li>
+          <li>الإنارة وكواشف الدخان والعوازل</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>التكييف والتهوية</h3>
+        <div class="scope">شقق · تاون هاوس · فلل</div>
+        <ul>
+          <li>وحدات التكييف وتدفق الهواء وصواني التصريف</li>
+          <li>الثرموستات والتقسيم وكفاءة التبريد</li>
+          <li>الفلاتر والشبكات والوصول لوحدة AHU</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>السباكة والصرف الصحي</h3>
+        <div class="scope">شقق · تاون هاوس · فلل</div>
+        <ul>
+          <li>ضغط الماء البارد والساخن والتسريبات</li>
+          <li>الخلاطات والمراحيض وسخان الماء</li>
+          <li>توصيلات المطبخ وغرفة الغسيل</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>الأتمتة المنزلية</h3>
+        <div class="scope">شقق · تاون هاوس · فلل</div>
+        <ul>
+          <li>المفاتيح الذكية واللوحات والمشاهد</li>
+          <li>التحكم بالتكييف والإنتركم والإضاءة</li>
+          <li>محركات الستائر والحساسات وجرس الباب</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>الواجهة والمظهر الخارجي</h3>
+        <div class="scope">تاون هاوس · فلل فقط</div>
+        <ul>
+          <li>الكسوة والدهان والعزل من العوامل الجوية</li>
+          <li>عوازل النوافذ والزجاج والصفائح</li>
+          <li>الممرات والدرج الخارجي وصندوق البريد</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>تنسيق الحدائق والمسبح</h3>
+        <div class="scope">تاون هاوس · فلل فقط</div>
+        <ul>
+          <li>الري والرشاشات والمؤقتات</li>
+          <li>بلاط المسبح والإنارة والقشّاط</li>
+          <li>غرفة المضخات والفلترة والإنارة الخارجية</li>
+        </ul>
+      </div>
+      <div class="disc">
+        <h3>الجراج والسلالم والسطح</h3>
+        <div class="scope">تاون هاوس · فلل فقط</div>
+        <ul>
+          <li>باب الجراج الرولّر والريموت والآلية</li>
+          <li>الدرابزين والسلالم والدرجات</li>
+          <li>عزل السطح والصرف وفتحة الوصول</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="section-head">
+      <span class="note">شامل · بدون رسوم خفية · بالدرهم الإماراتي</span>
+      <h2>أسعار الخدمات</h2>
+    </div>
+    <section class="pricing">
+      <div class="price-row">
+        <div class="price-label">الشقق<span class="sub">5 مقاسات</span></div>
+        <div class="price-cell"><div class="br">استوديو</div><div class="amount">AED 1,000</div><div class="size">≤ 1,000 sqft</div></div>
+        <div class="price-cell"><div class="br">غرفة واحدة</div><div class="amount">AED 1,000</div><div class="size">≤ 1,000 sqft</div></div>
+        <div class="price-cell"><div class="br">غرفتان</div><div class="amount">AED 1,500</div><div class="size">≤ 1,500 sqft</div></div>
+        <div class="price-cell"><div class="br">3 غرف</div><div class="amount">AED 1,700</div><div class="size">≤ 1,700 sqft</div></div>
+        <div class="price-cell"><div class="br">4 غرف</div><div class="amount">AED 1,900</div><div class="size">≤ 1,900 sqft</div></div>
+      </div>
+      <div class="villa-row">
+        <div class="price-row" style="grid-template-columns: auto repeat(4, 1fr)">
+          <div class="price-label">الفلل والتاون هاوس<span class="sub">4 مقاسات</span></div>
+          <div class="price-cell"><div class="br">3 غرف</div><div class="amount">AED 2,500</div><div class="size">≤ 2,200 sqft</div></div>
+          <div class="price-cell"><div class="br">4 غرف</div><div class="amount">AED 2,800</div><div class="size">≤ 2,400 sqft</div></div>
+          <div class="price-cell"><div class="br">5 غرف</div><div class="amount">AED 3,400</div><div class="size">≤ 3,000 sqft</div></div>
+          <div class="price-cell"><div class="br">6 غرف</div><div class="amount">AED 3,625</div><div class="size">≤ 3,250 sqft</div></div>
+        </div>
+      </div>
+      <div class="overage">
+        <strong>الزيادة:</strong> المساحات الإضافية تُحتسب بـ <span style="direction:ltr;display:inline-block">AED 1</span> لكل قدم مربع إضافي. يتم تأكيد السعر النهائي قبل الفحص بناءً على المساحة المبنية التي تقدّمها.
+      </div>
+    </section>
+
+    <div class="section-head">
+      <span class="note">يُسلَّم خلال 24 ساعة من الفحص</span>
+      <h2>ما تحصل عليه</h2>
+    </div>
+    <section class="deliverables">
+      <div class="deliv">
+        <h4>تقرير PDF احترافي</h4>
+        <p>جاهز لتقديمه للمطوّر بصيغة معتمدة للتسليم.</p>
+      </div>
+      <div class="deliv">
+        <h4>إثبات بالصور</h4>
+        <p>صور موثّقة ومشروحة لكل عيب، غرفة بغرفة.</p>
+      </div>
+      <div class="deliv">
+        <h4>تصنيف الخطورة</h4>
+        <p>حرجة · رئيسية · ثانوية لكل عيب يتم رصده.</p>
+      </div>
+      <div class="deliv">
+        <h4>نظام ترقيم العيوب</h4>
+        <p>كل عيب يُسجّل برقم فريد لتتبع المعالجة.</p>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="cta">
+        <div>احجز الفحص الآن</div>
+        <div class="cta-line">__PHONE__</div>
+        <div class="cta-rep">__REP_LABEL__</div>
+      </div>
+      <div style="text-align: left">
+        شقق · فلل · تاون هاوس · الإمارات<br/>
+        الأسعار سارية لعام 2025 · جميع الأسعار بالدرهم الإماراتي
+      </div>
+    </footer>
+
+  </main>
+</body>
+</html>
