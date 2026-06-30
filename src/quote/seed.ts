@@ -1,0 +1,52 @@
+/**
+ * One-shot seed of quotations that were issued BEFORE the Quotations
+ * library save logic was deployed. Runs once per device (gated by a
+ * localStorage flag) so re-loads don't keep re-inserting.
+ */
+
+import { quotesRepo } from '@/storage/quotes';
+import type { QuoteRecord } from './types';
+
+const SEED_FLAG = 'sp_seed_qtn_v1';
+
+const BACKFILL: QuoteRecord[] = [
+  {
+    quoteRef: 'SP-QTN-260630-027',
+    clientName: 'Pawan Kumar',
+    clientPhone: '+971521231847',
+    clientEmail: 'anthony.zhotso27@gmail.com',
+    developer: '',
+    community: '',
+    unit: 'Private',
+    floor: '',
+    propType: 'apartment',
+    bedrooms: 2,
+    bua: 1500,
+    priceOverride: 0,
+    total: 1500,
+    jobRef: 'SP-260630-001',
+    createdAt: new Date('2026-06-30T10:00:00Z').getTime(),
+    status: 'issued',
+  },
+];
+
+export async function seedMissingQuotes(): Promise<void> {
+  try {
+    if (localStorage.getItem(SEED_FLAG)) return;
+  } catch {
+    return;
+  }
+  for (const q of BACKFILL) {
+    try {
+      const existing = await quotesRepo.get(q.quoteRef);
+      if (!existing) await quotesRepo.save(q);
+    } catch {
+      /* best effort — failure here shouldn't block app startup */
+    }
+  }
+  try {
+    localStorage.setItem(SEED_FLAG, '1');
+  } catch {
+    /* ignore */
+  }
+}

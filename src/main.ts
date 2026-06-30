@@ -16,6 +16,7 @@ import { auth } from '@/lib/auth';
 import { currentRoute, go, startRouter, subscribe, type Route, type RouteName } from '@/lib/router';
 import { DISCIPLINES, type Discipline } from '@/domain/disciplines';
 import { startSyncEngine } from '@/sync/syncEngine';
+import { seedMissingQuotes } from '@/quote/seed';
 
 import { Splash } from '@/screens/Splash';
 import { PinGate } from '@/screens/PinGate';
@@ -113,3 +114,4 @@ startRouter();
 subscribe(dispatch);
 dispatch(currentRoute());
 startSyncEngine();
+void seedMissingQuotes();
