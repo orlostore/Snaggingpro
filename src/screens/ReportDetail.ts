@@ -174,6 +174,19 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
             <p>Snags: <strong>${snags.length}</strong> · Critical:
               <strong>${snags.filter((s) => s.severity === 'critical').length}</strong>
             </p>
+            ${report.job.sourceQuoteRef
+              ? html`<p class="meta">
+                  From quote
+                  <a
+                    href="#/quotations"
+                    @click=${(e: Event) => {
+                      e.preventDefault();
+                      go('quotations');
+                    }}
+                    ><strong>${report.job.sourceQuoteRef}</strong></a
+                  >
+                </p>`
+              : null}
           </div>
 
           <div class="report-detail__actions">

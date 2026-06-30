@@ -68,6 +68,8 @@ export const JobZ = z.object({
   reportType: ReportTypeZ.default('original'),
   parentReportId: z.string().nullable().default(null),
   status: z.enum(['draft', 'completed']).default('draft'),
+  /** Quote ref this inspection was started from, if any. */
+  sourceQuoteRef: z.string().nullable().default(null),
 });
 
 export const ClientZ = z.object({

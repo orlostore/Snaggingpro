@@ -32,6 +32,7 @@ export function emptyState(input: NewInspectionInput): State {
       reportType: 'original',
       parentReportId: null,
       status: 'draft',
+      sourceQuoteRef: null,
     },
     client: { name: '', phone: '', email: '' },
     property: {
@@ -126,6 +127,7 @@ export function cloneAsFollowUp(source: State, now: Date, jobSeq: number): State
     reportType: 'follow-up',
     parentReportId: source.job.ref,
     status: 'draft',
+    sourceQuoteRef: null,
   };
   // Leave rectification undefined on every observation. The Room screen
   // treats absence as "not yet reviewed" so we can gate the closing
