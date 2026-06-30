@@ -160,25 +160,27 @@ export function generateQuotationHtml(q: QuoteInput): string {
       </div>
     </header>
 
-    <section class="grid-2">
+    <section class="${q.developer || q.community || q.unit || q.bua > 0 ? 'grid-2' : ''}">
       <div class="card">
         <div class="section-head">Prepared for</div>
         <dl class="kv">
           <dt>Name</dt><dd>${h(q.clientName || '—')}</dd>
           ${q.clientPhone ? `<dt>Phone</dt><dd>${h(q.clientPhone)}</dd>` : ''}
           ${q.clientEmail ? `<dt>Email</dt><dd>${h(q.clientEmail)}</dd>` : ''}
+          <dt>Property</dt><dd>${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` · ${q.bedrooms} BR` : ''}</dd>
         </dl>
       </div>
-      <div class="card">
-        <div class="section-head">Property</div>
-        <dl class="kv">
-          <dt>Type</dt><dd>${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` · ${q.bedrooms} BR` : ''}</dd>
-          ${q.developer ? `<dt>Developer</dt><dd>${h(q.developer)}</dd>` : ''}
-          ${q.community ? `<dt>Community</dt><dd>${h(q.community)}</dd>` : ''}
-          ${q.unit ? `<dt>Unit</dt><dd>${h(q.unit)}${q.floor ? ` · Floor ${h(q.floor)}` : ''}</dd>` : ''}
-          ${q.bua > 0 ? `<dt>Built-up area</dt><dd>${q.bua.toLocaleString('en-US')} sqft</dd>` : ''}
-        </dl>
-      </div>
+      ${q.developer || q.community || q.unit || q.bua > 0
+        ? `<div class="card">
+            <div class="section-head">Property</div>
+            <dl class="kv">
+              ${q.developer ? `<dt>Developer</dt><dd>${h(q.developer)}</dd>` : ''}
+              ${q.community ? `<dt>Community</dt><dd>${h(q.community)}</dd>` : ''}
+              ${q.unit ? `<dt>Unit</dt><dd>${h(q.unit)}${q.floor ? ` · Floor ${h(q.floor)}` : ''}</dd>` : ''}
+              ${q.bua > 0 ? `<dt>Built-up area</dt><dd>${q.bua.toLocaleString('en-US')} sqft</dd>` : ''}
+            </dl>
+          </div>`
+        : ''}
     </section>
 
     <section class="card">
