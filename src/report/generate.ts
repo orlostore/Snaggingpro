@@ -43,15 +43,16 @@ const BRAND_CSS = `
   .kpi__n { font-size: 24px; font-weight: 700; color: var(--brand); }
   .kpi__l { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
   .cover-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 24px; }
-  .cover-photo { background: var(--light); aspect-ratio: 4/3; border-radius: 8px; overflow: hidden; }
-  .cover-photo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .cover-photo { background: #ecedf0; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden; }
+  .cover-photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .snag { border-left: 4px solid var(--brand); padding: 12px 16px; margin: 12px 0; background: #fafafa; page-break-inside: avoid; }
   .snag--critical { border-left-color: var(--critical); }
   .snag--major { border-left-color: var(--major); }
   .snag__head { display: flex; justify-content: space-between; font-size: 12px; color: var(--grey); }
   .snag__title { font-weight: 600; margin: 4px 0; }
   .snag__photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; }
-  .snag__photos img { width: 100%; height: 160px; object-fit: cover; border-radius: 6px; border: 1px solid #ddd; }
+  .snag__photo-cell { background: #ecedf0; aspect-ratio: 3/4; border-radius: 6px; overflow: hidden; border: 1px solid #ddd; }
+  .snag__photo-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
   .pill { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 10px; letter-spacing: 1px; text-transform: uppercase; color: white; background: var(--minor); }
   .pill--critical { background: var(--critical); }
   .pill--major { background: var(--major); }
@@ -319,7 +320,9 @@ function photoGrid(ids: string[], photos: Map<string, string>, label: string): s
   const imgs = ids
     .map((pid) => {
       const url = photos.get(pid);
-      return url ? `<img src="${url}" alt="${h(label)}" />` : '';
+      return url
+        ? `<div class="snag__photo-cell"><img src="${url}" alt="${h(label)}" /></div>`
+        : '';
     })
     .join('');
   return `<div class="snag__photos">${imgs}</div>`;
