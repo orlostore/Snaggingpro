@@ -50,42 +50,60 @@ const OVERLAY_CHROME_CSS = `
 .quote-overlay__bar {
   flex-shrink: 0;
   background: #1e3a5f; color: white;
-  display: flex; align-items: center; gap: 12px;
   padding: 10px 14px;
   padding-top: calc(10px + env(safe-area-inset-top, 0px));
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  display: grid;
+  grid-template-columns: auto 1fr auto auto auto;
+  grid-template-areas: "close title start wa pdf";
+  align-items: center;
+  column-gap: 8px;
+  row-gap: 8px;
 }
 .quote-overlay__close {
+  grid-area: close;
   background: rgba(255,255,255,0.12); color: white;
-  border: none; padding: 8px; border-radius: 99px;
+  border: none; width: 36px; height: 36px; border-radius: 99px;
   display: inline-flex; align-items: center; justify-content: center;
   cursor: pointer;
+  flex-shrink: 0;
 }
 .quote-overlay__close:hover { background: rgba(255,255,255,0.22); }
 .quote-overlay__title {
-  flex: 1; font-weight: 600; font-size: 14px;
-  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  grid-area: title;
+  min-width: 0;
+  font-weight: 600; font-size: 14px;
+  display: flex; align-items: center; gap: 8px;
+  overflow: hidden;
+}
+.quote-overlay__title-ref {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
 }
 .quote-overlay__pill {
+  flex-shrink: 0;
   font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
   padding: 3px 9px; border-radius: 99px;
   display: inline-flex; align-items: center;
 }
 .quote-overlay__pill--ok { background: rgba(255,255,255,0.92); color: #0f7a44; }
 .quote-overlay__pill--pending { background: rgba(255,255,255,0.18); color: #ffffff; }
-.quote-overlay__actions { display: flex; gap: 8px; }
 .quote-overlay__btn {
   background: white; color: #1e3a5f;
   border: none; padding: 8px 14px; border-radius: 99px;
-  display: inline-flex; align-items: center; gap: 6px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
   font-weight: 600; font-size: 13px; font-family: inherit;
-  cursor: pointer;
+  cursor: pointer; white-space: nowrap;
+  min-height: 36px;
 }
-.quote-overlay__btn--wa { background: #25d366; color: white; }
-.quote-overlay__btn--wa:hover { background: #1ea952; }
-.quote-overlay__btn--start { background: #b8923a; color: white; }
+.quote-overlay__btn--start { grid-area: start; background: #b8923a; color: white; }
+.quote-overlay__btn--wa    { grid-area: wa; background: #25d366; color: white; }
+.quote-overlay__btn--pdf   { grid-area: pdf; }
 .quote-overlay__btn--start:hover { background: #9a7a30; }
-.quote-overlay__btn--pdf:hover { background: #f1f1f2; }
+.quote-overlay__btn--wa:hover    { background: #1ea952; }
+.quote-overlay__btn--pdf:hover   { background: #f1f1f2; }
 .quote-overlay__btn:disabled { opacity: 0.55; cursor: wait; }
 .quote-overlay__scroll {
   flex: 1; overflow: auto; padding: 16px;
@@ -105,14 +123,38 @@ const OVERLAY_CHROME_CSS = `
   display: flex; flex-direction: column; gap: 6mm;
   background: white;
 }
-@media (max-width: 900px) {
+
+@media (max-width: 700px) {
+  /* Two-row mobile layout: close+title on top, three full-width
+     action buttons below. Title fits cleanly with the pill inline. */
+  .quote-overlay__bar {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "close title"
+      "start start"
+      "wa wa"
+      "pdf pdf";
+    padding: 8px 10px;
+    padding-top: calc(8px + env(safe-area-inset-top, 0px));
+  }
+  .quote-overlay__bar {
+    grid-template-areas:
+      "close title"
+      "actions actions";
+  }
+  .quote-overlay__actions {
+    grid-area: actions;
+    display: flex; gap: 6px;
+  }
+  .quote-overlay__btn { flex: 1; font-size: 12px; padding: 9px 10px; }
+  .quote-overlay__btn--start,
+  .quote-overlay__btn--wa,
+  .quote-overlay__btn--pdf { grid-area: unset; }
+  .quote-overlay__title { font-size: 13px; }
   .quote-overlay__scroll {
     justify-content: flex-start;
     padding: 8px;
   }
-  .quote-overlay__bar { padding: 8px 10px; gap: 8px; }
-  .quote-overlay__btn { padding: 7px 11px; font-size: 12px; }
-  .quote-overlay__title { font-size: 12px; }
 }
 `;
 
@@ -271,11 +313,11 @@ export function openQuoteOverlay(input: QuoteInput): void {
             </svg>
           </button>
           <div class="quote-overlay__title">
-            Quotation · ${input.quoteRef}
+            <span class="quote-overlay__title-ref">${input.quoteRef}</span>
             ${ENV.cloudEnabled && ackState.loaded
               ? ackState.signedAt
                 ? html`<span class="quote-overlay__pill quote-overlay__pill--ok"
-                    >✓ T&amp;C signed</span
+                    >✓ Signed</span
                   >`
                 : html`<span class="quote-overlay__pill quote-overlay__pill--pending"
                     >T&amp;C pending</span
