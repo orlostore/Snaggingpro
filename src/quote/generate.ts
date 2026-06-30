@@ -63,7 +63,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
   <title>Quotation ${h(q.quoteRef)} — SnaggingPro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -83,16 +83,16 @@ export function generateQuotationHtml(q: QuoteInput): string {
     .page { width: 210mm; min-height: 297mm; padding: 14mm; margin: 0 auto; background: #fff; display: flex; flex-direction: column; gap: 6mm; }
 
     .topbar { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 6mm; padding-bottom: 5mm; border-bottom: 2px solid var(--brand); }
-    .wordmark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28pt; letter-spacing: -0.015em; line-height: 1.15; padding-bottom: 1mm; }
+    .wordmark { font-family: 'DM Sans', system-ui, sans-serif; font-weight: 700; font-size: 28pt; letter-spacing: -0.04em; line-height: 1.15; padding-bottom: 1mm; white-space: nowrap; }
     .wordmark em { color: var(--brand); font-style: normal; }
     .wordmark-sub { font-size: 8pt; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; font-weight: 600; margin-top: 3mm; }
     .doc-meta { text-align: right; }
     .doc-pill { display: inline-block; background: var(--brand); color: white; font-weight: 700; padding: 1.5mm 3.5mm; border-radius: 99px; font-size: 8pt; letter-spacing: 0.06em; }
-    .doc-ref { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13pt; color: var(--brand); margin-top: 2mm; letter-spacing: -0.01em; }
+    .doc-ref { font-family: 'DM Sans', system-ui, sans-serif; font-weight: 700; font-size: 13pt; color: var(--brand); margin-top: 2mm; letter-spacing: -0.01em; }
     .doc-date { color: var(--muted); font-size: 9pt; margin-top: 0.5mm; }
     .doc-contact { color: var(--brand); font-weight: 700; font-size: 10pt; margin-top: 2mm; letter-spacing: 0.01em; }
 
-    .section-head { font-family: 'Syne', sans-serif; font-size: 10pt; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brand); margin-bottom: 2mm; }
+    .section-head { font-family: 'DM Sans', system-ui, sans-serif; font-size: 10pt; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brand); margin-bottom: 2mm; }
 
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
     .card { background: var(--card); border: 1px solid var(--border); border-radius: 3mm; padding: 4mm 5mm; }
@@ -105,7 +105,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
     .price-table th.right { text-align: right; }
     .price-table td { padding: 3mm 0; border-bottom: 1px dashed var(--border); }
     .price-table td.right { text-align: right; font-variant-numeric: tabular-nums; }
-    .price-table tr.total-row td { border-bottom: none; padding-top: 5mm; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14pt; color: var(--brand); }
+    .price-table tr.total-row td { border-bottom: none; padding-top: 5mm; font-family: 'DM Sans', system-ui, sans-serif; font-weight: 700; font-size: 14pt; color: var(--brand); }
     .price-table tr.total-row td.right { font-size: 16pt; }
     .price-note { font-size: 9pt; color: var(--muted); margin-top: 2mm; padding: 2.5mm 3mm; background: rgba(184, 146, 58, 0.08); border-left: 2px solid var(--accent); border-radius: 2mm; }
     .price-note strong { color: var(--text); }
@@ -117,7 +117,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
     .bank-table tr:last-child td { border-bottom: none; }
 
     .terms-block { background: var(--brand); color: white; border-radius: 3mm; padding: 5mm; display: grid; grid-template-columns: 1fr auto; gap: 4mm; align-items: center; }
-    .terms-block h3 { font-family: 'Syne', sans-serif; font-size: 12pt; font-weight: 700; }
+    .terms-block h3 { font-family: 'DM Sans', system-ui, sans-serif; font-size: 12pt; font-weight: 700; }
     .terms-block p { font-size: 10pt; opacity: 0.9; margin-top: 1mm; line-height: 1.45; }
     .terms-link { background: white; color: var(--brand); padding: 3mm 5mm; border-radius: 99px; font-weight: 700; text-decoration: none; font-size: 10pt; white-space: nowrap; }
 

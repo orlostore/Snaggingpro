@@ -79,12 +79,14 @@ const OVERLAY_CHROME_CSS = `
   flex: 1; overflow: auto; padding: 16px;
   display: flex; justify-content: center;
   -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y pinch-zoom;
 }
 .quote-overlay__paper {
-  background: white; width: 210mm; max-width: 100%;
+  background: white;
+  width: 210mm;
+  flex-shrink: 0;
   box-shadow: 0 8px 24px rgba(0,0,0,0.18);
   border-radius: 4px;
-  overflow: hidden;
 }
 .quote-overlay__paper .page {
   padding: 14mm;
@@ -92,7 +94,10 @@ const OVERLAY_CHROME_CSS = `
   background: white;
 }
 @media (max-width: 900px) {
-  .quote-overlay__paper .page { padding: 6mm; gap: 4mm; }
+  .quote-overlay__scroll {
+    justify-content: flex-start;
+    padding: 8px;
+  }
   .quote-overlay__bar { padding: 8px 10px; gap: 8px; }
   .quote-overlay__btn { padding: 7px 11px; font-size: 12px; }
   .quote-overlay__title { font-size: 12px; }
@@ -164,6 +169,15 @@ export function openQuoteOverlay(input: QuoteInput): void {
       clone.style.cssText = 'width: ' + A4_PX + 'px; max-width: none; box-shadow: none; border-radius: 0;';
       stage.appendChild(clone);
       document.body.appendChild(stage);
+
+      // Wait for web fonts so html2canvas captures the right glyphs.
+      // Without this, Syne/DM Sans aren't loaded inside the cloned context
+      // and the fallback renders with broken letter-spacing.
+      try {
+        await (document as Document & { fonts?: { ready: Promise<void> } }).fonts?.ready;
+      } catch {
+        /* not all browsers expose document.fonts */
+      }
 
       let canvas: HTMLCanvasElement;
       try {
