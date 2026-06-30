@@ -83,9 +83,9 @@ export function generateQuotationHtml(q: QuoteInput): string {
     .page { width: 210mm; min-height: 297mm; padding: 14mm; margin: 0 auto; background: #fff; display: flex; flex-direction: column; gap: 6mm; }
 
     .topbar { display: grid; grid-template-columns: 1fr auto; align-items: end; gap: 6mm; padding-bottom: 5mm; border-bottom: 2px solid var(--brand); }
-    .wordmark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28pt; letter-spacing: -0.015em; line-height: 1; }
+    .wordmark { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28pt; letter-spacing: -0.015em; line-height: 1.15; padding-bottom: 1mm; }
     .wordmark em { color: var(--brand); font-style: normal; }
-    .wordmark-sub { font-size: 8pt; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; font-weight: 600; margin-top: 2mm; }
+    .wordmark-sub { font-size: 8pt; letter-spacing: 0.12em; color: var(--muted); text-transform: uppercase; font-weight: 600; margin-top: 3mm; }
     .doc-meta { text-align: right; }
     .doc-pill { display: inline-block; background: var(--brand); color: white; font-weight: 700; padding: 1.5mm 3.5mm; border-radius: 99px; font-size: 8pt; letter-spacing: 0.06em; }
     .doc-ref { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13pt; color: var(--brand); margin-top: 2mm; letter-spacing: -0.01em; }

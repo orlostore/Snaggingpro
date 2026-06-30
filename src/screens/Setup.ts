@@ -162,6 +162,9 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
     state.property.floor = draft.floor;
     state.property.bua = draft.bua;
     state.property.price = draft.price;
+    if (fromQuote) {
+      state.job.sourceQuoteRef = fromQuote.quoteRef;
+    }
     saveDraft(state);
     if (fromQuote) {
       void quotesRepo.markConverted(fromQuote.quoteRef, state.job.ref);

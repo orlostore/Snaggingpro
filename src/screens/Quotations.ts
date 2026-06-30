@@ -155,6 +155,9 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
                             </div>
                             <div class="library__sub">
                               ${q.quoteRef} · ${formatDate(q.createdAt)} · ${formatAED(q.total)}
+                              ${q.convertedReportId
+                                ? html` · Job <strong>${q.convertedReportId}</strong>`
+                                : null}
                             </div>
                             <div class="library__meta">
                               ${q.developer || q.community || q.unit
