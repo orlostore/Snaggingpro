@@ -7,6 +7,7 @@
  */
 
 import { feeBreakdown, PROP_LABEL, type PropType } from '@/domain/pricing';
+import { BUSINESS } from '@/lib/business';
 import { formatAED, formatDateLong, todayIsoDate } from '@/lib/format';
 import { termsUrl } from '@/lib/share';
 
@@ -89,6 +90,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
     .doc-pill { display: inline-block; background: var(--brand); color: white; font-weight: 700; padding: 1.5mm 3.5mm; border-radius: 99px; font-size: 8pt; letter-spacing: 0.06em; }
     .doc-ref { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13pt; color: var(--brand); margin-top: 2mm; letter-spacing: -0.01em; }
     .doc-date { color: var(--muted); font-size: 9pt; margin-top: 0.5mm; }
+    .doc-contact { color: var(--brand); font-weight: 700; font-size: 10pt; margin-top: 2mm; letter-spacing: 0.01em; }
 
     .section-head { font-family: 'Syne', sans-serif; font-size: 10pt; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; color: var(--brand); margin-bottom: 2mm; }
 
@@ -154,6 +156,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
         <div class="doc-pill">QUOTATION</div>
         <div class="doc-ref">${h(q.quoteRef)}</div>
         <div class="doc-date">Issued ${formatDateLong(todayIsoDate(today))}<br/>Valid until ${formatDateLong(todayIsoDate(validUntil))}</div>
+        <div class="doc-contact">${h(BUSINESS.phone)}</div>
       </div>
     </header>
 
@@ -243,8 +246,8 @@ export function generateQuotationHtml(q: QuoteInput): string {
         Valid until ${formatDateLong(todayIsoDate(validUntil))}
       </div>
       <div class="footer-cta">
-        Questions? Contact us<br/>
-        ${q.clientPhone ? '' : ''}
+        Questions? <a href="tel:${h(BUSINESS.phone.replace(/\s+/g, ''))}">${h(BUSINESS.phone)}</a><br/>
+        ${h(BUSINESS.name)} · UAE
       </div>
     </footer>
 
