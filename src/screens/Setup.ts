@@ -13,6 +13,8 @@ import { go } from '@/lib/router';
 import { type QuoteInput } from '@/quote/generate';
 import { openQuoteOverlay } from '@/quote/overlay';
 import { nextQuoteRef } from '@/quote/quoteRef';
+import { quotesRepo } from '@/storage/quotes';
+import type { QuoteRecord } from '@/quote/types';
 import { saveSetupDraft, loadSetupDraft, clearSetupDraft } from '@/state/setupDraft';
 
 interface SetupDraft {
@@ -35,8 +37,9 @@ function optionKey(type: PropType, bedrooms: number): string {
   return `${type}_${bedrooms}`;
 }
 
-export function Setup(rootEl: HTMLElement): TemplateResult {
+export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResult {
   const persisted = loadSetupDraft();
+  let fromQuote: QuoteRecord | null = null;
   const draft: SetupDraft = persisted ?? {
     optionKey: null,
     type: null,
@@ -59,6 +62,30 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
 
   function paint() {
     render(view(), rootEl);
+  }
+
+  // If the screen was opened from a stored quote, hydrate the form
+  // with that quote's data (overrides any prior auto-saved draft).
+  if (fromQuoteRef) {
+    void quotesRepo.get(fromQuoteRef).then((q) => {
+      if (!q) return;
+      fromQuote = q;
+      draft.type = q.propType;
+      draft.bedrooms = q.bedrooms;
+      draft.optionKey = optionKey(q.propType, q.bedrooms);
+      draft.clientName = q.clientName;
+      draft.phone = q.clientPhone;
+      draft.email = q.clientEmail;
+      draft.developer = q.developer;
+      draft.community = q.community;
+      draft.unit = q.unit;
+      draft.floor = q.floor;
+      draft.bua = q.bua;
+      draft.price = q.total;
+      draft.priceManuallyEdited = q.priceOverride > 0;
+      persist();
+      paint();
+    });
   }
 
   function selectOption(type: PropType, bedrooms: number) {
@@ -88,10 +115,13 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
 
   async function openQuotation() {
     if (!draft.type || !draft.clientName.trim()) return;
-    const jobSeq = await nextJobSeq();
-    const jobRef = jobRefFromDate(new Date(), jobSeq);
+    // Reuse the existing quote ref if the user is re-opening an existing
+    // one; otherwise allocate a new ref + job ref.
+    const reuse = fromQuote && fromQuote.status === 'issued' ? fromQuote : null;
+    const jobSeq = reuse ? 0 : await nextJobSeq();
+    const jobRef = reuse ? reuse.jobRef : jobRefFromDate(new Date(), jobSeq);
     const input: QuoteInput = {
-      quoteRef: nextQuoteRef(),
+      quoteRef: reuse ? reuse.quoteRef : nextQuoteRef(),
       clientName: draft.clientName.trim(),
       clientPhone: draft.phone.trim(),
       clientEmail: draft.email.trim(),
@@ -105,6 +135,17 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
       priceOverride: draft.priceManuallyEdited ? draft.price : 0,
       jobRef,
     };
+    const total = draft.priceManuallyEdited
+      ? draft.price
+      : calcFee(input.propType, input.bedrooms, input.bua);
+    const record: QuoteRecord = {
+      ...input,
+      total,
+      createdAt: reuse ? reuse.createdAt : Date.now(),
+      status: 'issued',
+    };
+    await quotesRepo.save(record);
+    fromQuote = record;
     openQuoteOverlay(input);
   }
 
@@ -122,6 +163,9 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     state.property.bua = draft.bua;
     state.property.price = draft.price;
     saveDraft(state);
+    if (fromQuote) {
+      void quotesRepo.markConverted(fromQuote.quoteRef, state.job.ref);
+    }
     clearSetupDraft();
     go('cover');
   }

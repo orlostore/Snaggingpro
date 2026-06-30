@@ -37,6 +37,13 @@ export function Splash(): TemplateResult {
             variant: 'ghost',
             onClick: () => go('pin', { to: 'library' }),
           })}
+          ${Button({
+            label: html`${Icon({ name: 'tag', size: 18 })} Quotations`,
+            full: true,
+            size: 'lg',
+            variant: 'ghost',
+            onClick: () => go('pin', { to: 'quotations' }),
+          })}
         </div>
       </div>
       ${Footer()}

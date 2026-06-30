@@ -18,6 +18,7 @@ import { generateQuotationHtml, type QuoteInput } from './generate';
 import { formatAED } from '@/lib/format';
 import { feeBreakdown, PROP_LABEL } from '@/domain/pricing';
 import { termsUrl, whatsAppUrl } from '@/lib/share';
+import { go } from '@/lib/router';
 
 let overlayEl: HTMLDivElement | null = null;
 
@@ -70,6 +71,8 @@ const OVERLAY_CHROME_CSS = `
 }
 .quote-overlay__btn--wa { background: #25d366; color: white; }
 .quote-overlay__btn--wa:hover { background: #1ea952; }
+.quote-overlay__btn--start { background: #b8923a; color: white; }
+.quote-overlay__btn--start:hover { background: #9a7a30; }
 .quote-overlay__btn--pdf:hover { background: #f1f1f2; }
 .quote-overlay__btn:disabled { opacity: 0.55; cursor: wait; }
 .quote-overlay__scroll {
@@ -224,6 +227,21 @@ export function openQuoteOverlay(input: QuoteInput): void {
           </button>
           <div class="quote-overlay__title">Quotation · ${input.quoteRef}</div>
           <div class="quote-overlay__actions">
+            <button
+              type="button"
+              class="quote-overlay__btn quote-overlay__btn--start"
+              @click=${() => {
+                closeQuoteOverlay();
+                go('setup', { fromQuote: input.quoteRef });
+              }}
+              title="Start inspection from this quote"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+              </svg>
+              Start
+            </button>
             <button
               type="button"
               class="quote-overlay__btn quote-overlay__btn--wa"

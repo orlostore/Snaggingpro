@@ -1103,6 +1103,12 @@
   gap: var(--space-3);
   margin: var(--space-4) 0;
 }
+.quotation-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-items: stretch;
+}
 .library__row {
   display: flex;
   align-items: center;
