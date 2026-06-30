@@ -147,21 +147,36 @@ export function openQuoteOverlay(input: QuoteInput): void {
         backgroundColor: '#ffffff',
         logging: false,
       });
-      const imgData = canvas.toDataURL('image/jpeg', 0.95);
       const pdf = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
-      const ratio = canvas.height / canvas.width;
-      const imgH = pageW * ratio;
-      if (imgH <= pageH) {
-        pdf.addImage(imgData, 'JPEG', 0, 0, pageW, imgH);
-      } else {
-        let position = 0;
-        while (position < imgH) {
-          if (position > 0) pdf.addPage();
-          pdf.addImage(imgData, 'JPEG', 0, -position, pageW, imgH);
-          position += pageH;
-        }
+      // Pixels per mm at the captured canvas resolution.
+      const pxPerMm = canvas.width / pageW;
+      const pagePx = Math.floor(pageH * pxPerMm);
+
+      let yOffset = 0;
+      let pageNum = 0;
+      while (yOffset < canvas.height) {
+        const sliceHeight = Math.min(pagePx, canvas.height - yOffset);
+        const sliceCanvas = document.createElement('canvas');
+        sliceCanvas.width = canvas.width;
+        sliceCanvas.height = sliceHeight;
+        const sliceCtx = sliceCanvas.getContext('2d');
+        if (!sliceCtx) throw new Error('No 2D context for slice canvas.');
+        sliceCtx.fillStyle = '#ffffff';
+        sliceCtx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+        sliceCtx.drawImage(
+          canvas,
+          0, yOffset, canvas.width, sliceHeight,
+          0, 0, canvas.width, sliceHeight,
+        );
+        const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
+        if (pageNum > 0) pdf.addPage();
+        // Map slice back to mm; the slice IS one page tall (or less for last).
+        const renderedH = sliceHeight / pxPerMm;
+        pdf.addImage(sliceData, 'JPEG', 0, 0, pageW, renderedH);
+        yOffset += sliceHeight;
+        pageNum++;
       }
       pdf.save(`${input.quoteRef}.pdf`);
     } catch (e) {
