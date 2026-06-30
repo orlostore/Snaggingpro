@@ -38,7 +38,7 @@ export function Splash(): TemplateResult {
             onClick: () => go('pin', { to: 'library' }),
           })}
           ${Button({
-            label: html`${Icon({ name: 'tag', size: 18 })} Quotations`,
+            label: html`${Icon({ name: 'quote', size: 18 })} Quotations`,
             full: true,
             size: 'lg',
             variant: 'ghost',

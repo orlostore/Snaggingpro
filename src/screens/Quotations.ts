@@ -20,13 +20,21 @@ import { quotesRepo } from '@/storage/quotes';
 import { openQuoteOverlay } from '@/quote/overlay';
 import { go } from '@/lib/router';
 import { formatAED } from '@/lib/format';
+import { ENV } from '@/lib/env';
+import { loadAckIndex } from '@/lib/acknowledgements';
 import type { QuoteRecord } from '@/quote/types';
 
 export function Quotations(rootEl: HTMLElement): TemplateResult {
-  const ctx: { items: QuoteRecord[]; query: string; loading: boolean } = {
+  const ctx: {
+    items: QuoteRecord[];
+    query: string;
+    loading: boolean;
+    acks: Map<string, number>;
+  } = {
     items: [],
     query: '',
     loading: true,
+    acks: new Map(),
   };
 
   function paint() {
@@ -37,6 +45,10 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
     ctx.items = await quotesRepo.list();
     ctx.loading = false;
     paint();
+    if (ENV.cloudEnabled) {
+      ctx.acks = await loadAckIndex();
+      paint();
+    }
   }
 
   function filtered(): QuoteRecord[] {
@@ -131,6 +143,15 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
                                     >${Icon({ name: 'check', size: 12 })} Converted</span
                                   >`
                                 : html`<span class="ack-pill ack-pill--pending">Issued</span>`}
+                              ${ENV.cloudEnabled
+                                ? ctx.acks.get(q.jobRef)
+                                  ? html`<span class="ack-pill ack-pill--signed"
+                                      >${Icon({ name: 'check', size: 12 })} T&amp;C signed</span
+                                    >`
+                                  : html`<span class="ack-pill ack-pill--pending"
+                                      >T&amp;C pending</span
+                                    >`
+                                : null}
                             </div>
                             <div class="library__sub">
                               ${q.quoteRef} · ${formatDate(q.createdAt)} · ${formatAED(q.total)}
