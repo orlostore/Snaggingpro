@@ -141,43 +141,55 @@ export function openQuoteOverlay(input: QuoteInput): void {
         import('jspdf'),
       ]);
       const JsPDF = jsPdfModule.jsPDF;
-      const canvas = await html2canvas(paper, {
-        scale: 2,
-        useCORS: true,
-        backgroundColor: '#ffffff',
-        logging: false,
-      });
+      // Clone the paper into an off-screen container forced to A4 width
+      // so html2canvas captures the printable layout, not the phone-
+      // wrapped layout. Without this, mobile screens capture at ~360px
+      // wide and the content stretches tall, spilling onto extra pages.
+      const A4_PX = 794; // 210mm at 96dpi
+      const stage = document.createElement('div');
+      stage.style.cssText = [
+        'position: fixed',
+        'top: 0',
+        'left: 0',
+        'width: ' + A4_PX + 'px',
+        'background: #ffffff',
+        'pointer-events: none',
+        'opacity: 0',
+        'z-index: -1',
+      ].join(';');
+      const clone = paper.cloneNode(true) as HTMLElement;
+      clone.style.cssText = 'width: ' + A4_PX + 'px; max-width: none; box-shadow: none; border-radius: 0;';
+      stage.appendChild(clone);
+      document.body.appendChild(stage);
+
+      let canvas: HTMLCanvasElement;
+      try {
+        canvas = await html2canvas(clone, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+          windowWidth: A4_PX,
+        });
+      } finally {
+        stage.remove();
+      }
+
       const pdf = new JsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
       const pageW = pdf.internal.pageSize.getWidth();
       const pageH = pdf.internal.pageSize.getHeight();
-      // Pixels per mm at the captured canvas resolution.
-      const pxPerMm = canvas.width / pageW;
-      const pagePx = Math.floor(pageH * pxPerMm);
-
-      let yOffset = 0;
-      let pageNum = 0;
-      while (yOffset < canvas.height) {
-        const sliceHeight = Math.min(pagePx, canvas.height - yOffset);
-        const sliceCanvas = document.createElement('canvas');
-        sliceCanvas.width = canvas.width;
-        sliceCanvas.height = sliceHeight;
-        const sliceCtx = sliceCanvas.getContext('2d');
-        if (!sliceCtx) throw new Error('No 2D context for slice canvas.');
-        sliceCtx.fillStyle = '#ffffff';
-        sliceCtx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-        sliceCtx.drawImage(
-          canvas,
-          0, yOffset, canvas.width, sliceHeight,
-          0, 0, canvas.width, sliceHeight,
-        );
-        const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
-        if (pageNum > 0) pdf.addPage();
-        // Map slice back to mm; the slice IS one page tall (or less for last).
-        const renderedH = sliceHeight / pxPerMm;
-        pdf.addImage(sliceData, 'JPEG', 0, 0, pageW, renderedH);
-        yOffset += sliceHeight;
-        pageNum++;
+      const ratio = canvas.height / canvas.width;
+      // Always render to a single page. If the content is naturally taller
+      // than A4, scale it down proportionally and center horizontally.
+      let imgW = pageW;
+      let imgH = pageW * ratio;
+      if (imgH > pageH) {
+        imgH = pageH;
+        imgW = pageH / ratio;
       }
+      const x = (pageW - imgW) / 2;
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      pdf.addImage(imgData, 'JPEG', x, 0, imgW, imgH);
       pdf.save(`${input.quoteRef}.pdf`);
     } catch (e) {
       console.error('PDF generation failed', e);
