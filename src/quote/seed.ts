@@ -7,7 +7,7 @@
 import { quotesRepo } from '@/storage/quotes';
 import type { QuoteRecord } from './types';
 
-const SEED_FLAG = 'sp_seed_qtn_v1';
+const SEED_FLAG = 'sp_seed_qtn_v2';
 
 const BACKFILL: QuoteRecord[] = [
   {
@@ -21,9 +21,9 @@ const BACKFILL: QuoteRecord[] = [
     floor: '',
     propType: 'apartment',
     bedrooms: 2,
-    bua: 1500,
+    bua: 1650,
     priceOverride: 0,
-    total: 1500,
+    total: 1650,
     jobRef: 'SP-260630-001',
     createdAt: new Date('2026-06-30T10:00:00Z').getTime(),
     status: 'issued',
@@ -39,7 +39,18 @@ export async function seedMissingQuotes(): Promise<void> {
   for (const q of BACKFILL) {
     try {
       const existing = await quotesRepo.get(q.quoteRef);
-      if (!existing) await quotesRepo.save(q);
+      if (!existing) {
+        await quotesRepo.save(q);
+      } else if (existing.total !== q.total || existing.bua !== q.bua) {
+        // Update the financial details but preserve any conversion state.
+        await quotesRepo.save({
+          ...q,
+          status: existing.status,
+          ...(existing.convertedReportId !== undefined
+            ? { convertedReportId: existing.convertedReportId }
+            : {}),
+        });
+      }
     } catch {
       /* best effort — failure here shouldn't block app startup */
     }
