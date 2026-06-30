@@ -9,6 +9,7 @@ import { saveDraft } from '@/state/persist';
 import { cloneAsFollowUp } from '@/state/init';
 import { nextJobSeq } from '@/state/jobRef';
 import { generateReportHtml } from '@/report/generate';
+import { buildReportPdf } from '@/report/pdf';
 import { collectSnags } from '@/domain/snags';
 import { go } from '@/lib/router';
 import { formatDateLong } from '@/lib/format';
@@ -60,7 +61,25 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
     }
   }
 
-  async function openPrint() {
+  async function downloadPdf() {
+    if (!report) return;
+    toast('Preparing PDF…');
+    try {
+      const blob = await buildReportPdf(report);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${report.job.ref}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    } catch (e) {
+      toast(e instanceof Error ? `PDF failed: ${e.message}` : 'PDF failed');
+    }
+  }
+
+  async function openPrintable() {
     if (!report) return;
     const w = window.open('', '_blank');
     if (!w) {
@@ -191,10 +210,16 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
 
           <div class="report-detail__actions">
             ${Button({
-              label: html`${Icon({ name: 'print', size: 18 })} Print / PDF`,
+              label: html`${Icon({ name: 'save', size: 18 })} Download PDF`,
               full: true,
               size: 'lg',
-              onClick: () => void openPrint(),
+              onClick: () => void downloadPdf(),
+            })}
+            ${Button({
+              label: html`${Icon({ name: 'print', size: 18 })} Open printable view`,
+              full: true,
+              variant: 'ghost',
+              onClick: () => void openPrintable(),
             })}
             ${Button({
               label: html`${Icon({ name: 'pencil', size: 18 })} Edit this report`,
