@@ -19,6 +19,8 @@ import { formatAED } from '@/lib/format';
 import { feeBreakdown, PROP_LABEL } from '@/domain/pricing';
 import { termsUrl, whatsAppUrl } from '@/lib/share';
 import { go } from '@/lib/router';
+import { ENV } from '@/lib/env';
+import { listAcknowledgements } from '@/lib/acknowledgements';
 
 let overlayEl: HTMLDivElement | null = null;
 
@@ -60,7 +62,17 @@ const OVERLAY_CHROME_CSS = `
   cursor: pointer;
 }
 .quote-overlay__close:hover { background: rgba(255,255,255,0.22); }
-.quote-overlay__title { flex: 1; font-weight: 600; font-size: 14px; }
+.quote-overlay__title {
+  flex: 1; font-weight: 600; font-size: 14px;
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+}
+.quote-overlay__pill {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.02em;
+  padding: 3px 9px; border-radius: 99px;
+  display: inline-flex; align-items: center;
+}
+.quote-overlay__pill--ok { background: rgba(255,255,255,0.92); color: #0f7a44; }
+.quote-overlay__pill--pending { background: rgba(255,255,255,0.18); color: #ffffff; }
 .quote-overlay__actions { display: flex; gap: 8px; }
 .quote-overlay__btn {
   background: white; color: #1e3a5f;
@@ -115,6 +127,25 @@ export function openQuoteOverlay(input: QuoteInput): void {
   document.body.style.overflow = 'hidden';
 
   const pdfState: { generating: boolean } = { generating: false };
+  const ackState: { loaded: boolean; signedAt: number | null } = {
+    loaded: !ENV.cloudEnabled,
+    signedAt: null,
+  };
+
+  async function loadAckStatus() {
+    if (!ENV.cloudEnabled) return;
+    try {
+      const acks = await listAcknowledgements(input.jobRef);
+      if (acks.length > 0 && acks[0]) {
+        ackState.signedAt = acks[0].acknowledgedAt;
+      }
+    } catch {
+      /* offline or unauth — leave unsigned */
+    }
+    ackState.loaded = true;
+    paint();
+  }
+  void loadAckStatus();
 
   const onShareWhatsApp = () => {
     const breakdown = feeBreakdown(input.propType, input.bedrooms, input.bua);
@@ -239,7 +270,18 @@ export function openQuoteOverlay(input: QuoteInput): void {
               <path d="M6 6l12 12M18 6L6 18"></path>
             </svg>
           </button>
-          <div class="quote-overlay__title">Quotation · ${input.quoteRef}</div>
+          <div class="quote-overlay__title">
+            Quotation · ${input.quoteRef}
+            ${ENV.cloudEnabled && ackState.loaded
+              ? ackState.signedAt
+                ? html`<span class="quote-overlay__pill quote-overlay__pill--ok"
+                    >✓ T&amp;C signed</span
+                  >`
+                : html`<span class="quote-overlay__pill quote-overlay__pill--pending"
+                    >T&amp;C pending</span
+                  >`
+              : null}
+          </div>
           <div class="quote-overlay__actions">
             <button
               type="button"
