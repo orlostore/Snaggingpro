@@ -6,7 +6,6 @@
  * consistent across all client-facing documents.
  */
 
-import { BANK } from '@/lib/bank';
 import { feeBreakdown, PROP_LABEL, type PropType } from '@/domain/pricing';
 import { formatAED, formatDateLong, todayIsoDate } from '@/lib/format';
 import { termsUrl } from '@/lib/share';
@@ -213,21 +212,6 @@ export function generateQuotationHtml(q: QuoteInput): string {
       </table>
       <div class="price-note">
         <strong>All-inclusive · no hidden fees.</strong> Quote is firm subject to the BUA above. Final fee is confirmed on the actual measured area before the inspection.
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="section-head">Bank account — payment due in advance</div>
-      <table class="bank-table">
-        <tr><td>Bank</td><td>${h(BANK.name)}</td></tr>
-        <tr><td>Account title</td><td>${h(BANK.accountTitle)}</td></tr>
-        <tr><td>Account number</td><td>${h(BANK.accountNumber)}</td></tr>
-        <tr><td>IBAN</td><td>${h(BANK.iban)}</td></tr>
-        <tr><td>Currency</td><td>${h(BANK.currency)}</td></tr>
-        <tr><td>SWIFT</td><td>${h(BANK.swift)}</td></tr>
-      </table>
-      <div class="price-note" style="margin-top: 4mm;">
-        Please use <strong>${h(q.quoteRef)}</strong> as the payment reference. Send the transfer receipt back to confirm the booking.
       </div>
     </section>
 

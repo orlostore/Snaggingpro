@@ -126,7 +126,6 @@ export function openQuoteOverlay(input: QuoteInput): void {
       (input.unit ? ` · Unit ${input.unit}` : '') +
       `\n\n` +
       `Terms of Engagement (please review & sign):\n${tcLink}\n\n` +
-      `Bank details for advance payment are on the attached PDF — please tap "Download PDF" then attach it to your reply. Use the reference number above on the transfer.\n\n` +
       `Thank you.`;
     window.open(whatsAppUrl(input.clientPhone, message), '_blank');
   };
