@@ -7,7 +7,7 @@
 import { quotesRepo } from '@/storage/quotes';
 import type { QuoteRecord } from './types';
 
-const SEED_FLAG = 'sp_seed_qtn_v2';
+const SEED_FLAG = 'sp_seed_qtn_v3';
 
 const BACKFILL: QuoteRecord[] = [
   {
@@ -21,8 +21,8 @@ const BACKFILL: QuoteRecord[] = [
     floor: '',
     propType: 'apartment',
     bedrooms: 2,
-    bua: 1650,
-    priceOverride: 0,
+    bua: 1500,
+    priceOverride: 1650,
     total: 1650,
     jobRef: 'SP-260630-001',
     createdAt: new Date('2026-06-30T10:00:00Z').getTime(),
