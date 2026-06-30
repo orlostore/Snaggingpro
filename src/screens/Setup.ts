@@ -10,9 +10,10 @@ import { sendTermsViaWhatsApp } from '@/lib/share';
 import { jobRefFromDate } from '@/domain/snags';
 import { saveDraft } from '@/state/persist';
 import { go } from '@/lib/router';
-import { toast } from '@/components/Toast';
-import { generateQuotationHtml, type QuoteInput } from '@/quote/generate';
+import { type QuoteInput } from '@/quote/generate';
+import { openQuoteOverlay } from '@/quote/overlay';
 import { nextQuoteRef } from '@/quote/quoteRef';
+import { saveSetupDraft, loadSetupDraft, clearSetupDraft } from '@/state/setupDraft';
 
 interface SetupDraft {
   optionKey: string | null;
@@ -35,7 +36,8 @@ function optionKey(type: PropType, bedrooms: number): string {
 }
 
 export function Setup(rootEl: HTMLElement): TemplateResult {
-  const draft: SetupDraft = {
+  const persisted = loadSetupDraft();
+  const draft: SetupDraft = persisted ?? {
     optionKey: null,
     type: null,
     bedrooms: 0,
@@ -51,6 +53,10 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     priceManuallyEdited: false,
   };
 
+  function persist() {
+    saveSetupDraft(draft);
+  }
+
   function paint() {
     render(view(), rootEl);
   }
@@ -62,6 +68,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     if (!draft.priceManuallyEdited) {
       draft.price = calcFee(type, bedrooms, draft.bua);
     }
+    persist();
     paint();
   }
 
@@ -70,11 +77,13 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     if (!draft.priceManuallyEdited && draft.type) {
       draft.price = calcFee(draft.type, draft.bedrooms, value);
     }
+    persist();
     paint();
   }
 
   function input<K extends keyof SetupDraft>(field: K, value: SetupDraft[K]) {
     draft[field] = value;
+    persist();
   }
 
   async function openQuotation() {
@@ -96,14 +105,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
       priceOverride: draft.priceManuallyEdited ? draft.price : 0,
       jobRef,
     };
-    const w = window.open('', '_blank');
-    if (!w) {
-      toast('Popup blocked — allow popups to view the quotation');
-      return;
-    }
-    w.document.open();
-    w.document.write(generateQuotationHtml(input));
-    w.document.close();
+    openQuoteOverlay(input);
   }
 
   async function next() {
@@ -120,6 +122,7 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
     state.property.bua = draft.bua;
     state.property.price = draft.price;
     saveDraft(state);
+    clearSetupDraft();
     go('cover');
   }
 
