@@ -27,6 +27,7 @@ import { Room } from '@/screens/Room';
 import { Report } from '@/screens/Report';
 import { Library } from '@/screens/Library';
 import { Migrate } from '@/screens/Migrate';
+import { Quotations } from '@/screens/Quotations';
 import { ReportDetail } from '@/screens/ReportDetail';
 
 const rootEl = document.getElementById('app');
@@ -42,6 +43,7 @@ const PROTECTED: RouteName[] = [
   'report',
   'library',
   'migrate',
+  'quotations',
   'report-detail',
 ];
 
@@ -60,7 +62,7 @@ function dispatch(route: Route) {
       break;
     }
     case 'setup':
-      render(Setup(root), root);
+      render(Setup(root, route.params['fromQuote']), root);
       break;
     case 'cover':
       render(CoverPhotos(root), root);
@@ -97,6 +99,9 @@ function dispatch(route: Route) {
       break;
     case 'migrate':
       render(Migrate(root), root);
+      break;
+    case 'quotations':
+      render(Quotations(root), root);
       break;
     case 'report-detail':
       render(ReportDetail(root, route.params['id'] ?? ''), root);

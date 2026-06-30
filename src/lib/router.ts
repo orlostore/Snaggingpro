@@ -14,6 +14,7 @@ export type RouteName =
   | 'report'
   | 'library'
   | 'migrate'
+  | 'quotations'
   | 'report-detail';
 
 export interface Route {
@@ -56,6 +57,8 @@ function parseHash(): Route {
       return { name: 'library', params };
     case 'migrate':
       return { name: 'migrate', params };
+    case 'quotations':
+      return { name: 'quotations', params };
     case 'report-detail':
       return { name: 'report-detail', params: { ...params, id: segs[1] ?? '' } };
     default:

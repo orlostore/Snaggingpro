@@ -10,6 +10,7 @@
 
 import { openDB, type DBSchema, type IDBPDatabase } from 'idb';
 import type { State, ReportSummary } from '@/state/schema';
+import type { QuoteRecord } from '@/quote/types';
 
 export interface PhotoRecord {
   id: string;
@@ -56,10 +57,15 @@ interface SnaggingProDB extends DBSchema {
     value: OutboxEntry;
     indexes: { byNextAttempt: number };
   };
+  quotes: {
+    key: string;
+    value: QuoteRecord;
+    indexes: { byDate: number; byClient: string };
+  };
 }
 
 const DB_NAME = 'snaggingpro';
-const DB_VERSION = 2;
+const DB_VERSION = 3;
 
 let dbPromise: Promise<IDBPDatabase<SnaggingProDB>> | null = null;
 
@@ -85,6 +91,13 @@ export function getDB(): Promise<IDBPDatabase<SnaggingProDB>> {
           if (!db.objectStoreNames.contains('outbox')) {
             const outbox = db.createObjectStore('outbox', { keyPath: 'id' });
             outbox.createIndex('byNextAttempt', 'nextAttemptAt');
+          }
+        }
+        if (oldVersion < 3) {
+          if (!db.objectStoreNames.contains('quotes')) {
+            const quotes = db.createObjectStore('quotes', { keyPath: 'quoteRef' });
+            quotes.createIndex('byDate', 'createdAt');
+            quotes.createIndex('byClient', 'clientName');
           }
         }
       },
