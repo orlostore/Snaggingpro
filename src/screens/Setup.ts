@@ -10,6 +10,9 @@ import { sendTermsViaWhatsApp } from '@/lib/share';
 import { jobRefFromDate } from '@/domain/snags';
 import { saveDraft } from '@/state/persist';
 import { go } from '@/lib/router';
+import { toast } from '@/components/Toast';
+import { generateQuotationHtml, type QuoteInput } from '@/quote/generate';
+import { nextQuoteRef } from '@/quote/quoteRef';
 
 interface SetupDraft {
   optionKey: string | null;
@@ -72,6 +75,35 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
 
   function input<K extends keyof SetupDraft>(field: K, value: SetupDraft[K]) {
     draft[field] = value;
+  }
+
+  async function openQuotation() {
+    if (!draft.type || !draft.clientName.trim()) return;
+    const jobSeq = await nextJobSeq();
+    const jobRef = jobRefFromDate(new Date(), jobSeq);
+    const input: QuoteInput = {
+      quoteRef: nextQuoteRef(),
+      clientName: draft.clientName.trim(),
+      clientPhone: draft.phone.trim(),
+      clientEmail: draft.email.trim(),
+      developer: draft.developer.trim(),
+      community: draft.community.trim(),
+      unit: draft.unit.trim(),
+      floor: draft.floor.trim(),
+      propType: draft.type,
+      bedrooms: draft.bedrooms,
+      bua: draft.bua,
+      priceOverride: draft.priceManuallyEdited ? draft.price : 0,
+      jobRef,
+    };
+    const w = window.open('', '_blank');
+    if (!w) {
+      toast('Popup blocked — allow popups to view the quotation');
+      return;
+    }
+    w.document.open();
+    w.document.write(generateQuotationHtml(input));
+    w.document.close();
   }
 
   async function next() {
@@ -230,6 +262,13 @@ export function Setup(rootEl: HTMLElement): TemplateResult {
           </div>
 
           <div class="setup__actions">
+            ${Button({
+              label: html`${Icon({ name: 'print', size: 18 })} Generate quotation`,
+              full: true,
+              variant: 'secondary',
+              disabled: !draft.type || !draft.clientName.trim(),
+              onClick: () => openQuotation(),
+            })}
             ${Button({
               label: html`${Icon({ name: 'send', size: 18 })} Send T&C to client via WhatsApp`,
               full: true,
