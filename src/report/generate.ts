@@ -109,7 +109,30 @@ const BRAND_CSS = `
   .ba--before .ba__label { color: #5a5d63; }
   .ba--after  .ba__label { color: #0f7a44; }
   .ba--new    .ba__label { color: #b6221b; }
-  @media print { @page { size: A4; margin: 14mm; } .no-print { display: none; } }
+  @media print { @page { size: A4; margin: 14mm; } .no-print { display: none !important; } }
+  .sp-print-bar {
+    position: sticky; top: 0; z-index: 100;
+    background: #1e3a5f; color: white;
+    padding: 12px 16px;
+    padding-top: calc(12px + env(safe-area-inset-top, 0px));
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+    font-family: 'DM Sans', system-ui, sans-serif;
+  }
+  .sp-print-btn {
+    background: white; color: #1e3a5f;
+    border: none; padding: 10px 18px; border-radius: 99px;
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 14px; font-family: inherit;
+    cursor: pointer; white-space: nowrap;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+  }
+  .sp-print-btn:hover { background: #f1f1f2; }
+  .sp-print-hint { font-size: 12px; opacity: 0.85; }
+  @media (max-width: 600px) {
+    .sp-print-hint { display: none; }
+    .sp-print-btn { flex: 1; justify-content: center; }
+  }
 `;
 
 async function blobToDataUrl(blob: Blob): Promise<string> {
@@ -552,6 +575,13 @@ export async function generateReportHtml(state: State): Promise<string> {
   <style>${BRAND_CSS}</style>
 </head>
 <body>
+  <div class="no-print sp-print-bar">
+    <button type="button" class="sp-print-btn" onclick="window.print()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2M6 14h12v8H6z"/></svg>
+      Save as PDF
+    </button>
+    <div class="sp-print-hint">Choose <strong>Save as PDF</strong> in the print dialog.</div>
+  </div>
   ${coverPage(state, snags, photos)}
   ${severityDefinitionsPage()}
   ${isFollowUp ? rectificationSummary(snags, photos) : handoverPage()}
