@@ -321,6 +321,9 @@ export function Room(
           ${room.dbInstances && room.dbInstances.length > 0
             ? dbPanelGroups(room, active)
             : html`<ul class="item-list">${items.map((it) => itemRow(room, it))}</ul>`}
+          <button class="add-item" @click=${() => void addCustomItem(active)}>
+            ${Icon({ name: 'plus', size: 16 })} Add ${DISC_LABELS[active].toLowerCase()} item
+          </button>
           ${room.dbInstances ? dbAddRow() : null}
           <div class="room__actions">
             ${Button({
@@ -334,6 +337,56 @@ export function Room(
         ${Footer()}
       </section>
     `;
+  }
+
+  /**
+   * Add a checklist item the template didn't cover. Custom items live only in
+   * this report's state, so they never alter the shared checklist library.
+   */
+  async function addCustomItem(disc: Discipline) {
+    const current = loadDraft()?.rooms[roomId];
+    const label = await promptDialog({
+      title: 'Add an item',
+      message: `A new ${DISC_LABELS[disc]} item for ${current?.label ?? 'this area'}. It applies to this report only.`,
+      placeholder: 'e.g. Soffit to underside of flight',
+      confirmLabel: 'Add item',
+    });
+    const text = label?.trim();
+    if (!text) return;
+    const s = loadDraft();
+    const target = s?.rooms[roomId];
+    if (!s || !target) return;
+    const key = `custom_${disc}_${newId()}`;
+    target.items[key] = {
+      key,
+      label: text,
+      disc,
+      status: 'pending',
+      note: '',
+      observations: [],
+    };
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    toast('Item added');
+    paint();
+  }
+
+  async function removeCustomItem(key: string) {
+    const ok = await confirmDialog({
+      title: 'Remove this item?',
+      message: 'It was added by you, so removing it deletes anything recorded against it.',
+      destructive: true,
+      confirmLabel: 'Remove',
+    });
+    if (!ok) return;
+    const s = loadDraft();
+    const target = s?.rooms[roomId];
+    if (!s || !target) return;
+    delete target.items[key];
+    s.job.updatedAt = Date.now();
+    saveDraft(s);
+    toast('Item removed');
+    paint();
   }
 
   async function tryLeave() {
@@ -500,7 +553,19 @@ export function Room(
       >
         <div class="item__label">
           ${item.dbNum ? html`<span class="item__db">DB ${item.dbNum}</span>` : null}
+          ${item.key.startsWith('custom_')
+            ? html`<span class="item__custom">Added</span>`
+            : null}
           ${item.label}
+          ${item.key.startsWith('custom_')
+            ? html`<button
+                class="item__remove"
+                aria-label="Remove this added item"
+                @click=${() => void removeCustomItem(item.key)}
+              >
+                ${Icon({ name: 'trash', size: 14 })}
+              </button>`
+            : null}
           ${needsNote
             ? html`<span class="item__needs item__needs--note">✎ note required</span>`
             : null}

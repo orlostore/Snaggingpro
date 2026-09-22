@@ -5,6 +5,8 @@ import path from 'node:path';
 const BUILD_TIME = new Date().toISOString().replace(/[-:T.Z]/g, '').slice(0, 12);
 
 export default defineConfig({
+  // Relative base so a preview build can be served from any sub-path.
+  base: process.env.PREVIEW_BUILD === '1' ? './' : '/',
   resolve: {
     alias: { '@': path.resolve(__dirname, 'src') },
   },
@@ -24,6 +26,9 @@ export default defineConfig({
   },
   plugins: [
     VitePWA({
+      // No service worker in preview builds — they are served from a host
+      // that is not the app's real origin.
+      disable: process.env.PREVIEW_BUILD === '1',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png', 'plans/*.webp'],
       manifest: {

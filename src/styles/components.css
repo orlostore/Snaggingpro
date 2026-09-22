@@ -377,3 +377,25 @@
   text-align: center;
   color: var(--color-text-muted);
 }
+
+/* Items the inspector added themselves, on top of the template checklist. */
+.add-item {
+  display: flex; align-items: center; justify-content: center; gap: var(--space-2);
+  width: 100%; margin-top: var(--space-3); padding: var(--space-3);
+  background: transparent; color: var(--color-text-muted); font: inherit;
+  font-size: var(--font-size-sm);
+  border: 1px dashed var(--color-border); border-radius: var(--radius-md); cursor: pointer;
+}
+.add-item:hover { border-color: var(--color-accent); color: var(--color-accent); }
+.item__custom {
+  display: inline-block; margin-right: var(--space-1);
+  padding: 1px 6px; border-radius: var(--radius-pill);
+  background: var(--color-surface-alt); color: var(--color-text-muted);
+  font-size: var(--font-size-xs); text-transform: uppercase; letter-spacing: .06em;
+}
+.item__remove {
+  display: inline-flex; align-items: center; margin-left: var(--space-2);
+  padding: 2px; background: transparent; border: none; cursor: pointer;
+  color: var(--color-text-muted);
+}
+.item__remove:hover { color: var(--color-danger, #b03a36); }
