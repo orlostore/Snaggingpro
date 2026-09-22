@@ -37,6 +37,8 @@ export type AreaKind =
   | 'substation'
   | 'lv_room'
   | 'cctv'
+  | 'cctv_system'
+  | 'intercom'
   | 'gas_room'
   | 'parking'
   | 'driveway'

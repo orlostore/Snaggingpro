@@ -538,6 +538,43 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
       ],
     },
   },
+  cctv_system: {
+    icon: 'utility',
+    discs: ['electrical', 'automation'],
+    items: {
+      electrical: [
+        'UPS / battery back-up present, powered, holding charge',
+        'Power supply and isolation to the head end, labelled',
+        'Cabling and containment — supported, dressed, not shared with power',
+        'Earthing at the rack',
+      ],
+      automation: [
+        'Cameras fitted and aligned — coverage matches the intended view',
+        'Image quality by day, and by night on IR where fitted',
+        'No obstruction to any camera — planting, signage, ductwork, glare',
+        'Recorder operating, drives healthy, retention period set',
+        'Connectivity — every camera online, no dropouts on the live view',
+        'Time and date correct and consistent across cameras',
+        'Monitor / viewing station working',
+        'NOTE: technical inspection only — NOT checked against SiRA requirements',
+      ],
+    },
+  },
+  intercom: {
+    icon: 'utility',
+    discs: ['electrical', 'automation'],
+    items: {
+      electrical: ['Power supply and back-up', 'Cabling and containment where visible'],
+      automation: [
+        'Entrance panel — buttons, display, legibility, weather protection',
+        'Call to each apartment handset answers',
+        'Audio quality both ways',
+        'Video image where fitted',
+        'Door release operates from the handset',
+        'Apartment handset — fixing, finish, damage',
+      ],
+    },
+  },
   fahu: {
     icon: 'pump',
     discs: ['civil', 'electrical', 'hvac', 'mechanical', 'fire'],
