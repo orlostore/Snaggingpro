@@ -17,6 +17,11 @@ import { getDB } from './idb';
 import { reportsRepo } from './reports';
 import type { State } from '@/state/schema';
 
+/** Written into new backups. The old name is still accepted so existing
+ *  backup files keep restoring after the rename. */
+const APP_MARKER = 'Marsad Field';
+const ACCEPTED_MARKERS = [APP_MARKER, 'SnaggingPro'];
+
 const BUNDLE_VERSION = 1;
 
 interface PhotoBundle {
@@ -33,7 +38,7 @@ interface PhotoBundle {
 export interface BackupBundle {
   bundleVersion: number;
   exportedAt: number;
-  appName: 'SnaggingPro';
+  appName: string;
   reports: State[];
   photos: PhotoBundle[];
 }
@@ -94,7 +99,7 @@ export async function exportBackup(): Promise<BackupBundle> {
   return {
     bundleVersion: BUNDLE_VERSION,
     exportedAt: Date.now(),
-    appName: 'SnaggingPro',
+    appName: APP_MARKER,
     reports,
     photos,
   };
@@ -124,8 +129,8 @@ export async function importBackup(bundle: unknown): Promise<RestoreSummary> {
     throw new Error('Backup file is not valid JSON.');
   }
   const b = bundle as BackupBundle;
-  if (b.appName !== 'SnaggingPro' || typeof b.bundleVersion !== 'number') {
-    throw new Error('Not a SnaggingPro backup file.');
+  if (!ACCEPTED_MARKERS.includes(b.appName) || typeof b.bundleVersion !== 'number') {
+    throw new Error('Not a Marsad Field backup file.');
   }
   if (b.bundleVersion > BUNDLE_VERSION) {
     throw new Error(

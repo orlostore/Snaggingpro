@@ -51,4 +51,4 @@ export const HANDOVER_SECTIONS: HandoverSection[] = [
 ];
 
 export const HANDOVER_FOOTNOTE =
-  'SnaggingPro recommends retaining copies of all the above documents for the life of the property. Lost warranties cannot be re-issued.';
+  'Marsad Field recommends retaining copies of all the above documents for the life of the property. Lost warranties cannot be re-issued.';

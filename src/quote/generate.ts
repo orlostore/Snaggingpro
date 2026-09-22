@@ -60,7 +60,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quotation ${h(q.quoteRef)} — SnaggingPro</title>
+  <title>Quotation ${h(q.quoteRef)} — Marsad Field</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -149,7 +149,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
 
     <header class="topbar">
       <div>
-        <div class="wordmark">Snagging<em>Pro</em></div>
+        <div class="wordmark">Marsad<em>Field</em></div>
         <div class="wordmark-sub">Property condition assessment · UAE</div>
       </div>
       <div class="doc-meta">
@@ -263,7 +263,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
         var phone = ${JSON.stringify(q.clientPhone.replace(/[^\d]/g, ''))};
         var message =
           'Dear ${(q.clientName || 'Sir/Madam').replace(/'/g, "\\'")}, \\n\\n' +
-          'Please find your SnaggingPro inspection quotation:\\n\\n' +
+          'Please find your Marsad Field inspection quotation:\\n\\n' +
           'Reference: ${q.quoteRef}\\n' +
           'Total: ${formatAED(total)}\\n' +
           'Property: ${PROP_LABEL[q.propType]}${q.bedrooms > 0 ? ` ${q.bedrooms}BR` : ''}${q.unit ? ` · Unit ${q.unit.replace(/'/g, "\\'")}` : ''}\\n\\n' +

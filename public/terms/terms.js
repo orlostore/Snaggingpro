@@ -115,7 +115,7 @@
         showSuccess(typedName, record);
       })
       .catch(function (err) {
-        errorEl.textContent = 'Could not record agreement: ' + err.message + '. Please try again, or contact SnaggingPro directly.';
+        errorEl.textContent = 'Could not record agreement: ' + err.message + '. Please try again, or contact us directly.';
         errorEl.classList.add('on');
         btn.disabled = false;
         btn.innerHTML =

@@ -32,8 +32,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png', 'plans/*.webp'],
       manifest: {
-        name: 'OSnaggingPro',
-        short_name: 'OSnaggingPro',
+        name: 'Marsad Field',
+        short_name: 'Marsad',
         description: 'Internal inspection tool',
         theme_color: '#0B4E6A',
         background_color: '#f7f7f8',

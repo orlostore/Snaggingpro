@@ -41,7 +41,7 @@ export function sendTermsViaWhatsApp(opts: {
   const greeting = opts.clientName ? `Dear ${opts.clientName},` : 'Hello,';
   const message =
     `${greeting}\n\n` +
-    `Please review and acknowledge the Terms of Engagement before your SnaggingPro inspection:\n\n` +
+    `Please review and acknowledge the Terms of Engagement before your Marsad Field inspection:\n\n` +
     `${link}\n\n` +
     (opts.jobRef ? `Reference: ${opts.jobRef}\n\n` : '') +
     `Thank you.`;

@@ -1,10 +1,10 @@
 /**
- * SnaggingPro business contact details printed on client-facing
+ * Marsad Field business contact details printed on client-facing
  * documents (quotation, future receipts, etc.).
  */
 
 export const BUSINESS = {
-  name: 'SnaggingPro',
+  name: 'Marsad Field',
   tagline: 'Property condition assessment · UAE',
   phone: '+971 55 547 7206',
 } as const;

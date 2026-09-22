@@ -199,7 +199,7 @@ export function openQuoteOverlay(input: QuoteInput): void {
     const greeting = input.clientName ? `Dear ${input.clientName},` : 'Hello,';
     const message =
       `${greeting}\n\n` +
-      `Please find your SnaggingPro inspection quotation:\n\n` +
+      `Please find your Marsad Field inspection quotation:\n\n` +
       `Reference: ${input.quoteRef}\n` +
       `Total: ${formatAED(total)}\n` +
       `Property: ${PROP_LABEL[input.propType]}` +

@@ -4,7 +4,7 @@ declare const __BUILD_TIME__: string;
 
 export const ENV = {
   pin: import.meta.env.VITE_APP_PIN ?? '1576',
-  appName: 'SnaggingPro',
+  appName: 'Marsad Field',
   buildVersion:
     import.meta.env.VITE_BUILD_VERSION ??
     (typeof __BUILD_TIME__ !== 'undefined' ? __BUILD_TIME__ : 'dev'),

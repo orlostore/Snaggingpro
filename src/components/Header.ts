@@ -18,7 +18,7 @@ export function Header({ back, title }: HeaderProps = {}): TemplateResult {
         <div class="app-header__brand">
           ${title
             ? html`<span class="app-header__title">${title}</span>`
-            : html`<span class="app-header__logo">OSnagging<span>Pro</span></span>`}
+            : html`<span class="app-header__logo">Marsad<span>Field</span></span>`}
         </div>
         <span class="app-header__spacer"></span>
       </div>
