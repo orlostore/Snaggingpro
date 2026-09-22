@@ -3,10 +3,12 @@ import { Header } from '@/components/Header';
 import { Footer } from '@/components/Footer';
 import { Icon } from '@/components/Icon';
 import { toast } from '@/components/Toast';
+import { confirmDialog } from '@/components/Confirm';
 import { go } from '@/lib/router';
 import { loadDraft } from '@/state/persist';
 import { CRYSTAL_FOUR } from '@/building/registry';
-import { areaStatuses, openArea, planUrl, type AreaStatus } from '@/building/store';
+import { areaStatuses, isRemote, openArea, planUrl, type AreaStatus } from '@/building/store';
+import { onRemoteChange, pullRemoteQuietly } from '@/sync/remote';
 import { GROUP_LABELS, type AreaDef, type AreaGroup, type LevelDef } from '@/building/types';
 
 const GROUP_ORDER: AreaGroup[] = ['apartment', 'circulation', 'plant', 'amenity', 'waste', 'parking', 'system'];
@@ -29,8 +31,25 @@ export function LevelAreas(rootEl: HTMLElement, levelId: string): TemplateResult
     paint();
   }
 
+  // Other tablets are working the same building — refresh what they have done.
+  const stopWatching = onRemoteChange(() => void load());
+  window.addEventListener('beforeunload', stopWatching, { once: true });
+
   async function open(area: AreaDef) {
     if (!level) return;
+    const st = ctx.statuses.get(area.ref) ?? 'not-started';
+    if (isRemote(st)) {
+      const ok = await confirmDialog({
+        title: `${area.ref} is on another tablet`,
+        message:
+          st === 'remote-done'
+            ? `Another device has already completed ${area.ref}. Opening it here starts a fresh inspection on this tablet, and whichever device syncs last is the copy that is kept. Open it anyway?`
+            : `Another device is part way through ${area.ref}. Opening it here starts a fresh inspection on this tablet, and whichever device syncs last is the copy that is kept. Open it anyway?`,
+        confirmLabel: 'Open anyway',
+        destructive: true,
+      });
+      if (!ok) return;
+    }
     await openArea(b, level, area);
     toast(`Opened ${area.ref}`);
     go('dashboard');
@@ -49,6 +68,10 @@ export function LevelAreas(rootEl: HTMLElement, levelId: string): TemplateResult
   function statusChip(st: AreaStatus): TemplateResult {
     if (st === 'done') return html`<span class="area__st is-done">Complete</span>`;
     if (st === 'draft') return html`<span class="area__st is-draft">In progress</span>`;
+    if (st === 'remote-done')
+      return html`<span class="area__st is-remote">Complete · another tablet</span>`;
+    if (st === 'remote-draft')
+      return html`<span class="area__st is-remote">In progress · another tablet</span>`;
     return html`<span class="area__st">Not started</span>`;
   }
 
@@ -130,6 +153,7 @@ export function LevelAreas(rootEl: HTMLElement, levelId: string): TemplateResult
     `;
   }
 
+  pullRemoteQuietly();
   void load();
   return view();
 }

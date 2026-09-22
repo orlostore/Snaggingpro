@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { CRYSTAL_FOUR } from '@/building/registry';
-import { areaJobRef, newAreaState } from '@/building/store';
+import { areaJobRef, isRemote, newAreaState, progressForLevel, type AreaStatus } from '@/building/store';
 import { areaCount, findArea } from '@/building/types';
 import { checklistFor } from '@/building/areaChecklists';
 
@@ -74,5 +74,30 @@ describe('newAreaState', () => {
         expect(total, `${area.ref} (${area.kind}) has no checklist items`).toBeGreaterThan(0);
       }
     }
+  });
+});
+
+describe('multi-device status', () => {
+  it('marks only the other tablets\' work as remote', () => {
+    expect(isRemote('remote-done')).toBe(true);
+    expect(isRemote('remote-draft')).toBe(true);
+    expect(isRemote('done')).toBe(false);
+    expect(isRemote('draft')).toBe(false);
+    expect(isRemote('not-started')).toBe(false);
+  });
+
+  it('counts another tablet\'s areas toward the level progress', () => {
+    const level = CRYSTAL_FOUR.levels.find((l) => l.id === 'L2');
+    expect(level).toBeDefined();
+    const statuses = new Map<string, AreaStatus>();
+    const [a, b, c] = level!.areas;
+    statuses.set(a!.ref, 'done');
+    statuses.set(b!.ref, 'remote-done');
+    statuses.set(c!.ref, 'remote-draft');
+
+    const p = progressForLevel(level!, statuses);
+    expect(p.done).toBe(2);
+    expect(p.draft).toBe(1);
+    expect(p.total).toBe(level!.areas.length);
   });
 });

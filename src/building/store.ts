@@ -12,13 +12,19 @@ import { CHECKLISTS } from '@/domain/checklists';
 import { todayIsoDate } from '@/lib/format';
 import { saveDraft } from '@/state/persist';
 import { reportsRepo } from '@/storage/reports';
+import { remoteIndex } from '@/sync/remote';
 import { checklistFor } from './areaChecklists';
 import { BUILDINGS } from './registry';
 import type { AreaDef, BuildingDef, LevelDef } from './types';
 
 const ACTIVE_KEY = 'snaggingpro_building_active';
 
-export type AreaStatus = 'not-started' | 'draft' | 'done';
+export type AreaStatus = 'not-started' | 'draft' | 'done' | 'remote-draft' | 'remote-done';
+
+/** True when this area's only record came from another tablet, not this one. */
+export function isRemote(st: AreaStatus): boolean {
+  return st === 'remote-draft' || st === 'remote-done';
+}
 
 /** Safe, stable id for an area's report. "STR1 2→3" becomes "CF-STR1-2-3". */
 export function areaJobRef(buildingCode: string, areaRef: string): string {
@@ -171,12 +177,22 @@ export async function areaStatuses(b: BuildingDef, draftRef: string | null): Pro
     summaries = [];
   }
   const byRef = new Map(summaries.map((s) => [s.jobRef, s]));
+  const remote = remoteIndex();
   for (const level of b.levels) {
     for (const area of level.areas) {
       const ref = areaJobRef(b.code, area.ref);
       const found = byRef.get(ref);
-      if (found) out.set(area.ref, found.status === 'completed' ? 'done' : 'draft');
-      else if (draftRef === ref) out.set(area.ref, 'draft');
+      if (found) {
+        out.set(area.ref, found.status === 'completed' ? 'done' : 'draft');
+        continue;
+      }
+      if (draftRef === ref) {
+        out.set(area.ref, 'draft');
+        continue;
+      }
+      // Nothing local — another tablet may still have covered it.
+      const away = remote.get(ref);
+      if (away) out.set(area.ref, away.status === 'completed' ? 'remote-done' : 'remote-draft');
       else out.set(area.ref, 'not-started');
     }
   }
@@ -194,8 +210,8 @@ export function progressForLevel(level: LevelDef, statuses: Map<string, AreaStat
   let draft = 0;
   for (const area of level.areas) {
     const st = statuses.get(area.ref);
-    if (st === 'done') done++;
-    else if (st === 'draft') draft++;
+    if (st === 'done' || st === 'remote-done') done++;
+    else if (st === 'draft' || st === 'remote-draft') draft++;
   }
   return { done, draft, total: level.areas.length };
 }

@@ -1448,6 +1448,14 @@
 }
 .area__st.is-done { background: var(--color-success-soft, #e3f0e9); color: var(--color-success); }
 .area__st.is-draft { background: var(--color-warning-soft, #fbede1); color: var(--color-warning, #a8520c); }
+/* Covered by another tablet — visibly not this device's work. */
+.area__st.is-remote {
+  background: var(--color-info-soft, #e2f0f4);
+  color: var(--color-info, #0b6e8a);
+  border: 1px dashed currentColor;
+}
+.area.is-remote-done,
+.area.is-remote-draft { opacity: 0.72; }
 
 @media (max-width: 420px) {
   .area { flex-wrap: wrap; }

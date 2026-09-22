@@ -7,6 +7,7 @@
 import { StateZ, type State } from './schema';
 import { migrate } from './migrations';
 import { debounce } from '@/lib/debounce';
+import { ENV } from '@/lib/env';
 
 const DRAFT_KEY = 'snaggingpro_draft_v1';
 const LEGACY_KEY = 'snaggingpro_session';
@@ -18,9 +19,31 @@ export function saveDraft(state: State): void {
   } catch (err) {
     console.warn('saveDraft failed', err);
   }
+  cloudAutosave(state);
 }
 
 export const saveDraftDebounced = debounce(saveDraft, 250);
+
+/**
+ * Push the work-in-progress to the cloud, not just the finished report.
+ *
+ * Without this a tablet lost halfway through an apartment takes its snags
+ * with it — the photos are already in R2, but the checklist and the notes
+ * only ever lived in this browser. The outbox dedupes by report id, so
+ * calling this on every edit collapses to one upload of the latest state.
+ */
+const cloudAutosave = debounce((state: State) => {
+  if (!ENV.cloudEnabled) return;
+  if (!state.job?.ref) return;
+  void (async () => {
+    try {
+      const { reportsRepo } = await import('@/storage/reports');
+      await reportsRepo.saveReport(state);
+    } catch (err) {
+      console.warn('cloud autosave failed', err);
+    }
+  })();
+}, 4000);
 
 /** Map any pre-pricing-rework property types onto the new {apartment, villa} pair. */
 function normalisePropType(input: unknown): unknown {

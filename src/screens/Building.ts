@@ -7,6 +7,7 @@ import { loadDraft } from '@/state/persist';
 import { CRYSTAL_FOUR } from '@/building/registry';
 import { areaStatuses, progressForLevel, type AreaStatus } from '@/building/store';
 import { areaCount } from '@/building/types';
+import { onRemoteChange, pullRemoteQuietly } from '@/sync/remote';
 
 export function Building(rootEl: HTMLElement): TemplateResult {
   const b = CRYSTAL_FOUR;
@@ -21,6 +22,10 @@ export function Building(rootEl: HTMLElement): TemplateResult {
     ctx.statuses = await areaStatuses(b, draft?.job.ref ?? null);
     paint();
   }
+
+  // Progress here counts every tablet's work, not just this one's.
+  const stopWatching = onRemoteChange(() => void load());
+  window.addEventListener('beforeunload', stopWatching, { once: true });
 
   function totals() {
     let done = 0;
@@ -88,6 +93,7 @@ export function Building(rootEl: HTMLElement): TemplateResult {
     `;
   }
 
+  pullRemoteQuietly();
   void load();
   return view();
 }

@@ -13,6 +13,7 @@ import { ENV } from '@/lib/env';
 import { apiPost, apiDelete, apiPutBlob, ApiError } from '@/lib/api';
 import { complete, nextDue, recordFailure, subscribe as subscribeOutbox } from './outbox';
 import { getDB } from '@/storage/idb';
+import { pullRemoteQuietly } from './remote';
 import type { OutboxOp, PhotoRecord } from '@/storage/idb';
 import type { State } from '@/state/schema';
 
@@ -98,6 +99,9 @@ async function loop(): Promise<void> {
     const entry = await nextDue();
     if (!entry) {
       setStatus('idle');
+      // Queue is empty, so this is the cheapest moment to find out what the
+      // other tablets have done since we last looked.
+      pullRemoteQuietly();
       await waitForWake(30_000);
       continue;
     }
@@ -141,9 +145,15 @@ export function startSyncEngine(): void {
   started = true;
   setStatus('idle');
 
-  window.addEventListener('online', () => wake());
+  window.addEventListener('online', () => {
+    wake();
+    pullRemoteQuietly();
+  });
   window.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') wake();
+    if (document.visibilityState === 'visible') {
+      wake();
+      pullRemoteQuietly();
+    }
   });
   subscribeOutbox(() => wake());
 
