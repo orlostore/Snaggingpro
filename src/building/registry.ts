@@ -149,6 +149,7 @@ export const CRYSTAL_FOUR: BuildingDef = {
         { ref: 'R-WC2', label: 'Toilet 2', kind: 'wc', group: 'amenity', dwg: 'A-105' },
         { ref: 'R-WC3', label: 'Toilet 3', kind: 'wc', group: 'amenity', dwg: 'A-105' },
         { ref: 'R-WC4', label: 'Toilet 4 (accessible)', kind: 'wc', group: 'amenity', dwg: 'A-105' },
+        { ref: 'R-COR', label: 'Amenity corridor', kind: 'corridor', group: 'circulation', dwg: 'A-105', note: 'Strip west of the toilet block — the accessible WC, second WC and changing room open onto it' },
         { ref: 'R-CHG', label: 'Changing room', kind: 'changing', group: 'amenity', dwg: 'A-105' },
         { ref: 'R-SHWR', label: 'Shower', kind: 'changing', group: 'amenity', dwg: 'A-105' },
         { ref: 'R-PPLANT', label: 'Pool pump room', kind: 'pool_plant', group: 'plant', dwg: 'A-105', note: 'AC unit R-3, 3.40 kW' },
