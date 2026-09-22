@@ -18,6 +18,7 @@ import { HANDOVER_SECTIONS, HANDOVER_FOOTNOTE } from '@/domain/handoverDocs';
 import { PROP_LABEL } from '@/domain/pricing';
 import { formatDateLong, formatAED } from '@/lib/format';
 import { getPhoto } from '@/storage/photos';
+import { planContextFor, type PlanContext } from '@/building/store';
 import type { RoomState, State } from '@/state/schema';
 
 const BRAND_CSS = `
@@ -42,6 +43,8 @@ const BRAND_CSS = `
   .kpi { background: var(--light); border-radius: 8px; padding: 12px; text-align: center; }
   .kpi__n { font-size: 24px; font-weight: 700; color: var(--brand); }
   .kpi__l { font-size: 11px; color: var(--grey); text-transform: uppercase; letter-spacing: 1px; }
+  .area-plan { margin: 16px 0; border: 1px solid #d7d9de; border-radius: 8px; overflow: hidden; background: #fff; }
+  .area-plan img { width: 100%; height: auto; display: block; }
   .cover-photos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 16px 0 24px; }
   .cover-photo { background: #ecedf0; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden; }
   .cover-photo img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -214,6 +217,38 @@ function coverPhotosHtml(state: State, photos: Map<string, string>): string {
     <div class="cover-photos">
       ${slots.map((id) => `<div class="cover-photo"><img src="${photos.get(id)!}" alt="Cover photo" /></div>`).join('')}
     </div>
+  `;
+}
+
+
+/**
+ * The marked-up level plan, inlined as a data URL. The report is written into
+ * a blank window and may be rasterised for PDF, so a relative image path
+ * would not resolve — it has to travel inside the document.
+ */
+async function planDataUrl(src: string): Promise<string | null> {
+  try {
+    const res = await fetch(src);
+    if (!res.ok) return null;
+    return await blobToDataUrl(await res.blob());
+  } catch {
+    return null;
+  }
+}
+
+function areaPlanPage(ctx: PlanContext, dataUrl: string | null): string {
+  const body = dataUrl
+    ? `<div class="area-plan"><img src="${dataUrl}" alt="Marked-up plan for ${h(ctx.levelLabel)}" /></div>
+       ${ctx.planNote ? `<p class="meta">${h(ctx.planNote)}</p>` : ''}
+       <p class="meta">Areas are colour-coded by type. This report covers <strong>${h(ctx.areaRef)}</strong> only.</p>`
+    : `<p class="meta">No marked-up plan is available for this level.</p>`;
+  return `
+    <section class="page">
+      <h1>Location</h1>
+      <p class="meta">${h(ctx.buildingName)} · ${h(ctx.levelLabel)}</p>
+      <h2>${h(ctx.areaRef)} — ${h(ctx.areaLabel)}</h2>
+      ${body}
+    </section>
   `;
 }
 
@@ -566,6 +601,10 @@ export async function generateReportHtml(state: State): Promise<string> {
   const snags = collectSnags(state);
   const photos = await loadPhotoMap(state);
   const isFollowUp = state.job.reportType === 'follow-up';
+  const areaCtx = planContextFor(state);
+  const planPage = areaCtx
+    ? areaPlanPage(areaCtx, areaCtx.plan ? await planDataUrl(areaCtx.plan) : null)
+    : '';
   return `<!doctype html>
 <html lang="en">
 <head>
@@ -583,6 +622,7 @@ export async function generateReportHtml(state: State): Promise<string> {
     <div class="sp-print-hint">Choose <strong>Save as PDF</strong> in the print dialog.</div>
   </div>
   ${coverPage(state, snags, photos)}
+  ${planPage}
   ${severityDefinitionsPage()}
   ${isFollowUp ? rectificationSummary(snags, photos) : handoverPage()}
   ${isFollowUp ? '' : criticalSummary(snags, photos)}
