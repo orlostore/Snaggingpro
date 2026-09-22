@@ -67,7 +67,7 @@ function residentialLevel(n: number): LevelDef {
     id: `L${n}`,
     label: `Level ${n}`,
     dwg: n === 1 ? 'A-103' : 'A-104',
-    plan: n === 1 ? '/plans/L1.webp' : '/plans/TYP.webp',
+    plan: n === 1 ? 'plans/L1.webp' : 'plans/TYP.webp',
     planNote:
       n === 1
         ? 'First floor plan A-103 — note the inaccessible roof on the east side'
@@ -101,7 +101,7 @@ export const CRYSTAL_FOUR: BuildingDef = {
       id: 'G',
       label: 'Ground',
       dwg: 'A-102',
-      plan: '/plans/G.webp',
+      plan: 'plans/G.webp',
       planNote: 'Ground floor plan A-102',
       areas: [
         { ref: 'G-ENT', label: 'Entrance', kind: 'entrance', group: 'circulation', dwg: 'A-102', note: 'AC unit G-1, 10.59 kW (shared with CCTV)' },
@@ -138,7 +138,7 @@ export const CRYSTAL_FOUR: BuildingDef = {
       id: 'R',
       label: 'Roof — amenity deck',
       dwg: 'A-105 · AC-05 · AC-11',
-      plan: '/plans/R.webp',
+      plan: 'plans/R.webp',
       planNote: 'Roof plan A-105 — the condenser farm and FAHU-1 sit on this slab',
       areas: [
         { ref: 'R-POOL', label: 'Swimming pool', kind: 'pool', group: 'amenity', dwg: 'A-105' },

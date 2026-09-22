@@ -7,7 +7,7 @@ import { loadDraft, saveDraft } from '@/state/persist';
 import { statsForRoom } from '@/domain/snags';
 import { go } from '@/lib/router';
 import { Icon, IconOrFallback } from '@/components/Icon';
-import { planContextFor } from '@/building/store';
+import { planContextFor, planUrl } from '@/building/store';
 
 export function Dashboard(rootEl: HTMLElement): TemplateResult {
   let planOpen = false;
@@ -92,7 +92,7 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
                           }}
                         >
                           <img
-                            src=${plan.plan}
+                            src=${planUrl(plan.plan)}
                             alt="Area plan for ${plan.levelLabel}"
                             class=${planOpen ? 'is-open' : ''}
                             loading="lazy"

@@ -18,7 +18,7 @@ import { HANDOVER_SECTIONS, HANDOVER_FOOTNOTE } from '@/domain/handoverDocs';
 import { PROP_LABEL } from '@/domain/pricing';
 import { formatDateLong, formatAED } from '@/lib/format';
 import { getPhoto } from '@/storage/photos';
-import { planContextFor, type PlanContext } from '@/building/store';
+import { planContextFor, planUrl, type PlanContext } from '@/building/store';
 import type { RoomState, State } from '@/state/schema';
 
 const BRAND_CSS = `
@@ -228,7 +228,7 @@ function coverPhotosHtml(state: State, photos: Map<string, string>): string {
  */
 async function planDataUrl(src: string): Promise<string | null> {
   try {
-    const res = await fetch(src);
+    const res = await fetch(planUrl(src));
     if (!res.ok) return null;
     return await blobToDataUrl(await res.blob());
   } catch {

@@ -6,7 +6,7 @@ import { toast } from '@/components/Toast';
 import { go } from '@/lib/router';
 import { loadDraft } from '@/state/persist';
 import { CRYSTAL_FOUR } from '@/building/registry';
-import { areaStatuses, openArea, type AreaStatus } from '@/building/store';
+import { areaStatuses, openArea, planUrl, type AreaStatus } from '@/building/store';
 import { GROUP_LABELS, type AreaDef, type AreaGroup, type LevelDef } from '@/building/types';
 
 const GROUP_ORDER: AreaGroup[] = ['apartment', 'circulation', 'plant', 'amenity', 'waste', 'parking', 'system'];
@@ -84,7 +84,7 @@ export function LevelAreas(rootEl: HTMLElement, levelId: string): TemplateResult
                     aria-expanded=${ctx.planOpen ? 'true' : 'false'}
                   >
                     <img
-                      src=${l.plan}
+                      src=${planUrl(l.plan)}
                       alt="Colour-coded area plan for ${l.label}"
                       class=${ctx.planOpen ? 'is-open' : ''}
                       loading="lazy"

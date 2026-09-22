@@ -24,7 +24,7 @@ describe('building register', () => {
   it('attaches a marked-up plan to the levels that have one drawn', () => {
     const withPlan = CRYSTAL_FOUR.levels.filter((l) => l.plan);
     expect(withPlan.map((l) => l.id)).toEqual(['G', 'L1', 'L2', 'L3', 'L4', 'R']);
-    for (const l of withPlan) expect(l.plan).toMatch(/^\/plans\/.+\.webp$/);
+    for (const l of withPlan) expect(l.plan).toMatch(/^plans\/.+\.webp$/);
   });
 });
 

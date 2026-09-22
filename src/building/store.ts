@@ -200,6 +200,22 @@ export function progressForLevel(level: LevelDef, statuses: Map<string, AreaStat
   return { done, draft, total: level.areas.length };
 }
 
+
+/**
+ * Resolve a plan path against the document base.
+ *
+ * Plans are stored relative ("plans/TYP.webp") so the app works wherever it
+ * is served from — site root on Pages, or a sub-path on a preview host. An
+ * absolute "/plans/..." would resolve to the host root and 404.
+ */
+export function planUrl(path: string): string {
+  try {
+    return new URL(path, document.baseURI).href;
+  } catch {
+    return path;
+  }
+}
+
 export interface PlanContext {
   buildingName: string;
   levelId: string;
