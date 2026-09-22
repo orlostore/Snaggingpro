@@ -25,12 +25,12 @@ export default defineConfig({
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'icons/*.png'],
+      includeAssets: ['favicon.svg', 'icons/*.png', 'plans/*.webp'],
       manifest: {
-        name: 'SnaggingPro',
-        short_name: 'SnaggingPro',
-        description: 'UAE property snagging inspections — handover & DLP',
-        theme_color: '#1e3a5f',
+        name: 'SnaggingPro Buildings',
+        short_name: 'SP Buildings',
+        description: 'Whole-building snagging inspections — UAE handover & DLP',
+        theme_color: '#0B4E6A',
         background_color: '#f7f7f8',
         display: 'standalone',
         orientation: 'portrait',
@@ -43,7 +43,9 @@ export default defineConfig({
         ],
       },
       workbox: {
-        globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // webp included so the marked-up level plans are available offline —
+        // basements and plant rooms have no signal.
+        globPatterns: ['**/*.{js,css,html,svg,png,webp,woff2}'],
         cleanupOutdatedCaches: true,
         // Take over immediately on new deploy — no waiting for all tabs to
         // close. Critical for fast iteration; old CSS bundles must not get

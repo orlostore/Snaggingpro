@@ -30,6 +30,8 @@ import { Library } from '@/screens/Library';
 import { Migrate } from '@/screens/Migrate';
 import { Quotations } from '@/screens/Quotations';
 import { ReportDetail } from '@/screens/ReportDetail';
+import { Building } from '@/screens/Building';
+import { LevelAreas } from '@/screens/LevelAreas';
 
 const rootEl = document.getElementById('app');
 if (!rootEl) throw new Error('#app missing');
@@ -46,6 +48,8 @@ const PROTECTED: RouteName[] = [
   'migrate',
   'quotations',
   'report-detail',
+  'building',
+  'level',
 ];
 
 function dispatch(route: Route) {
@@ -106,6 +110,12 @@ function dispatch(route: Route) {
       break;
     case 'report-detail':
       render(ReportDetail(root, route.params['id'] ?? ''), root);
+      break;
+    case 'building':
+      render(Building(root), root);
+      break;
+    case 'level':
+      render(LevelAreas(root, route.params['id'] ?? ''), root);
       break;
   }
 }

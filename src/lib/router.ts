@@ -15,7 +15,9 @@ export type RouteName =
   | 'library'
   | 'migrate'
   | 'quotations'
-  | 'report-detail';
+  | 'report-detail'
+  | 'building'
+  | 'level';
 
 export interface Route {
   name: RouteName;
@@ -61,6 +63,10 @@ function parseHash(): Route {
       return { name: 'quotations', params };
     case 'report-detail':
       return { name: 'report-detail', params: { ...params, id: segs[1] ?? '' } };
+    case 'building':
+      return { name: 'building', params };
+    case 'level':
+      return { name: 'level', params: { ...params, id: segs[1] ?? '' } };
     default:
       return { name: 'splash', params };
   }
@@ -72,7 +78,7 @@ export function currentRoute(): Route {
 
 export function go(name: RouteName, params: Record<string, string> = {}): void {
   let path = `/${name}`;
-  if ((name === 'room' || name === 'report-detail') && params['id']) {
+  if ((name === 'room' || name === 'report-detail' || name === 'level') && params['id']) {
     path = `/${name}/${params['id']}`;
   }
   const qs = Object.entries(params)

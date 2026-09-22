@@ -13,12 +13,19 @@ export function Splash(): TemplateResult {
         <div class="splash__logo">
           <span>Snagging</span><em>Pro</em>
         </div>
-        <p class="splash__tagline">Professional property inspections, UAE.</p>
+        <p class="splash__tagline">Whole-building inspections, UAE.</p>
         <div class="splash__actions">
           ${Button({
-            label: html`${Icon({ name: 'plus', size: 18 })} New Inspection`,
+            label: html`${Icon({ name: 'apartment', size: 18 })} Building Inspection`,
             full: true,
             size: 'lg',
+            onClick: () => go('pin', { to: 'building' }),
+          })}
+          ${Button({
+            label: html`${Icon({ name: 'plus', size: 18 })} Single Unit Inspection`,
+            full: true,
+            size: 'lg',
+            variant: 'secondary',
             onClick: () => go('pin', { to: 'setup' }),
           })}
           ${draft

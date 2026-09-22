@@ -4,22 +4,22 @@
 # works locally if you want to run the Functions against a local D1 / R2.
 #
 # Production bindings (set in Pages dashboard → Settings → Bindings):
-#   DB     → D1 database snaggingpro
-#   PHOTOS → R2 bucket snaggingpro-photos
+#   DB     → D1 database snaggingpro-buildings
+#   PHOTOS → R2 bucket snaggingpro-buildings-photos
 #
 # Production secret (Pages → Settings → Variables and secrets):
 #   API_SECRET (Secret type)
 
-name = "snaggingpro"
+name = "snaggingpro-buildings"
 pages_build_output_dir = "dist"
 compatibility_date = "2025-06-01"
 compatibility_flags = ["nodejs_compat"]
 
 [[r2_buckets]]
 binding = "PHOTOS"
-bucket_name = "snaggingpro-photos"
+bucket_name = "snaggingpro-buildings-photos"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "snaggingpro"
-database_id = "70d1a6e4-ba43-477f-ac80-79d4200d7eec"
+database_name = "snaggingpro-buildings"
+database_id = "SET_AFTER_CREATING_THE_BUILDINGS_D1"
