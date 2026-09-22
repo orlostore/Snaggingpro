@@ -17,7 +17,7 @@ describe('building register', () => {
   });
 
   it('covers every level from underground to building systems', () => {
-    expect(CRYSTAL_FOUR.levels.map((l) => l.id)).toEqual(['UG', 'G', 'L1', 'L2', 'L3', 'L4', 'R', 'LM', 'SYS']);
+    expect(CRYSTAL_FOUR.levels.map((l) => l.id)).toEqual(['UG', 'G', 'L1', 'L2', 'L3', 'L4', 'R', 'LM', 'LIFTS', 'SYS']);
     expect(areaCount(CRYSTAL_FOUR)).toBeGreaterThan(140);
   });
 
@@ -99,5 +99,30 @@ describe('multi-device status', () => {
     expect(p.done).toBe(2);
     expect(p.draft).toBe(1);
     expect(p.total).toBe(level!.areas.length);
+  });
+});
+
+describe('lifts', () => {
+  it('keeps both lifts on one level, split by sub-heading', () => {
+    const lifts = CRYSTAL_FOUR.levels.find((l) => l.id === 'LIFTS');
+    expect(lifts).toBeDefined();
+    const subs = [...new Set(lifts!.areas.map((a) => a.sub))];
+    expect(subs).toEqual(['Lift 1', 'Lift 2']);
+    for (const sub of subs) {
+      const parts = lifts!.areas.filter((a) => a.sub === sub).map((a) => a.label);
+      expect(parts).toEqual(['Car', 'Shaft', 'Pit']);
+    }
+  });
+
+  it('snags the shared machine room once, not once per lift', () => {
+    const machineRooms = CRYSTAL_FOUR.levels
+      .flatMap((l) => l.areas)
+      .filter((a) => a.kind === 'lift_machine');
+    expect(machineRooms.map((a) => a.ref)).toEqual(['LM-LMR']);
+  });
+
+  it('leaves the landing doors on their own floors', () => {
+    const l2 = CRYSTAL_FOUR.levels.find((l) => l.id === 'L2');
+    expect(l2!.areas.map((a) => a.ref)).toEqual(expect.arrayContaining(['LIFT1@2', 'LIFT2@2']));
   });
 });

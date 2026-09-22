@@ -76,6 +76,11 @@ export interface AreaDef {
   note?: string;
   /** Source drawing, shown so the supervisor can cross-check on paper. */
   dwg?: string;
+  /**
+   * Optional sub-heading within a group — lets one level hold several
+   * pieces of equipment side by side, e.g. Lift 1 and Lift 2.
+   */
+  sub?: string;
 }
 
 export interface LevelDef {

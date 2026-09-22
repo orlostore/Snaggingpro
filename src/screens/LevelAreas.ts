@@ -128,9 +128,16 @@ export function LevelAreas(rootEl: HTMLElement, levelId: string): TemplateResult
             ([group, areas]) => html`
               <h2 class="lvl__group">${GROUP_LABELS[group]} <span>${areas.length}</span></h2>
               <ul class="lvl__areas">
-                ${areas.map((area) => {
+                ${areas.map((area, i) => {
                   const st = ctx.statuses.get(area.ref) ?? 'not-started';
+                  // A sub-heading opens each block — Lift 1, Lift 2, and so on.
+                  const prevSub = i > 0 ? areas[i - 1]?.sub : undefined;
+                  const sub =
+                    area.sub && area.sub !== prevSub
+                      ? html`<li class="lvl__sub">${area.sub}</li>`
+                      : null;
                   return html`
+                    ${sub}
                     <li>
                       <button class="area area--${group} is-${st}" @click=${() => void open(area)}>
                         <span class="area__ref">${area.ref}</span>

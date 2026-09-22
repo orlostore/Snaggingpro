@@ -1449,6 +1449,21 @@
 .area__st.is-done { background: var(--color-success-soft, #e3f0e9); color: var(--color-success); }
 .area__st.is-draft { background: var(--color-warning-soft, #fbede1); color: var(--color-warning, #a8520c); }
 /* Covered by another tablet — visibly not this device's work. */
+/* Sub-heading inside a group — separates Lift 1 from Lift 2. */
+.lvl__sub {
+  list-style: none;
+  font-family: var(--font-display, inherit);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-text-muted, #77878f);
+  margin: 14px 0 4px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--color-border, #e4eaee);
+}
+.lvl__sub:first-child { margin-top: 2px; }
+
 .area__st.is-remote {
   background: var(--color-info-soft, #e2f0f4);
   color: var(--color-info, #0b6e8a);
