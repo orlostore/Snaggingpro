@@ -110,7 +110,7 @@ describe('lifts', () => {
     expect(subs).toEqual(['Lift 1', 'Lift 2']);
     for (const sub of subs) {
       const parts = lifts!.areas.filter((a) => a.sub === sub).map((a) => a.label);
-      expect(parts).toEqual(['Car', 'Shaft', 'Pit']);
+      expect(parts).toEqual(['Car', 'Shaft', 'Pit', 'Commissioning checks']);
     }
   });
 

@@ -189,9 +189,13 @@ export const CRYSTAL_FOUR: BuildingDef = {
           note: 'Guide rails, counterweight, travelling cable, buffers, limit switches, shaft lighting' },
         { ref: 'LIFT1-PIT', label: 'Pit', kind: 'lift_pit', group: 'circulation', sub: 'Lift 1',
           note: 'Below the ground slab — water ingress is the classic defect. Buffer, ladder, stop switch, lighting' },
+        { ref: 'LIFT1-COMM', label: 'Commissioning checks', kind: 'lift_commissioning', group: 'circulation', sub: 'Lift 1',
+          dwg: 'Contractor checklist', note: 'Contractor commissioning sheet — controller, motor/inverter, car and shaft. Needs the lift engineer with a multimeter and the PC tool' },
         { ref: 'LIFT2-CAR', label: 'Car', kind: 'lift_car', group: 'circulation', sub: 'Lift 2', note: 'As Lift 1' },
         { ref: 'LIFT2-SHAFT', label: 'Shaft', kind: 'lift_shaft', group: 'circulation', sub: 'Lift 2', note: 'As Lift 1' },
         { ref: 'LIFT2-PIT', label: 'Pit', kind: 'lift_pit', group: 'circulation', sub: 'Lift 2', note: 'As Lift 1' },
+        { ref: 'LIFT2-COMM', label: 'Commissioning checks', kind: 'lift_commissioning', group: 'circulation', sub: 'Lift 2',
+          dwg: 'Contractor checklist', note: 'As Lift 1' },
       ],
     },
     {

@@ -39,6 +39,7 @@ export type AreaKind =
   | 'cctv'
   | 'cctv_system'
   | 'intercom'
+  | 'lift_commissioning'
   | 'gas_room'
   | 'parking'
   | 'driveway'
