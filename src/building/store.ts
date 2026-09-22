@@ -13,6 +13,7 @@ import { todayIsoDate } from '@/lib/format';
 import { saveDraft } from '@/state/persist';
 import { reportsRepo } from '@/storage/reports';
 import { checklistFor } from './areaChecklists';
+import { BUILDINGS } from './registry';
 import type { AreaDef, BuildingDef, LevelDef } from './types';
 
 const ACTIVE_KEY = 'snaggingpro_building_active';
@@ -197,4 +198,42 @@ export function progressForLevel(level: LevelDef, statuses: Map<string, AreaStat
     else if (st === 'draft') draft++;
   }
   return { done, draft, total: level.areas.length };
+}
+
+export interface PlanContext {
+  buildingName: string;
+  levelId: string;
+  levelLabel: string;
+  areaRef: string;
+  areaLabel: string;
+  plan?: string;
+  planNote?: string;
+}
+
+/**
+ * Which building, level and area a draft belongs to — so the area's own
+ * screens can show the level plan the supervisor is standing in front of.
+ * Returns null for an ordinary single-unit inspection.
+ */
+export function planContextFor(state: State | null): PlanContext | null {
+  if (!state) return null;
+  const code = getActiveBuilding();
+  for (const b of code ? BUILDINGS.filter((x) => x.code === code).concat(BUILDINGS) : BUILDINGS) {
+    for (const level of b.levels) {
+      for (const area of level.areas) {
+        if (areaJobRef(b.code, area.ref) !== state.job.ref) continue;
+        const ctx: PlanContext = {
+          buildingName: b.name,
+          levelId: level.id,
+          levelLabel: level.label,
+          areaRef: area.ref,
+          areaLabel: area.label,
+        };
+        if (level.plan) ctx.plan = level.plan;
+        if (level.planNote) ctx.planNote = level.planNote;
+        return ctx;
+      }
+    }
+  }
+  return null;
 }

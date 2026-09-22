@@ -310,7 +310,9 @@ export const CHECKLISTS: Record<ChecklistKey, Checklist> = {
       'Walls — cracks, paint, finish',
       'Ceiling — level, paint, no cracks',
       'Floor coverings — level, intact',
+      'Skirting — fixed and sealed',
       'Door — alignment, ironmongery',
+      'Window — alignment, sealing, locks, fly screen',
     ],
     electrical: ['Light fittings — operational', 'Power points — tested'],
     hvac: ['AC vent / grille — condition', 'AC cooling — adequate'],
@@ -335,7 +337,12 @@ export const CHECKLISTS: Record<ChecklistKey, Checklist> = {
   },
 
   utilityRoom: {
-    civil: ['Walls and ceiling — paint, no cracks', 'Floor — level, drain present'],
+    civil: [
+      'Walls — paint, no cracks',
+      'Ceiling — level, paint, no cracks',
+      'Floor — level, drain present',
+      'Door — alignment, ironmongery',
+    ],
     electrical: ['Light fittings — operational', 'Power points — tested'],
     plumbing: [
       'Washing machine connections — present',

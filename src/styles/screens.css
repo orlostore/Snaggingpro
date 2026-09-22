@@ -1453,3 +1453,37 @@
   .area { flex-wrap: wrap; }
   .area__st { align-self: flex-start; }
 }
+
+/* Which area of the building you are standing in, with its level plan. */
+.area-ctx {
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: var(--color-surface); overflow: hidden;
+}
+.area-ctx__head {
+  display: flex; align-items: baseline; gap: var(--space-2); flex-wrap: wrap;
+  padding: var(--space-3);
+}
+.area-ctx__ref { font-weight: 700; font-variant-numeric: tabular-nums; }
+.area-ctx__label { flex: 1 1 auto; min-width: 0; color: var(--color-text); }
+.area-ctx__level { font-size: var(--font-size-xs); color: var(--color-text-muted); }
+.area-ctx__plan {
+  display: block; width: 100%; padding: 0; cursor: zoom-in; position: relative;
+  background: #fff; border: none; border-top: 1px solid var(--color-border);
+}
+.area-ctx__plan[aria-expanded='true'] { cursor: zoom-out; }
+.area-ctx__plan img {
+  display: block; width: 100%; height: 150px;
+  object-fit: cover; object-position: top center;
+}
+.area-ctx__plan img.is-open { height: auto; object-fit: contain; }
+.area-ctx__hint {
+  position: absolute; right: var(--space-2); bottom: var(--space-2);
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 4px 8px; border-radius: var(--radius-pill);
+  background: rgb(0 0 0 / 68%); color: #fff; font-size: var(--font-size-xs);
+}
+.area-ctx__noplan {
+  margin: 0; padding: var(--space-3); border-top: 1px dashed var(--color-border);
+  font-size: var(--font-size-xs); color: var(--color-text-muted);
+}

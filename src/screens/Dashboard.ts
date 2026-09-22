@@ -7,8 +7,11 @@ import { loadDraft, saveDraft } from '@/state/persist';
 import { statsForRoom } from '@/domain/snags';
 import { go } from '@/lib/router';
 import { Icon, IconOrFallback } from '@/components/Icon';
+import { planContextFor } from '@/building/store';
 
 export function Dashboard(rootEl: HTMLElement): TemplateResult {
+  let planOpen = false;
+
   function paint() {
     render(view(), rootEl);
   }
@@ -61,10 +64,49 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
     }).length;
     const pendingRooms = visible.length - completed;
 
+    const plan = planContextFor(s);
+
     return html`
       <section class="screen">
-        ${Header({ title: 'Dashboard', back: () => go('splash') })}
+        ${Header({
+          title: plan ? plan.areaRef : 'Dashboard',
+          back: () => go(plan ? 'level' : 'splash', plan ? { id: plan.levelId } : {}),
+        })}
         <main class="container">
+          ${plan
+            ? html`
+                <div class="area-ctx">
+                  <div class="area-ctx__head">
+                    <span class="area-ctx__ref">${plan.areaRef}</span>
+                    <span class="area-ctx__label">${plan.areaLabel}</span>
+                    <span class="area-ctx__level">${plan.levelLabel}</span>
+                  </div>
+                  ${plan.plan
+                    ? html`
+                        <button
+                          class="area-ctx__plan"
+                          aria-expanded=${planOpen ? 'true' : 'false'}
+                          @click=${() => {
+                            planOpen = !planOpen;
+                            paint();
+                          }}
+                        >
+                          <img
+                            src=${plan.plan}
+                            alt="Area plan for ${plan.levelLabel}"
+                            class=${planOpen ? 'is-open' : ''}
+                            loading="lazy"
+                          />
+                          <span class="area-ctx__hint">
+                            ${Icon({ name: planOpen ? 'minus' : 'plus', size: 15 })}
+                            ${planOpen ? 'Hide plan' : `Show ${plan.areaRef} on the plan`}
+                          </span>
+                        </button>
+                      `
+                    : html`<p class="area-ctx__noplan">No marked-up plan for this level.</p>`}
+                </div>
+              `
+            : null}
           <div class="dash-meta card">
             <div>
               <div class="dash-meta__ref">${s.job.ref}</div>
