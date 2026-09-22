@@ -11,7 +11,7 @@ export function Splash(): TemplateResult {
     <section class="screen splash">
       <div class="container splash__inner">
         <div class="splash__logo">
-          <span>Snagging</span><em>Pro</em>
+          <span>OSnagging</span><em>Pro</em>
         </div>
         <p class="splash__tagline">Whole-building inspections, UAE.</p>
         <div class="splash__actions">

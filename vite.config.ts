@@ -32,9 +32,9 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'icons/*.png', 'plans/*.webp'],
       manifest: {
-        name: 'SnaggingPro Buildings',
-        short_name: 'SP Buildings',
-        description: 'Whole-building snagging inspections — UAE handover & DLP',
+        name: 'OSnaggingPro',
+        short_name: 'OSnaggingPro',
+        description: 'Internal inspection tool',
         theme_color: '#0B4E6A',
         background_color: '#f7f7f8',
         display: 'standalone',
