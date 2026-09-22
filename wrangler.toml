@@ -22,4 +22,4 @@ bucket_name = "snaggingpro-buildings-photos"
 [[d1_databases]]
 binding = "DB"
 database_name = "snaggingpro-buildings"
-database_id = "SET_AFTER_CREATING_THE_BUILDINGS_D1"
+database_id = "9fb1e3ff-8d10-4c1d-9e94-0a1043d4cd18"
