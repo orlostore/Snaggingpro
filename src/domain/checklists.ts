@@ -296,6 +296,8 @@ export const CHECKLISTS: Record<ChecklistKey, Checklist> = {
     civil: [
       'Handrail — secure, continuous, correct height',
       'Floor coverings on stairs — secure, no loose tiles',
+      'Wall finish to staircase — paint, plaster, corners',
+      'Ceiling / soffit — including the underside of the flight above',
       'Landing floor coverings — level and secure',
       'Balustrade — secure, no movement',
       'Riser and tread condition — no cracks, uniform height',

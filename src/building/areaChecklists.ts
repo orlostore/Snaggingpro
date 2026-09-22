@@ -56,7 +56,8 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
       civil: [
         'Entrance doors — operation, alignment, seals',
         'Floor finish, matting and threshold',
-        'Wall and ceiling finishes',
+        'Wall finish — paint, plaster, corners',
+        'Ceiling — level, joints, paint, no cracks',
         'Glazing — condition, sealant, manifestation',
       ],
       electrical: ['Lighting', 'Emergency lighting', 'Door power supply and isolation'],
@@ -104,7 +105,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'db',
     discs: ['civil', 'electrical', 'mechanical'],
     items: {
-      civil: ['Landing door finish and alignment', 'Architrave and reveal', 'Sill — fixing, level, condition'],
+      civil: ['Landing door finish and alignment', 'Architrave and reveal', 'Sill — fixing, level, condition', 'Landing ceiling and access panels'],
       electrical: ['Call panel and indicator operation', 'Landing lighting'],
       mechanical: ['Car levelling accuracy at this floor', 'Door opening and closing timing', 'Door reopening device'],
     },
@@ -141,7 +142,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'pump',
     discs: ['civil', 'electrical', 'hvac', 'mechanical', 'fire'],
     items: {
-      civil: ['Room access door, lock and signage', 'Guarding around shaft opening', 'Floor and wall condition'],
+      civil: ['Room access door, lock and signage', 'Guarding around shaft opening', 'Floor and wall condition', 'Ceiling / soffit — no cracks, no leaks or staining'],
       electrical: ['Controller panel — labelling, covers, isolation', 'Lighting and socket', 'Earthing'],
       hvac: ['Room cooling operating — unit R-5 (5.40 kW)', 'Temperature acceptable under load'],
       mechanical: ['Machine, brake and sheave condition', 'Rope condition and tension', 'Manual lowering instructions displayed'],
@@ -152,7 +153,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'db',
     discs: ['civil', 'electrical', 'fire'],
     items: {
-      civil: ['Door, frame and lock', 'Floor and wall finish', 'Ventilation opening clear'],
+      civil: ['Door, frame and lock', 'Floor and wall finish', 'Ventilation opening clear', 'Ceiling / soffit — no cracks, no leaks or staining'],
       electrical: [
         'Distribution board — fixing, covers, blanking plates',
         'Circuit schedule present, legible and correct',
@@ -169,7 +170,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'automation',
     discs: ['civil', 'electrical'],
     items: {
-      civil: ['Cupboard door, frame and lock'],
+      civil: ['Cupboard door, frame and lock', 'Cupboard soffit and top panel'],
       electrical: ['Containment and trunking fixed', 'Cables dressed and labelled', 'Blanking plates fitted', 'Earth bar present'],
     },
   },
@@ -177,7 +178,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'automation',
     discs: ['civil', 'electrical', 'automation'],
     items: {
-      civil: ['Door, frame and lock'],
+      civil: ['Door, frame and lock', 'Ceiling — level, paint, no cracks'],
       electrical: ['Power supply and socket', 'Cable management and labelling'],
       automation: ['MATV / satellite distribution equipment mounted and labelled', 'Amplifier and splitter condition'],
     },
@@ -186,7 +187,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'tank',
     discs: ['civil', 'plumbing'],
     items: {
-      civil: ['Cupboard door, frame and lock'],
+      civil: ['Cupboard door, frame and lock', 'Cupboard soffit and top panel'],
       plumbing: [
         'Meters fitted, labelled per unit and readable',
         'Isolation valves operate',
@@ -204,6 +205,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
         'Door, frame, closer and lock',
         'Wall and floor finish — washable, coved',
         'Impact protection',
+        'Ceiling — washable finish, no damp or staining',
       ],
       electrical: ['Lighting operation', 'Socket for cleaning equipment'],
       hvac: ['Extract ventilation operating', 'No odour carry-over into the corridor'],
@@ -260,7 +262,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'pump',
     discs: ['civil', 'electrical', 'mechanical', 'plumbing', 'fire'],
     items: {
-      civil: ['Door, frame, lock and access', 'Floor finish and falls to drain', 'Plinths — level, no cracking'],
+      civil: ['Door, frame, lock and access', 'Floor finish and falls to drain', 'Plinths — level, no cracking', 'Ceiling / soffit — no cracks, no leaks or staining'],
       electrical: ['Control panel — labelling, covers, isolation', 'Lighting and socket', 'Earthing and bonding'],
       mechanical: [
         'Pump set mounted, aligned and labelled',
@@ -308,7 +310,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'db',
     discs: ['civil', 'electrical', 'hvac', 'fire'],
     items: {
-      civil: ['Door, lock and restricted access signage', 'Floor, walls and ventilation openings'],
+      civil: ['Door, lock and restricted access signage', 'Floor, walls and ventilation openings', 'Ceiling / soffit — no cracks, no leaks or staining'],
       electrical: ['Panels — covers, labelling, warning signage', 'Earthing and bonding', 'Insulation mat where required'],
       hvac: ['Ventilation operating'],
       fire: ['Fire stopping', 'CO2 / appropriate extinguisher'],
@@ -318,7 +320,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'db',
     discs: ['civil', 'electrical', 'hvac', 'fire'],
     items: {
-      civil: ['Door, lock and signage', 'Floor and wall finish', 'Clear working space'],
+      civil: ['Door, lock and signage', 'Floor and wall finish', 'Clear working space', 'Ceiling / soffit — no cracks, no leaks or staining'],
       electrical: [
         'LV panel — covers, blanking plates, labelling',
         'Single line diagram displayed',
@@ -334,7 +336,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'automation',
     discs: ['civil', 'electrical', 'automation'],
     items: {
-      civil: ['Door, frame and lock'],
+      civil: ['Door, frame and lock', 'Ceiling — level, paint, no cracks'],
       electrical: ['Power supply, UPS where fitted', 'Cable management'],
       automation: ['Recorder and monitor operating', 'Camera coverage as designed', 'Time and date correct'],
     },
@@ -343,7 +345,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'utility',
     discs: ['civil', 'mechanical', 'fire'],
     items: {
-      civil: ['Louvered door and ventilation openings clear', 'Floor and wall finish'],
+      civil: ['Louvered door and ventilation openings clear', 'Floor and wall finish', 'Ceiling — level, paint, no cracks'],
       mechanical: ['Manifold, regulators and valves', 'Pipework supports and identification', 'Leak test record available'],
       fire: ['Gas detection where fitted', 'Warning signage', 'Extinguisher provided'],
     },
@@ -359,6 +361,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
         'Wheel stops / bumper stops fitted',
         'Column protection',
         'Falls to drainage — no ponding',
+        'Soffit — no cracks, spalling or exposed rebar; no leaks or staining',
       ],
       electrical: ['Lighting levels and operation', 'Emergency lighting'],
       fire: ['Signage and escape route marking', 'Extinguishers in position'],
@@ -368,7 +371,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'garage',
     discs: ['civil', 'electrical', 'plumbing'],
     items: {
-      civil: ['Ramp finish and anti-slip', 'Gradient and transitions', 'Kerbs and edge protection', 'Entry/exit signage and mirrors'],
+      civil: ['Ramp finish and anti-slip', 'Gradient and transitions', 'Kerbs and edge protection', 'Entry/exit signage and mirrors', 'Ramp soffit — no cracks, spalling or leaks'],
       electrical: ['Lighting', 'Barrier or shutter operation where fitted'],
       plumbing: ['Drainage channel at ramp foot — clear and draining'],
     },
@@ -376,13 +379,13 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
   store: {
     icon: 'utility',
     discs: ['civil', 'electrical'],
-    items: { civil: ['Door, frame and lock', 'Floor and wall finish', 'Shelving where fitted'], electrical: ['Lighting', 'Socket'] },
+    items: { civil: ['Door, frame and lock', 'Floor and wall finish', 'Shelving where fitted', 'Ceiling — level, paint, no cracks'], electrical: ['Lighting', 'Socket'] },
   },
   bulk_waste: {
     icon: 'utility',
     discs: ['civil', 'electrical', 'hvac', 'plumbing'],
     items: {
-      civil: ['Louvered door and frame', 'Washable wall and floor finish, coved', 'Container manoeuvring space'],
+      civil: ['Louvered door and frame', 'Washable wall and floor finish, coved', 'Container manoeuvring space', 'Ceiling — washable finish, no damp or staining'],
       electrical: ['Lighting'],
       hvac: ['Ventilation operating'],
       plumbing: ['Washdown tap', 'Floor gully trapped and draining'],
@@ -418,7 +421,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'pump',
     discs: ['civil', 'electrical', 'mechanical', 'plumbing'],
     items: {
-      civil: ['Door, access and ventilation', 'Floor falls to drain', 'Plinths'],
+      civil: ['Door, access and ventilation', 'Floor falls to drain', 'Plinths', 'Ceiling / soffit — no cracks, no leaks or staining'],
       electrical: ['Control panel, labelling, isolation', 'Earthing and bonding', 'Lighting'],
       mechanical: ['Circulation pumps — mounting, alignment, noise', 'Filters — condition and backwash operation', 'Dosing equipment where fitted'],
       plumbing: ['Valves labelled and operating', 'Gauges readable', 'Pipework supports and identification', 'No leaks'],
@@ -431,7 +434,8 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
       civil: [
         'Flooring — type, joints, fixing',
         'Mirrors — fixing, backing, edge protection',
-        'Wall and ceiling finishes',
+        'Wall finish — paint, plaster, corners',
+        'Ceiling — level, joints, paint, no cracks',
         'Equipment anchorage where fixed',
         'Glazing and manifestation',
       ],
@@ -444,7 +448,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'bathroom',
     discs: ['civil', 'electrical', 'hvac', 'plumbing'],
     items: {
-      civil: ['Tiling and grout', 'Benches, hooks and lockers', 'Door and privacy'],
+      civil: ['Tiling and grout', 'Benches, hooks and lockers', 'Door and privacy', 'Ceiling — paint, no damp, no cracks'],
       electrical: ['Lighting and IP rating', 'Socket positions relative to wet zones'],
       hvac: ['Extract ventilation operating'],
       plumbing: ['Floor drainage and falls', 'Sanitaryware and fittings'],
@@ -454,7 +458,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'bathroom',
     discs: ['civil', 'electrical', 'hvac', 'plumbing'],
     items: {
-      civil: ['Tiling, grout and silicone', 'Door, lock and indicator', 'Accessible provisions where applicable'],
+      civil: ['Tiling, grout and silicone', 'Door, lock and indicator', 'Accessible provisions where applicable', 'Ceiling — paint, no damp, no cracks'],
       electrical: ['Lighting and IP rating', 'Hand dryer where fitted'],
       hvac: ['Extract operating — 15 L/s per WC'],
       plumbing: ['WC, basin and fittings', 'Traps and seals', 'Water pressure and temperature', 'Floor drain and falls', 'No leaks'],
@@ -464,7 +468,7 @@ const C: Partial<Record<AreaKind, AreaChecklist>> = {
     icon: 'maid',
     discs: ['civil', 'electrical', 'hvac', 'plumbing'],
     items: {
-      civil: ['Door, window and finishes', 'Kitchenette joinery'],
+      civil: ['Door, window and finishes', 'Kitchenette joinery', 'Ceiling — level, paint, no cracks'],
       electrical: ['Lighting and sockets', 'Data / intercom point'],
       hvac: ['Cooling operating — unit R-4 (1.30 kW)'],
       plumbing: ['Sink and WC', 'Water supply and drainage', 'No leaks'],
