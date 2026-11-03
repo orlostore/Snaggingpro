@@ -14,18 +14,13 @@ export interface NewInspectionInput {
   propType: PropType;
   bedrooms: number;
   jobSeq: number;
-  maidRoom?: boolean;
   now?: Date;
 }
 
 export function emptyState(input: NewInspectionInput): State {
   const now = input.now ?? new Date();
   const ref = jobRefFromDate(now, input.jobSeq);
-  const rooms = buildRooms({
-    propType: input.propType,
-    bedrooms: input.bedrooms,
-    maidRoom: input.maidRoom ?? false,
-  });
+  const rooms = buildRooms({ propType: input.propType, bedrooms: input.bedrooms });
 
   const state: State = {
     version: STATE_VERSION,

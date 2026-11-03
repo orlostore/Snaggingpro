@@ -31,8 +31,6 @@ export interface QuoteInput {
   jobRef: string;
   /** Validity (days from today). */
   validDays?: number;
-  /** Apartment has a maid's room (villas always do). */
-  maidRoom?: boolean;
   /** 0 = original issue; 1+ = revision number shown as -R1, -R2… */
   revision?: number;
   /** When the original quote was first issued (ms). Defaults to now. */
@@ -67,11 +65,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
       ? `Issued ${formatDateLong(todayIsoDate(issued))} · Revision ${revision} ${formatDateLong(todayIsoDate(today))}`
       : `Issued ${formatDateLong(todayIsoDate(issued))}`;
 
-  const scope = checkpointsSentence({
-    propType: q.propType,
-    bedrooms: q.bedrooms,
-    maidRoom: q.maidRoom ?? false,
-  });
+  const scope = checkpointsSentence({ propType: q.propType, bedrooms: q.bedrooms });
 
   const tcLink = termsUrl({ client: q.clientName, job: q.jobRef, unit: q.unit });
 

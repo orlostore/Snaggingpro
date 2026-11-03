@@ -49,18 +49,17 @@ describe('displayQuoteRef', () => {
 });
 
 describe('checkpointsSentence', () => {
-  it('describes a 3 BR apartment without maid room', () => {
+  it('matches the agreed wording for a 3 BR apartment', () => {
     expect(checkpointsSentence({ propType: 'apartment', bedrooms: 3 })).toBe(
-      'On average, a 3-bedroom apartment has 300+ checking points, depending on the systems available. ' +
+      "On average, a 3-bedroom apartment plus maid's room has 300+ checking points, " +
+        "depending on the systems available and the availability of a maid's room. " +
         'All checks are segmented into 14 sections. ' +
         'The sections and systems are subject to availability in the apartment.',
     );
   });
 
-  it('adds the maid room when present', () => {
-    const s = checkpointsSentence({ propType: 'apartment', bedrooms: 3, maidRoom: true });
-    expect(s).toContain("3-bedroom apartment plus maid's room has 350+ checking points");
-    expect(s).toContain('15 sections');
+  it('leaves the maid room out for a studio', () => {
+    expect(checkpointsSentence({ propType: 'apartment', bedrooms: 0 })).not.toContain('maid');
   });
 
   it('appears on the quotation with Lump sum on override', () => {

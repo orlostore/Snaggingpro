@@ -31,7 +31,6 @@ interface SetupDraft {
   bua: number;
   price: number;
   priceManuallyEdited: boolean;
-  maidRoom: boolean;
 }
 
 function optionKey(type: PropType, bedrooms: number): string {
@@ -50,7 +49,6 @@ function quoteChanged(prev: QuoteRecord, next: QuoteInput, total: number): boole
     prev.propType !== next.propType ||
     prev.bedrooms !== next.bedrooms ||
     prev.bua !== next.bua ||
-    (prev.maidRoom ?? false) !== (next.maidRoom ?? false) ||
     prev.priceOverride !== next.priceOverride ||
     prev.total !== total
   );
@@ -59,7 +57,7 @@ function quoteChanged(prev: QuoteRecord, next: QuoteInput, total: number): boole
 export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResult {
   const persisted = loadSetupDraft();
   let fromQuote: QuoteRecord | null = null;
-  const draft: SetupDraft = persisted ? { ...persisted, maidRoom: persisted.maidRoom ?? false } : {
+  const draft: SetupDraft = persisted ?? {
     optionKey: null,
     type: null,
     bedrooms: 0,
@@ -73,7 +71,6 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
     bua: 0,
     price: 0,
     priceManuallyEdited: false,
-    maidRoom: false,
   };
 
   function persist() {
@@ -101,7 +98,6 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
       draft.unit = q.unit;
       draft.floor = q.floor;
       draft.bua = q.bua;
-      draft.maidRoom = q.maidRoom ?? false;
       draft.price = q.total;
       draft.priceManuallyEdited = q.priceOverride > 0;
       persist();
@@ -153,7 +149,6 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
       propType: draft.type,
       bedrooms: draft.bedrooms,
       bua: draft.bua,
-      maidRoom: hasMaidOption() && draft.maidRoom,
       priceOverride: draft.priceManuallyEdited ? draft.price : 0,
       jobRef,
     };
@@ -184,12 +179,7 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
   async function next() {
     if (!draft.type) return;
     const jobSeq = await nextJobSeq();
-    const state = emptyState({
-      propType: draft.type,
-      bedrooms: draft.bedrooms,
-      maidRoom: hasMaidOption() && draft.maidRoom,
-      jobSeq,
-    });
+    const state = emptyState({ propType: draft.type, bedrooms: draft.bedrooms, jobSeq });
     state.client.name = draft.clientName;
     state.client.phone = draft.phone;
     state.client.email = draft.email;
@@ -208,10 +198,6 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
     }
     clearSetupDraft();
     go('cover');
-  }
-
-  function hasMaidOption(): boolean {
-    return draft.type === 'apartment' && draft.bedrooms > 0;
   }
 
   function feeBreakdownLine(): TemplateResult | null {
@@ -255,23 +241,6 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
               `,
             )}
           </div>
-
-          ${hasMaidOption()
-            ? html`
-                <label class="disc-chip ${draft.maidRoom ? 'disc-chip--on' : ''}">
-                  <input
-                    type="checkbox"
-                    .checked=${draft.maidRoom}
-                    @change=${(e: Event) => {
-                      draft.maidRoom = (e.target as HTMLInputElement).checked;
-                      persist();
-                      paint();
-                    }}
-                  />
-                  Maid's room
-                </label>
-              `
-            : null}
 
           <h2 class="section-title">Client</h2>
           <div class="card">

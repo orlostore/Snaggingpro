@@ -36,7 +36,7 @@ export function roundCheckpoints(points: number): number {
 
 export function checkpointsSentence(input: BuildRoomsInput): string {
   const villa = isVillaLike(input.propType);
-  const maid = villa || (input.bedrooms > 0 && input.maidRoom === true);
+  const maid = input.bedrooms > 0;
   const { points, areas } = estimateCheckpoints(input);
   const property =
     input.bedrooms === 0
