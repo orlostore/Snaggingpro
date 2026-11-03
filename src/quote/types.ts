@@ -20,6 +20,7 @@ export interface QuoteRecord {
   propType: PropType;
   bedrooms: number;
   bua: number;
+  maidRoom?: boolean;
   /** When non-zero, overrides the calculated total. */
   priceOverride: number;
   /** Final total in AED — computed once at issue and stored for the list. */

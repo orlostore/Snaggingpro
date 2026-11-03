@@ -20,9 +20,11 @@ export interface RoomTemplate {
 export interface BuildRoomsInput {
   propType: PropType;
   bedrooms: number;
+  /** Apartments only — villas always include a maid's room. */
+  maidRoom?: boolean;
 }
 
-export function buildRooms({ propType, bedrooms }: BuildRoomsInput): RoomTemplate[] {
+export function buildRooms({ propType, bedrooms, maidRoom = false }: BuildRoomsInput): RoomTemplate[] {
   const villa = isVillaLike(propType);
   const rooms: RoomTemplate[] = [];
 
@@ -55,6 +57,11 @@ export function buildRooms({ propType, bedrooms }: BuildRoomsInput): RoomTemplat
   const balconyCount = bedrooms === 0 ? 1 : bedrooms <= 2 ? 2 : Math.min(bedrooms, 3);
   for (let i = 1; i <= balconyCount; i++) {
     rooms.push({ id: `balcony_${i}`, label: `Balcony ${i}`, icon: 'balcony', clKey: 'balcony',
+      discs: ['civil', 'electrical', 'hvac', 'plumbing'] });
+  }
+
+  if (!villa && bedrooms > 0 && maidRoom) {
+    rooms.push({ id: 'maid_room', label: "Maid's Room", icon: 'maid', clKey: 'maidRoom',
       discs: ['civil', 'electrical', 'hvac', 'plumbing'] });
   }
 

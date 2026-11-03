@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { generateQuotationHtml, type QuoteInput } from '@/quote/generate';
 import { displayQuoteRef } from '@/quote/quoteRef';
+import { checkpointsSentence } from '@/domain/checkpoints';
 
 const base: QuoteInput = {
   quoteRef: 'SP-QTN-261102-001',
@@ -44,5 +45,27 @@ describe('displayQuoteRef', () => {
   it('leaves the original issue unsuffixed', () => {
     expect(displayQuoteRef('SP-QTN-261102-001', 0)).toBe('SP-QTN-261102-001');
     expect(displayQuoteRef('SP-QTN-261102-001', undefined)).toBe('SP-QTN-261102-001');
+  });
+});
+
+describe('checkpointsSentence', () => {
+  it('describes a 3 BR apartment without maid room', () => {
+    expect(checkpointsSentence({ propType: 'apartment', bedrooms: 3 })).toBe(
+      'On average, a 3-bedroom apartment has 300+ checking points, depending on the systems available. ' +
+        'All checks are segmented into 14 sections. ' +
+        'The sections and systems are subject to availability in the apartment.',
+    );
+  });
+
+  it('adds the maid room when present', () => {
+    const s = checkpointsSentence({ propType: 'apartment', bedrooms: 3, maidRoom: true });
+    expect(s).toContain("3-bedroom apartment plus maid's room has 350+ checking points");
+    expect(s).toContain('15 sections');
+  });
+
+  it('appears on the quotation with Lump sum on override', () => {
+    const out = generateQuotationHtml({ ...base, priceOverride: 2500 });
+    expect(out).toContain('Lump sum');
+    expect(out).toContain('checking points');
   });
 });

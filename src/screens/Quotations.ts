@@ -80,6 +80,7 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
       propType: q.propType,
       bedrooms: q.bedrooms,
       bua: q.bua,
+      maidRoom: q.maidRoom ?? false,
       priceOverride: q.priceOverride,
       jobRef: q.jobRef,
       revision: q.revision ?? 0,

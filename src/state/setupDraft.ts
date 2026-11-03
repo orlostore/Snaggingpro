@@ -26,6 +26,7 @@ export interface SetupDraftPersisted {
   bua: number;
   price: number;
   priceManuallyEdited: boolean;
+  maidRoom?: boolean;
 }
 
 export function saveSetupDraft(draft: SetupDraftPersisted): void {
