@@ -36,4 +36,9 @@ describe('state', () => {
     expect(migrated?.property.type).toBe('villa');
     expect(migrated?.property.bedrooms).toBe(3);
   });
+
+  it('emptyState keeps a supplied job ref (quote → inspection)', () => {
+    const s = emptyState({ propType: 'apartment', bedrooms: 2, jobSeq: 0, jobRef: 'SP-261103-004' });
+    expect(s.job.ref).toBe('SP-261103-004');
+  });
 });

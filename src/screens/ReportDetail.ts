@@ -5,6 +5,7 @@ import { Button } from '@/components/Button';
 import { confirmDialog } from '@/components/Confirm';
 import { toast } from '@/components/Toast';
 import { reportsRepo } from '@/storage/reports';
+import { quotesRepo } from '@/storage/quotes';
 import { saveDraft } from '@/state/persist';
 import { cloneAsFollowUp } from '@/state/init';
 import { nextJobSeq } from '@/state/jobRef';
@@ -32,14 +33,25 @@ export function ReportDetail(rootEl: HTMLElement, id: string): TemplateResult {
   async function load() {
     report = (await reportsRepo.getReport(id)) ?? null;
     paint();
-    if (report && ENV.cloudEnabled) void loadAcks(report.job.ref);
+    if (report && ENV.cloudEnabled) void loadAcks(report);
   }
 
-  async function loadAcks(jobRef: string) {
+  async function ackJobRefs(r: State): Promise<string[]> {
+    const refs = [r.job.ref];
+    if (r.job.sourceQuoteRef) {
+      const quote = await quotesRepo.get(r.job.sourceQuoteRef);
+      if (quote?.jobRef && quote.jobRef !== r.job.ref) refs.push(quote.jobRef);
+    }
+    return refs;
+  }
+
+  async function loadAcks(r: State) {
     acks.loading = true;
     paint();
     try {
-      acks.items = await listAcknowledgements(jobRef);
+      const refs = await ackJobRefs(r);
+      const lists = await Promise.all(refs.map((ref) => listAcknowledgements(ref)));
+      acks.items = lists.flat().sort((a, b) => b.acknowledgedAt - a.acknowledgedAt);
       for (const a of acks.items) {
         if (a.signatureKey && !acks.sigUrls.has(a.id)) {
           getSignatureUrl(a.id)

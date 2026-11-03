@@ -14,12 +14,14 @@ export interface NewInspectionInput {
   propType: PropType;
   bedrooms: number;
   jobSeq: number;
+  /** Reuse an existing job ref (e.g. the one a quote's T&C link was signed against). */
+  jobRef?: string;
   now?: Date;
 }
 
 export function emptyState(input: NewInspectionInput): State {
   const now = input.now ?? new Date();
-  const ref = jobRefFromDate(now, input.jobSeq);
+  const ref = input.jobRef ?? jobRefFromDate(now, input.jobSeq);
   const rooms = buildRooms({ propType: input.propType, bedrooms: input.bedrooms });
 
   const state: State = {

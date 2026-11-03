@@ -14,6 +14,7 @@ import { type QuoteInput } from '@/quote/generate';
 import { openQuoteOverlay } from '@/quote/overlay';
 import { nextQuoteRef } from '@/quote/quoteRef';
 import { quotesRepo } from '@/storage/quotes';
+import { reportsRepo } from '@/storage/reports';
 import type { QuoteRecord } from '@/quote/types';
 import { saveSetupDraft, loadSetupDraft, clearSetupDraft } from '@/state/setupDraft';
 
@@ -176,10 +177,24 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
     openQuoteOverlay(input);
   }
 
+  // The T&C link sent with a quote is signed against the quote's job ref,
+  // so the inspection keeps that ref unless a report already owns it.
+  async function reusableQuoteJobRef(): Promise<string | null> {
+    if (!fromQuote || fromQuote.status !== 'issued' || !fromQuote.jobRef) return null;
+    const existing = await reportsRepo.getReport(fromQuote.jobRef);
+    return existing ? null : fromQuote.jobRef;
+  }
+
   async function next() {
     if (!draft.type) return;
-    const jobSeq = await nextJobSeq();
-    const state = emptyState({ propType: draft.type, bedrooms: draft.bedrooms, jobSeq });
+    const quoteJobRef = await reusableQuoteJobRef();
+    const jobSeq = quoteJobRef ? 0 : await nextJobSeq();
+    const state = emptyState({
+      propType: draft.type,
+      bedrooms: draft.bedrooms,
+      jobSeq,
+      ...(quoteJobRef ? { jobRef: quoteJobRef } : {}),
+    });
     state.client.name = draft.clientName;
     state.client.phone = draft.phone;
     state.client.email = draft.email;
