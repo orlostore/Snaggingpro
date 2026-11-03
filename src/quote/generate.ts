@@ -11,6 +11,7 @@ import { BUSINESS } from '@/lib/business';
 import { formatAED, formatDateLong, todayIsoDate } from '@/lib/format';
 import { termsUrl } from '@/lib/share';
 import { displayQuoteRef } from './quoteRef';
+import { checkpointsSentence } from '@/domain/checkpoints';
 
 export interface QuoteInput {
   quoteRef: string;
@@ -63,6 +64,8 @@ export function generateQuotationHtml(q: QuoteInput): string {
     revision > 0
       ? `Issued ${formatDateLong(todayIsoDate(issued))} · Revision ${revision} ${formatDateLong(todayIsoDate(today))}`
       : `Issued ${formatDateLong(todayIsoDate(issued))}`;
+
+  const scope = checkpointsSentence({ propType: q.propType, bedrooms: q.bedrooms });
 
   const tcLink = termsUrl({ client: q.clientName, job: q.jobRef, unit: q.unit });
 
@@ -205,7 +208,10 @@ export function generateQuotationHtml(q: QuoteInput): string {
         <tbody>
           ${isOverride
             ? `<tr>
-                 <td>Inspection — ${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` ${q.bedrooms} BR` : ''}</td>
+                 <td>
+                   Inspection — ${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` ${q.bedrooms} BR` : ''}
+                   <br/><span style="color:var(--dim);font-size:9pt">Lump sum</span>
+                 </td>
                  <td class="right">${formatAED(total)}</td>
                </tr>`
             : `<tr>
@@ -221,6 +227,9 @@ export function generateQuotationHtml(q: QuoteInput): string {
                       <td class="right">${formatAED(overageAmount)}</td>
                     </tr>`
                  : ''}`}
+          <tr>
+            <td colspan="2" style="color:var(--dim);font-size:9pt;line-height:1.5">${h(scope)}</td>
+          </tr>
           <tr class="total-row">
             <td>Total payable</td>
             <td class="right">${formatAED(total)}</td>
