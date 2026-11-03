@@ -20,3 +20,7 @@ export function nextQuoteRef(d: Date = new Date()): string {
   }
   return `SP-QTN-${ymd}-${pad(seq, 3)}`;
 }
+
+export function displayQuoteRef(quoteRef: string, revision: number | undefined): string {
+  return revision && revision > 0 ? `${quoteRef}-R${revision}` : quoteRef;
+}

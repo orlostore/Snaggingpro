@@ -10,6 +10,7 @@ import { feeBreakdown, PROP_LABEL, type PropType } from '@/domain/pricing';
 import { BUSINESS } from '@/lib/business';
 import { formatAED, formatDateLong, todayIsoDate } from '@/lib/format';
 import { termsUrl } from '@/lib/share';
+import { displayQuoteRef } from './quoteRef';
 
 export interface QuoteInput {
   quoteRef: string;
@@ -29,6 +30,10 @@ export interface QuoteInput {
   jobRef: string;
   /** Validity (days from today). */
   validDays?: number;
+  /** 0 = original issue; 1+ = revision number shown as -R1, -R2… */
+  revision?: number;
+  /** When the original quote was first issued (ms). Defaults to now. */
+  issuedAt?: number;
 }
 
 function escapeHtml(s: string): string {
@@ -51,6 +56,14 @@ export function generateQuotationHtml(q: QuoteInput): string {
   const total = q.priceOverride > 0 ? q.priceOverride : computed;
   const isOverride = q.priceOverride > 0 && q.priceOverride !== computed;
 
+  const revision = q.revision ?? 0;
+  const ref = displayQuoteRef(q.quoteRef, revision);
+  const issued = q.issuedAt ? new Date(q.issuedAt) : today;
+  const dateLine =
+    revision > 0
+      ? `Issued ${formatDateLong(todayIsoDate(issued))} · Revision ${revision} ${formatDateLong(todayIsoDate(today))}`
+      : `Issued ${formatDateLong(todayIsoDate(issued))}`;
+
   const tcLink = termsUrl({ client: q.clientName, job: q.jobRef, unit: q.unit });
 
   const h = escapeHtml;
@@ -60,7 +73,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Quotation ${h(q.quoteRef)} — SnaggingPro</title>
+  <title>Quotation ${h(ref)} — SnaggingPro</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
@@ -154,8 +167,8 @@ export function generateQuotationHtml(q: QuoteInput): string {
       </div>
       <div class="doc-meta">
         <div class="doc-pill">QUOTATION</div>
-        <div class="doc-ref">${h(q.quoteRef)}</div>
-        <div class="doc-date">Issued ${formatDateLong(todayIsoDate(today))}<br/>Valid until ${formatDateLong(todayIsoDate(validUntil))}</div>
+        <div class="doc-ref">${h(ref)}</div>
+        <div class="doc-date">${dateLine}<br/>Valid until ${formatDateLong(todayIsoDate(validUntil))}</div>
         <div class="doc-contact">${h(BUSINESS.phone)}</div>
       </div>
     </header>
@@ -190,25 +203,24 @@ export function generateQuotationHtml(q: QuoteInput): string {
           <tr><th>Description</th><th class="right">Amount</th></tr>
         </thead>
         <tbody>
-          <tr>
-            <td>
-              Inspection — ${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` ${q.bedrooms} BR` : ''}
-              ${baseArea > 0 ? `<br/><span style="color:var(--dim);font-size:9pt">Base up to ${baseArea.toLocaleString('en-US')} sqft</span>` : ''}
-            </td>
-            <td class="right">${formatAED(baseAmount)}</td>
-          </tr>
-          ${overageSqft > 0
-            ? `<tr>
-                 <td>Additional area<br/><span style="color:var(--dim);font-size:9pt">${overageSqft.toLocaleString('en-US')} sqft × AED 1 / sqft</span></td>
-                 <td class="right">${formatAED(overageAmount)}</td>
-               </tr>`
-            : ''}
           ${isOverride
             ? `<tr>
-                 <td>Adjustment / agreed price</td>
-                 <td class="right">${formatAED(total - computed)}</td>
+                 <td>Inspection — ${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` ${q.bedrooms} BR` : ''}</td>
+                 <td class="right">${formatAED(total)}</td>
                </tr>`
-            : ''}
+            : `<tr>
+                 <td>
+                   Inspection — ${h(PROP_LABEL[q.propType])}${q.bedrooms > 0 ? ` ${q.bedrooms} BR` : ''}
+                   ${baseArea > 0 ? `<br/><span style="color:var(--dim);font-size:9pt">Base up to ${baseArea.toLocaleString('en-US')} sqft</span>` : ''}
+                 </td>
+                 <td class="right">${formatAED(baseAmount)}</td>
+               </tr>
+               ${overageSqft > 0
+                 ? `<tr>
+                      <td>Additional area<br/><span style="color:var(--dim);font-size:9pt">${overageSqft.toLocaleString('en-US')} sqft × AED 1 / sqft</span></td>
+                      <td class="right">${formatAED(overageAmount)}</td>
+                    </tr>`
+                 : ''}`}
           <tr class="total-row">
             <td>Total payable</td>
             <td class="right">${formatAED(total)}</td>
@@ -244,7 +256,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
 
     <footer class="footer">
       <div>
-        Quote ID <code>${h(q.quoteRef)}</code> · Issued ${formatDateLong(todayIsoDate(today))}<br/>
+        Quote ID <code>${h(ref)}</code> · ${dateLine}<br/>
         Valid until ${formatDateLong(todayIsoDate(validUntil))}
       </div>
       <div class="footer-cta">
@@ -264,7 +276,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
         var message =
           'Dear ${(q.clientName || 'Sir/Madam').replace(/'/g, "\\'")}, \\n\\n' +
           'Please find your SnaggingPro inspection quotation:\\n\\n' +
-          'Reference: ${q.quoteRef}\\n' +
+          'Reference: ${ref}\\n' +
           'Total: ${formatAED(total)}\\n' +
           'Property: ${PROP_LABEL[q.propType]}${q.bedrooms > 0 ? ` ${q.bedrooms}BR` : ''}${q.unit ? ` · Unit ${q.unit.replace(/'/g, "\\'")}` : ''}\\n\\n' +
           'Terms of Engagement (please review & sign): ${tcLink}\\n\\n' +

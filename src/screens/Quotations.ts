@@ -4,6 +4,8 @@
  * Local-first; cloud sync to come in a follow-up. From each row the
  * inspector can:
  *   - View   → re-open the quotation overlay (PDF + WhatsApp share)
+ *   - Edit   → reopen in Setup; regenerating with changes bumps the
+ *              revision (SP-QTN-…-R1, -R2…)
  *   - Start  → load the quote into Setup pre-filled and continue
  *              into the inspection flow
  *   - Delete → drop the local record
@@ -19,6 +21,7 @@ import { toast } from '@/components/Toast';
 import { quotesRepo } from '@/storage/quotes';
 import { openQuoteOverlay } from '@/quote/overlay';
 import { go } from '@/lib/router';
+import { displayQuoteRef } from '@/quote/quoteRef';
 import { formatAED } from '@/lib/format';
 import { ENV } from '@/lib/env';
 import { loadAckIndex } from '@/lib/acknowledgements';
@@ -56,7 +59,7 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
     if (!q) return ctx.items;
     return ctx.items.filter(
       (r) =>
-        r.quoteRef.toLowerCase().includes(q) ||
+        displayQuoteRef(r.quoteRef, r.revision).toLowerCase().includes(q) ||
         r.clientName.toLowerCase().includes(q) ||
         r.developer.toLowerCase().includes(q) ||
         r.community.toLowerCase().includes(q) ||
@@ -79,6 +82,8 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
       bua: q.bua,
       priceOverride: q.priceOverride,
       jobRef: q.jobRef,
+      revision: q.revision ?? 0,
+      issuedAt: q.createdAt,
     });
   }
 
@@ -154,7 +159,8 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
                                 : null}
                             </div>
                             <div class="library__sub">
-                              ${q.quoteRef} · ${formatDate(q.createdAt)} · ${formatAED(q.total)}
+                              ${displayQuoteRef(q.quoteRef, q.revision)} · ${formatDate(q.revisedAt ?? q.createdAt)}
+                              · ${formatAED(q.total)}
                               ${q.convertedReportId
                                 ? html` · Job <strong>${q.convertedReportId}</strong>`
                                 : null}
@@ -166,6 +172,14 @@ export function Quotations(rootEl: HTMLElement): TemplateResult {
                             </div>
                           </button>
                           <div class="quotation-actions">
+                            ${q.status === 'issued'
+                              ? Button({
+                                  label: 'Edit',
+                                  variant: 'ghost',
+                                  size: 'sm',
+                                  onClick: () => go('setup', { fromQuote: q.quoteRef }),
+                                })
+                              : null}
                             ${Button({
                               label: html`${Icon({ name: 'arrow-right', size: 16 })} Start`,
                               variant: 'secondary',

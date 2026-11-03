@@ -37,6 +37,23 @@ function optionKey(type: PropType, bedrooms: number): string {
   return `${type}_${bedrooms}`;
 }
 
+function quoteChanged(prev: QuoteRecord, next: QuoteInput, total: number): boolean {
+  return (
+    prev.clientName !== next.clientName ||
+    prev.clientPhone !== next.clientPhone ||
+    prev.clientEmail !== next.clientEmail ||
+    prev.developer !== next.developer ||
+    prev.community !== next.community ||
+    prev.unit !== next.unit ||
+    prev.floor !== next.floor ||
+    prev.propType !== next.propType ||
+    prev.bedrooms !== next.bedrooms ||
+    prev.bua !== next.bua ||
+    prev.priceOverride !== next.priceOverride ||
+    prev.total !== total
+  );
+}
+
 export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResult {
   const persisted = loadSetupDraft();
   let fromQuote: QuoteRecord | null = null;
@@ -138,11 +155,21 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
     const total = draft.priceManuallyEdited
       ? draft.price
       : calcFee(input.propType, input.bedrooms, input.bua);
+    const prevRevision = reuse?.revision ?? 0;
+    const revision = reuse && quoteChanged(reuse, input, total) ? prevRevision + 1 : prevRevision;
+    input.revision = revision;
+    input.issuedAt = reuse ? reuse.createdAt : Date.now();
     const record: QuoteRecord = {
       ...input,
       total,
-      createdAt: reuse ? reuse.createdAt : Date.now(),
+      createdAt: input.issuedAt,
       status: 'issued',
+      revision,
+      ...(revision > prevRevision
+        ? { revisedAt: Date.now() }
+        : reuse?.revisedAt !== undefined
+          ? { revisedAt: reuse.revisedAt }
+          : {}),
     };
     await quotesRepo.save(record);
     fromQuote = record;

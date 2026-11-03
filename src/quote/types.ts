@@ -27,6 +27,9 @@ export interface QuoteRecord {
   /** Job ref that this quote would become if the client books. */
   jobRef: string;
   createdAt: number;
+  /** 0 / absent = original issue. Bumped each time an issued quote is edited. */
+  revision?: number;
+  revisedAt?: number;
   status: 'issued' | 'converted';
   /** If status is 'converted', the actual reportId the inspection lives under. */
   convertedReportId?: string;

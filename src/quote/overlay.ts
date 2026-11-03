@@ -15,6 +15,7 @@
 import { html, render } from 'lit-html';
 import { unsafeHTML } from 'lit-html/directives/unsafe-html.js';
 import { generateQuotationHtml, type QuoteInput } from './generate';
+import { displayQuoteRef } from './quoteRef';
 import { formatAED } from '@/lib/format';
 import { feeBreakdown, PROP_LABEL } from '@/domain/pricing';
 import { termsUrl, whatsAppUrl } from '@/lib/share';
@@ -162,6 +163,7 @@ export function openQuoteOverlay(input: QuoteInput): void {
   closeQuoteOverlay();
 
   const { page, styles } = strip(generateQuotationHtml(input));
+  const ref = displayQuoteRef(input.quoteRef, input.revision);
 
   overlayEl = document.createElement('div');
   overlayEl.className = 'quote-overlay';
@@ -200,7 +202,7 @@ export function openQuoteOverlay(input: QuoteInput): void {
     const message =
       `${greeting}\n\n` +
       `Please find your SnaggingPro inspection quotation:\n\n` +
-      `Reference: ${input.quoteRef}\n` +
+      `Reference: ${ref}\n` +
       `Total: ${formatAED(total)}\n` +
       `Property: ${PROP_LABEL[input.propType]}` +
       (input.bedrooms > 0 ? ` ${input.bedrooms}BR` : '') +
@@ -280,7 +282,7 @@ export function openQuoteOverlay(input: QuoteInput): void {
       const x = (pageW - imgW) / 2;
       const imgData = canvas.toDataURL('image/jpeg', 0.95);
       pdf.addImage(imgData, 'JPEG', x, 0, imgW, imgH);
-      pdf.save(`${input.quoteRef}.pdf`);
+      pdf.save(`${ref}.pdf`);
     } catch (e) {
       console.error('PDF generation failed', e);
       alert(
@@ -313,7 +315,7 @@ export function openQuoteOverlay(input: QuoteInput): void {
             </svg>
           </button>
           <div class="quote-overlay__title">
-            <span class="quote-overlay__title-ref">${input.quoteRef}</span>
+            <span class="quote-overlay__title-ref">${ref}</span>
             ${ENV.cloudEnabled && ackState.loaded
               ? ackState.signedAt
                 ? html`<span class="quote-overlay__pill quote-overlay__pill--ok"
