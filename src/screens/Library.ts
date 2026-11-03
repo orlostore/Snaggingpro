@@ -5,6 +5,7 @@ import { Button } from '@/components/Button';
 import { confirmDialog } from '@/components/Confirm';
 import { toast } from '@/components/Toast';
 import { reportsRepo } from '@/storage/reports';
+import { quotesRepo } from '@/storage/quotes';
 import { deletePhotosForJob } from '@/storage/photos';
 import { exportBackup, importBackup, triggerDownload } from '@/storage/backup';
 import { Icon } from '@/components/Icon';
@@ -19,7 +20,8 @@ export function Library(rootEl: HTMLElement): TemplateResult {
     summaries: ReportSummary[];
     query: string;
     acks: Map<string, number>;
-  } = { summaries: [], query: '', acks: new Map() };
+    quoteJobRefs: Map<string, string>;
+  } = { summaries: [], query: '', acks: new Map(), quoteJobRefs: new Map() };
 
   function paint() {
     render(view(), rootEl);
@@ -29,9 +31,22 @@ export function Library(rootEl: HTMLElement): TemplateResult {
     ctx.summaries = await reportsRepo.listSummaries();
     paint();
     if (ENV.cloudEnabled) {
-      ctx.acks = await loadAckIndex();
+      const [acks, quotes] = await Promise.all([loadAckIndex(), quotesRepo.list()]);
+      ctx.acks = acks;
+      // Inspections started before job refs were carried over from the quote
+      // still need the quote's ref to find the client's signature.
+      ctx.quoteJobRefs = new Map(
+        quotes
+          .filter((q) => q.convertedReportId && q.convertedReportId !== q.jobRef)
+          .map((q) => [q.convertedReportId!, q.jobRef]),
+      );
       paint();
     }
+  }
+
+  function signedAtFor(jobRef: string): number | undefined {
+    const quoteRef = ctx.quoteJobRefs.get(jobRef);
+    return ctx.acks.get(jobRef) ?? (quoteRef ? ctx.acks.get(quoteRef) : undefined);
   }
 
   async function doExport() {
@@ -132,7 +147,7 @@ export function Library(rootEl: HTMLElement): TemplateResult {
             : html`
                 <ul class="library__list">
                   ${rows.map((s) => {
-                    const signedAt = ctx.acks.get(s.jobRef);
+                    const signedAt = signedAtFor(s.jobRef);
                     return html`
                       <li class="library__row">
                         <button
