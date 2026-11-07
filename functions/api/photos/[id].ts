@@ -12,7 +12,7 @@
 
 import { err, json, type Env } from '../../types';
 
-const KINDS = new Set(['cover', 'overview', 'snag', 'annotated', 'rectification']);
+const KINDS = new Set(['cover', 'overview', 'snag', 'annotated', 'rectification', 'plan']);
 
 export const onRequestGet: PagesFunction<Env> = async ({ env, params }) => {
   const id = String(params.id);

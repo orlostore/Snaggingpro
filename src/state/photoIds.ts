@@ -10,6 +10,7 @@ export function photoIdsInState(state: State): string[] {
   for (const id of state.coverPhotoIds) {
     if (id) out.add(id);
   }
+  if (state.planPhotoId) out.add(state.planPhotoId);
   for (const room of Object.values(state.rooms)) {
     for (const item of Object.values(room.items)) {
       for (const obs of item.observations) {

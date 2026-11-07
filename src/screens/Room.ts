@@ -16,8 +16,10 @@ import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { reencodeToWebp } from '@/lib/imageEncode';
 import { openAnnotator } from '@/components/PhotoAnnotate';
 import { openSeverityPicker } from '@/components/SeverityPicker';
+import { openPlanPinner } from '@/components/PlanPinner';
 import { newId } from '@/lib/id';
 import {
+  collectSnags,
   issueMissingPhoto,
   issueMissingNote,
   issueIncomplete,
@@ -170,6 +172,49 @@ export function Room(
     const url = await getPhotoUrl(id);
     if (url) view.photoUrls.set(id, url);
     paint();
+  }
+
+  function markOnPlan(itemKey: string, obsId: string) {
+    const s = loadDraft();
+    if (!s?.planPhotoId) return;
+    const room = s.rooms[roomId];
+    const obs = room?.items[itemKey]?.observations.find((o) => o.id === obsId);
+    if (!room || !obs) return;
+    const snags = collectSnags(s);
+    const self = snags.find((sn) => sn.observationId === obsId);
+    void openPlanPinner({
+      planPhotoId: s.planPhotoId,
+      title: `${room.label} · ${room.items[itemKey]?.label ?? ''}`,
+      currentNumber: self?.ordinal ?? snags.length + 1,
+      current: obs.pin,
+      others: snags
+        .filter((sn) => sn.pin && sn.observationId !== obsId)
+        .map((sn) => ({ n: sn.ordinal, pin: sn.pin! })),
+      onSave: (pin) => {
+        const s2 = loadDraft();
+        const o2 = s2?.rooms[roomId]?.items[itemKey]?.observations.find((o) => o.id === obsId);
+        if (!s2 || !o2) return;
+        if (pin) o2.pin = pin;
+        else delete o2.pin;
+        s2.job.updatedAt = Date.now();
+        saveDraft(s2);
+        toast(pin ? 'Location saved on plan' : 'Pin removed');
+        paint();
+      },
+    });
+  }
+
+  function pinButton(item: Item, obs: Item['observations'][number], hasPlan: boolean): TemplateResult {
+    if (!hasPlan) return html``;
+    return html`
+      <button
+        class="btn btn--secondary btn--sm obs__pin ${obs.pin ? 'obs__pin--set' : ''}"
+        @click=${() => markOnPlan(item.key, obs.id)}
+      >
+        ${Icon({ name: 'pin', size: 16 })}
+        ${obs.pin ? 'On plan · move pin' : 'Mark on plan'}
+      </button>
+    `;
   }
 
   function annotatePhoto(itemKey: string, obsId: string, photoId: string) {
@@ -553,6 +598,7 @@ export function Room(
   function observationsBlock(item: Item): TemplateResult {
     const s = loadDraft();
     const isFollowUp = s?.job.reportType === 'follow-up';
+    const hasPlan = !!s?.planPhotoId;
     return html`
       <div class="obs-block">
         ${item.observations.map(
@@ -604,6 +650,8 @@ export function Room(
                 onPicked: (f) => void addPhotoToObs(item.key, obs.id, f),
                 label: 'Add photo to this observation',
               })}
+
+              ${pinButton(item, obs, hasPlan)}
 
               ${isFollowUp ? rectificationPanel(item, obs) : null}
 

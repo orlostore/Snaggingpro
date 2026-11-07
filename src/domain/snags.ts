@@ -2,7 +2,7 @@
  * Snag identity and severity rules.
  */
 
-import type { Item, RoomState, State } from '@/state/schema';
+import type { Item, PlanPin, RoomState, State } from '@/state/schema';
 
 export const SEVERITIES = ['critical', 'major', 'minor'] as const;
 export type Severity = (typeof SEVERITIES)[number];
@@ -49,6 +49,8 @@ export interface SnagRecord {
   text: string;
   photoIds: string[];
   observationId: string | null;
+  /** Where the snag sits on the floor plan, if the inspector pinned it. */
+  pin?: PlanPin;
   /** Rectification status carried through from a follow-up inspection. */
   rectification?: Rectification;
   rectificationNote?: string;
@@ -95,6 +97,7 @@ export function collectSnags(state: State): SnagRecord[] {
           photoIds: obs.photoIds,
           observationId: obs.id,
         };
+        if (obs.pin) rec.pin = obs.pin;
         if (obs.rectification) {
           rec.rectification = obs.rectification.status;
           rec.rectificationNote = obs.rectification.note;

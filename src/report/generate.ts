@@ -18,6 +18,7 @@ import { HANDOVER_SECTIONS, HANDOVER_FOOTNOTE } from '@/domain/handoverDocs';
 import { PROP_LABEL } from '@/domain/pricing';
 import { formatDateLong, formatAED } from '@/lib/format';
 import { getPhoto } from '@/storage/photos';
+import { PIN_PATH } from '@/domain/planPin';
 import type { RoomState, State } from '@/state/schema';
 
 const BRAND_CSS = `
@@ -50,6 +51,20 @@ const BRAND_CSS = `
   .snag--major { border-left-color: var(--major); }
   .snag__head { display: flex; justify-content: space-between; font-size: 12px; color: var(--grey); }
   .snag__title { font-weight: 600; margin: 4px 0; }
+  .plan-page { break-before: page; }
+  .plan-sheet { position: relative; display: table; margin: 12px auto 16px; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; break-inside: avoid; }
+  .plan-sheet img { display: block; max-width: 100%; max-height: 165mm; width: auto; height: auto; }
+  .plan-pin { position: absolute; width: 26px; height: 35px; transform: translate(-50%, -100%); color: var(--minor); }
+  .plan-pin svg { width: 100%; height: 100%; display: block; fill: currentColor; stroke: #fff; stroke-width: 1.5; }
+  .plan-pin b { position: absolute; inset: 0 0 auto 0; height: 26px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 10.5px; font-weight: 700; }
+  .plan-pin--critical { color: var(--critical); }
+  .plan-pin--major { color: var(--major); }
+  .plan-legend__n--critical { background: var(--critical); }
+  .plan-legend__n--major { background: var(--major); }
+  .plan-legend { list-style: none; columns: 2; column-gap: 18px; font-size: 11.5px; }
+  .plan-legend li { display: flex; gap: 6px; align-items: flex-start; margin-bottom: 5px; break-inside: avoid; }
+  .plan-legend__n { flex: none; min-width: 20px; height: 20px; border-radius: 10px; background: var(--minor); color: #fff; font-size: 10.5px; font-weight: 700; text-align: center; line-height: 20px; padding: 0 4px; }
+  .snag__pin { font-weight: 700; color: var(--brand); }
   .snag__photos { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; margin-top: 10px; }
   .snag__photo-cell { background: #ecedf0; aspect-ratio: 3/4; border-radius: 6px; overflow: hidden; border: 1px solid #ddd; }
   .snag__photo-cell img { width: 100%; height: 100%; object-fit: contain; display: block; }
@@ -149,6 +164,7 @@ async function loadPhotoMap(state: State): Promise<Map<string, string>> {
   for (const id of state.coverPhotoIds) {
     if (id) ids.add(id);
   }
+  if (state.planPhotoId) ids.add(state.planPhotoId);
   for (const room of Object.values(state.rooms)) {
     for (const item of Object.values(room.items)) {
       for (const obs of item.observations) {
@@ -228,6 +244,32 @@ function coverPage(state: State, snags: SnagRecord[], photos: Map<string, string
       <p class="meta">Prepared for ${h(state.client.name || '—')} ${state.client.phone ? `· ${h(state.client.phone)}` : ''}</p>
       ${coverPhotosHtml(state, photos)}
       ${kpis(state, snags)}
+    </section>
+  `;
+}
+
+function planPage(state: State, snags: SnagRecord[], photos: Map<string, string>): string {
+  const url = state.planPhotoId ? photos.get(state.planPhotoId) : undefined;
+  const pinned = snags.filter((s) => s.pin);
+  if (!url || pinned.length === 0) return '';
+  const markers = pinned
+    .map(
+      (s) =>
+        `<span class="plan-pin plan-pin--${s.severity}" style="left:${(s.pin!.x * 100).toFixed(2)}%;top:${(s.pin!.y * 100).toFixed(2)}%"><svg viewBox="0 0 30 40"><path d="${PIN_PATH}"/></svg><b>${s.ordinal}</b></span>`,
+    )
+    .join('');
+  const legend = pinned
+    .map(
+      (s) =>
+        `<li><span class="plan-legend__n plan-legend__n--${s.severity}">${s.ordinal}</span><span><strong>${h(s.roomLabel)}</strong> · ${h(s.itemLabel)}${s.text ? ` — ${h(s.text)}` : ''}</span></li>`,
+    )
+    .join('');
+  return `
+    <section class="page plan-page">
+      <h1>Floor plan</h1>
+      <p class="meta">${pinned.length} snag${pinned.length === 1 ? '' : 's'} marked on the plan. Numbers match the findings in this report.</p>
+      <div class="plan-sheet"><img src="${url}" alt="Floor plan" />${markers}</div>
+      <ol class="plan-legend">${legend}</ol>
     </section>
   `;
 }
@@ -415,7 +457,7 @@ function snagBlock(s: SnagRecord, photos: Map<string, string>): string {
   return `
     <div class="snag snag--${s.severity}">
       <div class="snag__head">
-        <span>${h(s.id)} · ${h(s.roomLabel)}${s.dbNum ? ` · DB ${s.dbNum}` : ''}</span>
+        <span>${h(s.id)} · ${h(s.roomLabel)}${s.dbNum ? ` · DB ${s.dbNum}` : ''}${s.pin ? ` · <span class="snag__pin">Plan pin ${s.ordinal}</span>` : ''}</span>
         <span class="pill pill--${s.severity}">${h(SEVERITY_LABEL[s.severity])}</span>
       </div>
       <div class="snag__title">${h(s.itemLabel)}</div>
@@ -583,6 +625,7 @@ export async function generateReportHtml(state: State): Promise<string> {
     <div class="sp-print-hint">Choose <strong>Save as PDF</strong> in the print dialog.</div>
   </div>
   ${coverPage(state, snags, photos)}
+  ${planPage(state, snags, photos)}
   ${severityDefinitionsPage()}
   ${isFollowUp ? rectificationSummary(snags, photos) : handoverPage()}
   ${isFollowUp ? '' : criticalSummary(snags, photos)}

@@ -7,7 +7,7 @@ import { z } from 'zod';
 import { DISCIPLINES } from '@/domain/disciplines';
 import { SEVERITIES } from '@/domain/snags';
 
-export const STATE_VERSION = 1 as const;
+export const STATE_VERSION = 2 as const;
 
 const DisciplineZ = z.enum(DISCIPLINES);
 const SeverityZ = z.enum(SEVERITIES);
@@ -17,9 +17,16 @@ const ReportTypeZ = z.enum(['original', 'follow-up']);
 const StatusZ = z.enum(['pending', 'pass', 'issue', 'na']);
 const RectificationZ = z.enum(['fixed', 'open', 'new']);
 
+/** Position on the floor plan, as fractions (0–1) of the plan image's width and height. */
+export const PlanPinZ = z.object({
+  x: z.number().min(0).max(1),
+  y: z.number().min(0).max(1),
+});
+
 export const ObservationZ = z.object({
   id: z.string(),
   text: z.string(),
+  pin: PlanPinZ.optional(),
   severity: SeverityZ.optional(),
   photoIds: z.array(z.string()).default([]),
   rectification: z
@@ -95,11 +102,14 @@ export const StateZ = z.object({
   client: ClientZ,
   property: PropertyZ,
   coverPhotoIds: z.array(z.string().nullable()).length(3).default([null, null, null]),
+  /** Floor plan image (blob in IndexedDB) that snags can be pinned on. */
+  planPhotoId: z.string().nullable().default(null),
   rooms: z.record(z.string(), RoomStateZ).default({}),
   roomOrder: z.array(z.string()).default([]),
   discLabels: z.record(z.string(), z.string()).default({}),
 });
 
+export type PlanPin = z.infer<typeof PlanPinZ>;
 export type Observation = z.infer<typeof ObservationZ>;
 export type Item = z.infer<typeof ItemZ>;
 export type DbInstance = z.infer<typeof DbInstanceZ>;
