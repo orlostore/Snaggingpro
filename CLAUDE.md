@@ -15,6 +15,7 @@
 - Use the tokens in `src/styles/tokens.css` only; the rules for which colour may sit on which surface are written at the top of that file.
 - Small text on teal is ivory (`--color-on-brand`). Pale sand (`--color-accent-light`) on teal is for large text (24px+) and lines only. Text on sand fills is `--color-on-accent`. Small sand text on light surfaces is `--color-accent-strong`.
 - Every text/background pair is checked against WCAG AA by `tests/unit/contrast.test.ts`. Adding a new pairing means adding it to that test; changing a colour means the test must still pass.
+- Font: **Barlow Semi Condensed** for everything in the app (titles and body), via `--font-display` / `--font-body`. Do not reintroduce serif or other display fonts.
 - Client PDFs (quotation, receipt, report) keep their own fixed print styles.
 
 ## State

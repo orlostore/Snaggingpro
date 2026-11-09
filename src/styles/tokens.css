@@ -89,8 +89,9 @@
   --shadow-gold: 0 10px 24px rgba(225, 178, 123, 0.40);
 
   /* ------- Typography ------- */
-  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
-  --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
+  /* Approved font (owner choice, Nov 2026): Barlow Semi Condensed everywhere */
+  --font-display: 'Barlow Semi Condensed', 'Arial Narrow', system-ui, -apple-system, sans-serif;
+  --font-body: 'Barlow Semi Condensed', 'Arial Narrow', system-ui, -apple-system, sans-serif;
 
   --text-xs: 13px;
   --text-sm: 15px;
