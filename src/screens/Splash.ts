@@ -2,7 +2,6 @@ import { html, type TemplateResult } from 'lit-html';
 import { Button } from '@/components/Button';
 import { Icon, type IconName } from '@/components/Icon';
 import { Footer } from '@/components/Footer';
-import { Skyline } from '@/components/Skyline';
 import { go } from '@/lib/router';
 import { loadDraft } from '@/state/persist';
 import { inspectionProgress } from '@/domain/progress';
@@ -50,8 +49,8 @@ export function Splash(): TemplateResult {
     <section class="screen splash">
       <div class="container splash__inner">
         <header class="splash__brand">
-          <div class="splash__emblem" aria-hidden="true"><span>SP</span></div>
           <div class="splash__logo"><span>Snagging</span><em>Pro</em></div>
+          <div class="splash__rule" aria-hidden="true"></div>
         </header>
 
         <div class="splash__hero">
@@ -59,8 +58,6 @@ export function Splash(): TemplateResult {
           <h1 class="splash__headline">Every detail,<br /><em>inspected.</em></h1>
           <p class="splash__tagline">Independent property inspections · UAE</p>
         </div>
-
-        <div class="splash__skyline">${Skyline()}</div>
 
         <div class="splash__actions">
           ${draft ? resumeCard(draft) : null}

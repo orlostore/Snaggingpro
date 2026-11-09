@@ -1,108 +1,67 @@
 /* ============ Splash ============ */
-.splash {
-  background: var(--pattern-blueprint), var(--gradient-brand);
-  color: var(--color-on-brand);
-}
-.splash .app-footer,
-.pin-screen .app-footer {
-  border-top-color: var(--color-on-brand-line);
-  color: var(--color-on-brand-muted);
-}
-.splash .app-footer .sync-status__label,
-.pin-screen .app-footer .sync-status__label {
-  color: var(--color-on-brand-muted);
-}
 .splash__inner {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: var(--space-6);
-  padding: calc(var(--space-6) + env(safe-area-inset-top, 0)) var(--space-5) var(--space-8);
+  gap: var(--space-8);
+  padding: calc(var(--space-10) + env(safe-area-inset-top, 0)) var(--space-5) var(--space-8);
 }
 .splash__brand {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: var(--space-4);
-}
-.splash__emblem {
-  flex: none;
-  width: 34px;
-  height: 34px;
-  border: 1px solid var(--color-accent-light);
-  rotate: 45deg;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 0 var(--space-1);
-}
-.splash__emblem span {
-  rotate: -45deg;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 600;
-  font-size: var(--text-xs);
-  color: var(--color-accent-light);
 }
 .splash__logo {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: var(--text-md);
+  font-size: var(--text-xl);
   letter-spacing: 0.01em;
-  color: var(--color-on-brand);
+  color: var(--color-brand);
 }
 .splash__logo em {
-  color: var(--color-accent-light);
+  color: var(--color-accent-strong);
   font-style: italic;
 }
+.splash__rule {
+  width: 40px;
+  height: 1px;
+  background: var(--color-accent);
+}
 .splash__hero {
-  margin-top: var(--space-6);
+  margin: auto 0;
+  text-align: center;
 }
 .splash__eyebrow {
   font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: var(--tracking-caps);
   text-transform: uppercase;
-  color: var(--color-accent-light);
+  color: var(--color-accent-strong);
 }
 .splash__headline {
   font-family: var(--font-display);
   font-weight: 500;
-  font-size: var(--text-3xl);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  color: var(--color-on-brand);
+  font-size: var(--text-2xl);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  color: var(--color-brand);
   margin-top: var(--space-3);
 }
 .splash__headline em {
   font-style: italic;
-  color: var(--color-accent-light);
+  color: var(--color-accent-strong);
 }
 .splash__tagline {
-  margin-top: var(--space-4);
+  margin-top: var(--space-3);
   font-size: var(--text-sm);
-  color: var(--color-on-brand-muted);
-}
-.splash__skyline {
-  color: var(--color-accent-light);
-  opacity: 0.85;
-  margin: auto calc(var(--space-5) * -1) 0;
-  border-bottom: 1px solid var(--color-on-brand-line);
-}
-.skyline {
-  display: block;
-  width: 100%;
-  height: auto;
+  color: var(--color-text-muted);
 }
 .splash__actions {
   display: flex;
   flex-direction: column;
   gap: var(--space-4);
   width: 100%;
-}
-.splash .btn--primary {
-  background: var(--gradient-accent);
-  color: var(--color-brand-deep);
-  box-shadow: var(--shadow-gold);
 }
 .resume {
   display: flex;
@@ -111,33 +70,35 @@
   text-align: left;
   padding: var(--space-4) var(--space-5);
   border-radius: var(--radius-lg);
-  background: var(--color-on-brand-glass);
-  border: 1px solid var(--color-on-brand-line);
-  color: var(--color-on-brand);
-  backdrop-filter: blur(6px);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  border-left: 3px solid var(--color-accent);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-text);
 }
 .resume__eyebrow {
   font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: var(--tracking-wide);
   text-transform: uppercase;
-  color: var(--color-accent-light);
+  color: var(--color-accent-strong);
 }
 .resume__client {
   font-family: var(--font-display);
   font-size: var(--text-lg);
   font-weight: 600;
+  color: var(--color-brand);
 }
 .resume__where {
   font-size: var(--text-sm);
-  color: var(--color-on-brand-muted);
+  color: var(--color-text-muted);
 }
 .resume__bar {
   display: block;
   height: 3px;
   margin: var(--space-3) 0 var(--space-1);
   border-radius: var(--radius-pill);
-  background: var(--color-on-brand-line);
+  background: var(--color-progress-track);
   overflow: hidden;
 }
 .resume__bar > span {
@@ -150,20 +111,23 @@
   justify-content: space-between;
   align-items: center;
   font-size: var(--text-xs);
-  color: var(--color-on-brand-muted);
+  color: var(--color-text-muted);
+}
+.resume__meta > svg {
+  color: var(--color-brand);
 }
 .splash__links {
   display: flex;
   flex-direction: column;
-  border-top: 1px solid var(--color-on-brand-line);
+  border-top: 1px solid var(--color-border);
 }
 .splash__link {
   display: flex;
   align-items: center;
   gap: var(--space-3);
   min-height: 54px;
-  border-bottom: 1px solid var(--color-on-brand-line);
-  color: var(--color-on-brand);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
   font-size: var(--text-base);
   text-align: left;
 }
@@ -171,18 +135,14 @@
   flex: 1;
 }
 .splash__link > svg {
-  color: var(--color-on-brand-muted);
+  color: var(--color-text-dim);
 }
 .splash__link-icon {
   display: inline-flex;
-  color: var(--color-accent-light);
+  color: var(--color-accent-strong);
 }
 
 /* ============ Pin screen ============ */
-.pin-screen {
-  background: var(--pattern-blueprint), var(--gradient-brand);
-  color: var(--color-on-brand);
-}
 .pin-screen__inner {
   flex: 1;
   display: flex;
@@ -197,10 +157,10 @@
   font-weight: 600;
   font-size: var(--text-xl);
   margin-bottom: var(--space-4);
-  color: var(--color-on-brand);
+  color: var(--color-brand);
 }
 .pin-screen__error {
-  color: var(--color-issue-on-brand);
+  color: var(--color-critical);
   font-size: var(--text-sm);
 }
 
@@ -801,7 +761,7 @@
 }
 .dash-meta.card {
   flex-wrap: wrap;
-  background: var(--pattern-blueprint), var(--gradient-brand);
+  background: var(--gradient-brand);
   color: var(--color-on-brand);
   border: none;
   border-top: 3px solid var(--color-accent);

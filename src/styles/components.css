@@ -314,9 +314,10 @@
   margin: 0 auto;
 }
 .pin__key {
-  background: var(--color-on-brand-glass);
-  border: 1px solid var(--color-on-brand-line);
-  color: var(--color-on-brand);
+  background: var(--color-bg-elevated);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  color: var(--color-brand);
   border-radius: var(--radius-pill);
   aspect-ratio: 1 / 1;
   min-height: 72px;
@@ -329,7 +330,7 @@
     transform var(--duration-fast) var(--ease-out);
 }
 .pin__key:active {
-  background: var(--color-on-brand-line);
+  background: var(--color-accent-soft);
   transform: scale(0.96);
 }
 .pin__dots {
@@ -342,12 +343,12 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid var(--color-accent-light);
+  border: 1.5px solid var(--color-brand);
   transition: background var(--duration-fast) var(--ease-out);
 }
 .pin__dot--on {
-  background: var(--color-accent-light);
-  border-color: var(--color-accent-light);
+  background: var(--color-brand);
+  border-color: var(--color-brand);
 }
 
 /* ============ Lists / cards ============ */

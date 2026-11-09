@@ -19,10 +19,6 @@
   --color-accent-soft: rgba(176, 141, 79, 0.12);
   --gradient-brand: linear-gradient(160deg, #1a3a66 0%, #0a1830 100%);
   --gradient-accent: linear-gradient(135deg, #d4b679 0%, #a9864a 100%);
-  /* Faint architectural grid laid over navy surfaces */
-  --pattern-blueprint:
-    repeating-linear-gradient(0deg, rgba(247, 243, 234, 0.045) 0 1px, transparent 1px 32px),
-    repeating-linear-gradient(90deg, rgba(247, 243, 234, 0.045) 0 1px, transparent 1px 32px);
   --color-progress-track: rgba(18, 41, 74, 0.08);
 
   /* ------- Surfaces ------- */
