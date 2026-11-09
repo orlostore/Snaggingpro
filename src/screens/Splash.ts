@@ -10,6 +10,7 @@ export function Splash(): TemplateResult {
   return html`
     <section class="screen splash">
       <div class="container splash__inner">
+        <div class="splash__emblem" aria-hidden="true"><span>SP</span></div>
         <div class="splash__logo">
           <span>Snagging</span><em>Pro</em>
         </div>

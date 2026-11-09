@@ -583,7 +583,7 @@ export function Room(
               : 'Issue'}</span>
           </button>
           <button
-            class="item__btn ${item.status === 'na' ? 'item__btn--on' : ''}"
+            class="item__btn ${item.status === 'na' ? 'item__btn--on item__btn--na' : ''}"
             @click=${() => setStatus(item.key, 'na')}
           >
             ${Icon({ name: 'minus', size: 16 })}

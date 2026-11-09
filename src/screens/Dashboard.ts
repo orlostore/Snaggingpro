@@ -11,7 +11,7 @@ import { toast } from '@/components/Toast';
 import { collectSnags } from '@/domain/snags';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { reencodeToWebp } from '@/lib/imageEncode';
-import type { State } from '@/state/schema';
+import type { RoomState, State } from '@/state/schema';
 
 const PLAN_MAX_DIMENSION = 2400;
 
@@ -28,6 +28,17 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
     plan.photoId = photoId;
     plan.url = photoId ? await getPhotoUrl(photoId) : null;
     paint();
+  }
+
+  function progressPct(rooms: RoomState[]): number {
+    let total = 0;
+    let done = 0;
+    for (const r of rooms) {
+      const st = statsForRoom(r);
+      total += st.total;
+      done += st.inspected;
+    }
+    return total ? Math.round((done / total) * 100) : 0;
   }
 
   function pinCount(s: State): number {
@@ -206,13 +217,16 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
               </div>
             </div>
             <div class="dash-meta__stats">
-              <div>
-                <strong>${completed}</strong> / ${visible.length} rooms done
-              </div>
+              <div class="dash-meta__big">${completed}<span>/${visible.length}</span></div>
+              <div class="dash-meta__label">rooms complete</div>
               ${pendingRooms > 0
                 ? html`<div class="dash-meta__pending">${pendingRooms} pending</div>`
                 : null}
               <div class="dash-meta__issues">${totalIssues} issues logged</div>
+            </div>
+            <div class="dash-meta__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
+              aria-valuenow=${progressPct(visible)}>
+              <span style="width:${progressPct(visible)}%"></span>
             </div>
           </div>
 
@@ -234,6 +248,9 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
                   <div class="room-card__label">${room.label}</div>
                   <div class="room-card__meta">
                     ${st.inspected}/${st.total} inspected
+                  </div>
+                  <div class="room-card__bar ${complete ? 'room-card__bar--done' : ''}">
+                    <span style="width:${st.total ? Math.round((st.inspected / st.total) * 100) : 0}%"></span>
                   </div>
                   <div class="room-card__pills">
                       ${complete
