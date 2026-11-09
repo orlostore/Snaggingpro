@@ -1,53 +1,66 @@
 /**
  * Design tokens — single source of truth.
- * Premium light theme: deep navy surfaces for chrome, champagne gold
- * accents, warm ivory canvas, serif display type.
+ *
+ * APPROVED PALETTE (signed off by the owner, Nov 2026): midway teal + sand
+ * on a warm ivory canvas. Do not introduce other brand colours.
+ * Every text/background pairing is checked by tests/unit/contrast.test.ts
+ * against WCAG AA (4.5:1 normal text, 3:1 large text and UI parts).
+ *
+ * Rules:
+ *  - Small text on teal is always --color-on-brand (or -muted).
+ *  - --color-accent-light (pale sand) on teal is for LARGE text (24px+)
+ *    and decorative lines only.
+ *  - --color-accent (sand) is a FILL colour; text on it is --color-on-accent.
+ *  - Small sand text on light surfaces uses --color-accent-strong.
+ *  - Text colours are solid hex so the contrast test can check them.
  *
  * Nothing else in the app defines colour, spacing, radius, or shadow.
  * Add new tokens here, then reference them via var(--...) everywhere else.
  */
 
 :root {
-  /* ------- Brand colours — deep navy + champagne gold ------- */
-  --color-brand: #12294a;            /* deep navy */
-  --color-brand-hover: #0c1d36;
-  --color-brand-deep: #0a1830;       /* darkest navy, gradients and toasts */
-  --color-brand-soft: rgba(18, 41, 74, 0.07);
-  --color-accent: #b08d4f;           /* champagne gold — decorative / large text only */
-  --color-accent-strong: #84652d;    /* gold for small text on light surfaces (5:1) */
-  --color-accent-light: #dcc28f;     /* gold on navy surfaces */
-  --color-accent-soft: rgba(176, 141, 79, 0.12);
-  --gradient-brand: linear-gradient(160deg, #1a3a66 0%, #0a1830 100%);
-  --gradient-accent: linear-gradient(135deg, #d4b679 0%, #a9864a 100%);
-  --color-progress-track: rgba(18, 41, 74, 0.08);
+  /* ------- Brand colours — approved midway teal + sand ------- */
+  --color-brand: #1f6b71;            /* teal: buttons, active tabs, icons */
+  --color-brand-light: #297c83;      /* lighter end of the teal band */
+  --color-brand-hover: #1a5c64;
+  --color-brand-deep: #1a5c64;       /* darker end of the teal band, toasts */
+  --color-brand-soft: rgba(31, 107, 113, 0.08);
+  --color-accent: #e1b27b;           /* sand: fills only (buttons, bars) */
+  --color-on-accent: #33200c;        /* text on sand fills */
+  --color-accent-strong: #8e5f31;    /* sand for small text on light surfaces */
+  --color-accent-light: #eac9a3;     /* pale sand: large text / lines on teal */
+  --color-accent-soft: rgba(225, 178, 123, 0.16);
+  --gradient-brand: linear-gradient(160deg, var(--color-brand-light) 0%, var(--color-brand-deep) 100%);
+  --gradient-accent: linear-gradient(135deg, #e8bf8c 0%, #dcab70 100%);
+  --color-progress-track: #ede4d6;
 
   /* ------- Surfaces ------- */
-  --color-bg: #f5f2ec;               /* warm ivory canvas */
+  --color-bg: #f6f1ea;               /* warm ivory canvas */
   --color-bg-elevated: #ffffff;      /* cards, sheets */
-  --color-bg-sunken: #efeae1;        /* input backgrounds, sunken rows */
-  --color-bg-overlay: rgba(10, 24, 48, 0.55);
+  --color-bg-sunken: #efe8dc;        /* input backgrounds, sunken rows */
+  --color-bg-overlay: rgba(16, 52, 56, 0.55);
 
-  /* ------- Text (all WCAG AA on white and on the ivory canvas) ------- */
-  --color-text: #161a22;
-  --color-text-muted: #4a4f58;
-  --color-text-dim: #656a72;
+  /* ------- Text ------- */
+  --color-text: #192e31;             /* ink */
+  --color-text-muted: #4f5b5d;
+  --color-text-dim: #5f6a6c;
   --color-text-inverse: #ffffff;
-  --color-on-brand: #f7f3ea;         /* ivory text on navy */
-  --color-on-brand-muted: rgba(247, 243, 234, 0.74);
-  --color-on-brand-line: rgba(247, 243, 234, 0.18);
-  --color-on-brand-glass: rgba(247, 243, 234, 0.07);
-  --color-issue-on-brand: #f6b48d;   /* issue colour readable on navy */
+  --color-on-brand: #fcf8f1;         /* ivory text on teal */
+  --color-on-brand-muted: #f3f8f8;   /* secondary text on teal (use smaller size for hierarchy) */
+  --color-on-brand-line: rgba(252, 248, 241, 0.22);
+  --color-on-brand-glass: rgba(252, 248, 241, 0.10);
+  --color-issue-on-brand: #fff6ef;   /* issue figures on teal */
 
   /* ------- Borders ------- */
-  --color-border: #e8e2d7;           /* warm hairline */
+  --color-border: #e6ded1;           /* warm hairline (decorative) */
   --color-border-strong: #8b867d;    /* 3:1 — meets WCAG 1.4.11 for UI */
 
   /* ------- Status (all AA on white, both as fg and as bg with white fg) ------- */
-  --color-pass: #0f7a44;             /* 5.4:1 — green */
-  --color-issue: #c2410c;            /* 5.2:1 — vibrant pumpkin orange (was muddy) */
+  --color-pass: #0f7642;             /* green — AA on all light surfaces */
+  --color-issue: #b83e0b;            /* pumpkin orange — AA on all light surfaces */
   --color-critical: #b6221b;         /* 6.5:1 — deep red */
-  --color-warning: #a16207;          /* 4.9:1 — gold-amber (clearly distinct from issue) */
-  --color-na: #6b7280;
+  --color-warning: #945a06;          /* amber — AA on all light surfaces */
+  --color-na: #616874;
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;
@@ -69,10 +82,10 @@
   --radius-pill: 999px;
 
   /* ------- Shadows ------- */
-  --shadow-sm: 0 1px 2px rgba(18, 41, 74, 0.05), 0 2px 8px rgba(18, 41, 74, 0.04);
-  --shadow-md: 0 8px 24px rgba(18, 41, 74, 0.09);
-  --shadow-lg: 0 24px 56px rgba(10, 24, 48, 0.22);
-  --shadow-gold: 0 6px 18px rgba(169, 134, 74, 0.32);
+  --shadow-sm: 0 1px 2px rgba(26, 92, 100, 0.05), 0 2px 8px rgba(26, 92, 100, 0.04);
+  --shadow-md: 0 10px 28px rgba(26, 92, 100, 0.10);
+  --shadow-lg: 0 24px 56px rgba(16, 52, 56, 0.22);
+  --shadow-gold: 0 10px 24px rgba(225, 178, 123, 0.40);
 
   /* ------- Typography ------- */
   --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;

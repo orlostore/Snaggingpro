@@ -9,6 +9,14 @@
 - Destructive UI actions go through `confirmDialog()` in `src/components/Confirm.ts`. Never call `confirm()` or `prompt()`.
 - Authentication is the `Authenticator` interface in `src/lib/auth.ts`. Today: PIN from `VITE_APP_PIN`. Phase 2 swaps the implementation only.
 
+## Approved colours (owner sign-off, Nov 2026)
+
+- Palette: **midway teal + sand on warm ivory**. Teal `#1f6b71` (band `#297c83` → `#1a5c64`), sand fill `#e1b27b`, ivory canvas `#f6f1ea`. Do not add other brand colours or bring back navy/black/grey themes.
+- Use the tokens in `src/styles/tokens.css` only; the rules for which colour may sit on which surface are written at the top of that file.
+- Small text on teal is ivory (`--color-on-brand`). Pale sand (`--color-accent-light`) on teal is for large text (24px+) and lines only. Text on sand fills is `--color-on-accent`. Small sand text on light surfaces is `--color-accent-strong`.
+- Every text/background pair is checked against WCAG AA by `tests/unit/contrast.test.ts`. Adding a new pairing means adding it to that test; changing a colour means the test must still pass.
+- Client PDFs (quotation, receipt, report) keep their own fixed print styles.
+
 ## State
 
 - Single canonical schema in `src/state/schema.ts`, version `STATE_VERSION`.

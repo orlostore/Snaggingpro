@@ -42,7 +42,8 @@
   letter-spacing: var(--tracking-tight);
 }
 .app-header__logo span {
-  color: var(--color-accent-light);
+  color: var(--color-on-brand);
+  font-style: italic;
 }
 .app-header__title {
   font-family: var(--font-display);
@@ -237,7 +238,7 @@
 /* ============ Toast ============ */
 .toast-host {
   position: fixed;
-  bottom: calc(var(--space-8) + env(safe-area-inset-bottom, 0));
+  bottom: calc(96px + env(safe-area-inset-bottom, 0));
   left: 50%;
   transform: translateX(-50%);
   z-index: var(--z-toast);

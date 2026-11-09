@@ -55,7 +55,7 @@ function dispatch(route: Route) {
   }
   switch (route.name) {
     case 'splash':
-      render(Splash(), root);
+      render(Splash(root), root);
       break;
     case 'pin': {
       const next = (route.params['to'] as RouteName | undefined) ?? 'splash';
