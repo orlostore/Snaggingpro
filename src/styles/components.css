@@ -1,7 +1,10 @@
 /* ============ Header ============ */
 .app-header {
-  background: var(--color-bg-elevated);
-  border-bottom: 2px solid var(--color-brand);
+  background: var(--gradient-brand);
+  color: var(--color-on-brand);
+  border-bottom: 2px solid var(--color-accent);
+  box-shadow: var(--shadow-md);
+  padding-top: env(safe-area-inset-top, 0);
   position: sticky;
   top: 0;
   z-index: var(--z-sticky);
@@ -20,12 +23,12 @@
   justify-content: center;
   width: var(--touch-min);
   height: var(--touch-min);
-  border-radius: var(--radius-md);
-  color: var(--color-text);
-  background: transparent;
+  border-radius: var(--radius-pill);
+  color: var(--color-on-brand);
+  background: var(--color-on-brand-glass);
 }
 .app-header__back:hover {
-  background: var(--color-bg-sunken);
+  background: var(--color-on-brand-line);
 }
 .app-header__brand {
   display: flex;
@@ -39,14 +42,14 @@
   letter-spacing: var(--tracking-tight);
 }
 .app-header__logo span {
-  color: var(--color-brand);
+  color: var(--color-accent-light);
 }
 .app-header__title {
   font-family: var(--font-display);
   font-size: var(--text-md);
   font-weight: 600;
-  color: var(--color-text);
-  letter-spacing: var(--tracking-tight);
+  color: var(--color-on-brand);
+  letter-spacing: 0.01em;
 }
 .app-header__spacer {
   width: var(--touch-min);
@@ -54,7 +57,7 @@
 
 /* ============ Footer ============ */
 .app-footer {
-  background: var(--color-bg-elevated);
+  background: transparent;
   border-top: 1px solid var(--color-border);
   padding: var(--space-4) 0 calc(var(--space-4) + env(safe-area-inset-bottom, 0));
   color: var(--color-text-muted);
@@ -121,9 +124,11 @@
   justify-content: center;
   gap: var(--space-2);
   font-family: var(--font-body);
-  font-weight: 500;
+  font-weight: 600;
+  letter-spacing: 0.01em;
   border-radius: var(--radius-md);
   transition: background var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
     transform var(--duration-fast) var(--ease-out);
   min-height: var(--touch-min);
   padding: 0 var(--space-5);
@@ -147,20 +152,29 @@
   width: 100%;
 }
 .btn--primary {
-  background: var(--color-brand);
-  color: var(--color-text-inverse);
+  background: var(--gradient-brand);
+  color: var(--color-on-brand);
+  box-shadow: var(--shadow-sm);
 }
 .btn--primary:hover {
   background: var(--color-brand-hover);
 }
+.btn--primary:disabled {
+  opacity: 0.45;
+  box-shadow: none;
+}
 .btn--secondary {
   background: var(--color-bg-elevated);
-  color: var(--color-text);
+  color: var(--color-brand);
   border: 1px solid var(--color-border-strong);
+}
+.btn--secondary:hover {
+  border-color: var(--color-brand);
+  background: var(--color-brand-soft);
 }
 .btn--ghost {
   background: transparent;
-  color: var(--color-text);
+  color: var(--color-brand);
 }
 .btn--ghost:hover {
   background: var(--color-bg-elevated);
@@ -230,13 +244,15 @@
   pointer-events: none;
 }
 .toast {
-  background: var(--color-bg-elevated);
-  color: var(--color-text);
+  background: var(--color-brand-deep);
+  color: var(--color-on-brand);
   padding: var(--space-3) var(--space-5);
   border-radius: var(--radius-pill);
-  box-shadow: var(--shadow-md);
-  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-accent);
   font-size: var(--text-sm);
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* ============ Cards / Splash / Forms ============ */
@@ -254,7 +270,10 @@
   margin-bottom: var(--space-4);
 }
 .field__label {
-  font-size: var(--text-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: var(--tracking-wide);
+  text-transform: uppercase;
   color: var(--color-text-muted);
 }
 .field__input,
@@ -272,6 +291,13 @@
 .field__textarea::placeholder {
   color: var(--color-text-dim);
 }
+.field__input:focus-visible,
+.field__select:focus-visible,
+.field__textarea:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+  border-color: var(--color-accent);
+}
 .field__textarea {
   resize: vertical;
   min-height: 96px;
@@ -288,12 +314,13 @@
   margin: 0 auto;
 }
 .pin__key {
-  background: var(--color-bg-elevated);
-  border: 1px solid var(--color-border-strong);
-  border-radius: var(--radius-lg);
+  background: var(--color-on-brand-glass);
+  border: 1px solid var(--color-on-brand-line);
+  color: var(--color-on-brand);
+  border-radius: var(--radius-pill);
   aspect-ratio: 1 / 1;
   min-height: 72px;
-  font-size: var(--text-2xl);
+  font-size: var(--text-xl);
   font-family: var(--font-display);
   display: flex;
   align-items: center;
@@ -302,7 +329,7 @@
     transform var(--duration-fast) var(--ease-out);
 }
 .pin__key:active {
-  background: var(--color-brand-soft);
+  background: var(--color-on-brand-line);
   transform: scale(0.96);
 }
 .pin__dots {
@@ -315,12 +342,12 @@
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid var(--color-border-strong);
+  border: 2px solid var(--color-accent-light);
   transition: background var(--duration-fast) var(--ease-out);
 }
 .pin__dot--on {
-  background: var(--color-brand);
-  border-color: var(--color-brand);
+  background: var(--color-accent-light);
+  border-color: var(--color-accent-light);
 }
 
 /* ============ Lists / cards ============ */
@@ -333,6 +360,9 @@
 .room-card {
   background: var(--color-bg-elevated);
   border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-sm);
+  transition: box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out);
   border-radius: var(--radius-lg);
   padding: var(--space-4);
   display: flex;
@@ -342,7 +372,8 @@
   min-height: 120px;
 }
 .room-card:hover {
-  border-color: var(--color-border-strong);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-md);
 }
 .room-card__icon {
   display: inline-flex;
@@ -351,7 +382,7 @@
   width: 40px;
   height: 40px;
   border-radius: var(--radius-md);
-  background: var(--color-bg-sunken);
+  background: var(--color-brand-soft);
   color: var(--color-brand);
   margin-bottom: var(--space-1);
 }
@@ -360,7 +391,9 @@
   color: var(--color-pass);
 }
 .room-card__label {
-  font-weight: 500;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-base);
 }
 .room-card__meta {
   font-size: var(--text-xs);
