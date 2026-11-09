@@ -371,9 +371,11 @@
   cursor: pointer;
   min-height: 120px;
 }
-.room-card:hover {
-  border-color: var(--color-accent);
-  box-shadow: var(--shadow-md);
+@media (hover: hover) {
+  .room-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: var(--shadow-md);
+  }
 }
 .room-card__icon {
   display: inline-flex;

@@ -11,7 +11,8 @@ import { toast } from '@/components/Toast';
 import { collectSnags } from '@/domain/snags';
 import { storePhoto, getPhotoUrl, deletePhoto } from '@/storage/photos';
 import { reencodeToWebp } from '@/lib/imageEncode';
-import type { RoomState, State } from '@/state/schema';
+import type { State } from '@/state/schema';
+import { inspectionProgress } from '@/domain/progress';
 
 const PLAN_MAX_DIMENSION = 2400;
 
@@ -30,15 +31,25 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
     paint();
   }
 
-  function progressPct(rooms: RoomState[]): number {
-    let total = 0;
-    let done = 0;
-    for (const r of rooms) {
-      const st = statsForRoom(r);
-      total += st.total;
-      done += st.inspected;
-    }
-    return total ? Math.round((done / total) * 100) : 0;
+  function progressRing(pct: number): TemplateResult {
+    const r = 30;
+    const c = 2 * Math.PI * r;
+    return html`
+      <div class="ring" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow=${pct}>
+        <svg viewBox="0 0 72 72" aria-hidden="true">
+          <circle class="ring__track" cx="36" cy="36" r=${r} />
+          <circle
+            class="ring__fill"
+            cx="36"
+            cy="36"
+            r=${r}
+            stroke-dasharray=${c}
+            stroke-dashoffset=${c * (1 - pct / 100)}
+          />
+        </svg>
+        <span class="ring__label">${pct}<small>%</small></span>
+      </div>
+    `;
   }
 
   function pinCount(s: State): number {
@@ -202,6 +213,7 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
       return st.pending === 0 && st.total > 0;
     }).length;
     const pendingRooms = visible.length - completed;
+    const progress = inspectionProgress(s);
 
     return html`
       <section class="screen">
@@ -216,17 +228,11 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
                 ${s.property.unit ? html` · Unit ${s.property.unit}` : null}
               </div>
             </div>
-            <div class="dash-meta__stats">
-              <div class="dash-meta__big">${completed}<span>/${visible.length}</span></div>
-              <div class="dash-meta__label">rooms complete</div>
-              ${pendingRooms > 0
-                ? html`<div class="dash-meta__pending">${pendingRooms} pending</div>`
-                : null}
-              <div class="dash-meta__issues">${totalIssues} issues logged</div>
-            </div>
-            <div class="dash-meta__bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"
-              aria-valuenow=${progressPct(visible)}>
-              <span style="width:${progressPct(visible)}%"></span>
+            ${progressRing(progress.pct)}
+            <div class="dash-meta__figures">
+              <div><strong>${completed}/${visible.length}</strong><span>Rooms</span></div>
+              <div><strong>${pendingRooms}</strong><span>Pending</span></div>
+              <div class="dash-meta__issues"><strong>${totalIssues}</strong><span>Issues</span></div>
             </div>
           </div>
 
