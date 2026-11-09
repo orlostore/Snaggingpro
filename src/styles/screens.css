@@ -670,7 +670,7 @@
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  background: rgba(182, 34, 27, 0.12);
+  background: var(--color-critical-soft);
   color: var(--color-critical);
   border-radius: var(--radius-pill);
   padding: 3px 10px;

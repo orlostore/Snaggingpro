@@ -35,7 +35,14 @@ export function Dashboard(rootEl: HTMLElement): TemplateResult {
     const r = 30;
     const c = 2 * Math.PI * r;
     return html`
-      <div class="ring" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow=${pct}>
+      <div
+        class="ring"
+        role="progressbar"
+        aria-label="Inspection progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow=${pct}
+      >
         <svg viewBox="0 0 72 72" aria-hidden="true">
           <circle class="ring__track" cx="36" cy="36" r=${r} />
           <circle

@@ -98,7 +98,7 @@ export function Splash(rootEl: HTMLElement): TemplateResult {
   function view(): TemplateResult {
     return html`
       <section class="screen home">
-        <header class="home-band">
+        <header class="home-band" role="banner">
           <div class="home-band__top">
             <div class="home-band__logo">Snagging<em>Pro</em></div>
           </div>

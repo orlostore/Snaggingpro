@@ -61,6 +61,7 @@
   --color-critical: #b6221b;         /* 6.5:1 — deep red */
   --color-warning: #945a06;          /* amber — AA on all light surfaces */
   --color-na: #616874;
+  --color-critical-soft: #fbe9e7;    /* solid tint behind small critical text */
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;

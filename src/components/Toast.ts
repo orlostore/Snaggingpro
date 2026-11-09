@@ -7,6 +7,8 @@ function ensureHost(): HTMLDivElement {
   if (!host) {
     host = document.createElement('div');
     host.className = 'toast-host';
+    host.setAttribute('role', 'status');
+    host.setAttribute('aria-live', 'polite');
     document.body.appendChild(host);
   }
   return host;
