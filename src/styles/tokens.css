@@ -68,6 +68,8 @@
   --color-issue: #be400c;            /* orange */
   --color-critical: #b6221b;         /* red */
   --color-critical-soft: #fbe9e7;    /* solid tint behind small critical text */
+  --color-issue-soft: #fef2ed;       /* solid tint behind small issue text */
+  --color-warning-soft: #fef6ea;     /* solid tint behind small warning text */
   --color-warning: #995d07;          /* amber */
   --color-na: #656b78;
 

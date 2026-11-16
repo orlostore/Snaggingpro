@@ -27,7 +27,11 @@ let overlayEl: HTMLDivElement | null = null;
 
 function strip(fullHtml: string): { page: string; styles: string } {
   const pageMatch = /<main class="page">([\s\S]*?)<\/main>/.exec(fullHtml);
-  const page = pageMatch ? pageMatch[1]! : '';
+  const page = (pageMatch ? pageMatch[1]! : '')
+    .replace(/<header\b/g, '<div')
+    .replace(/<\/header>/g, '</div>')
+    .replace(/<footer\b/g, '<div')
+    .replace(/<\/footer>/g, '</div>');
   const styleMatches = fullHtml.match(/<style>[\s\S]*?<\/style>/g) ?? [];
   return { page, styles: styleMatches.join('\n') };
 }
@@ -167,6 +171,9 @@ export function openQuoteOverlay(input: QuoteInput): void {
 
   overlayEl = document.createElement('div');
   overlayEl.className = 'quote-overlay';
+  overlayEl.setAttribute('role', 'dialog');
+  overlayEl.setAttribute('aria-modal', 'true');
+  overlayEl.setAttribute('aria-label', `Quotation ${displayQuoteRef(input.quoteRef, input.revision)}`);
   document.body.appendChild(overlayEl);
   document.body.style.overflow = 'hidden';
 
@@ -380,7 +387,7 @@ export function openQuoteOverlay(input: QuoteInput): void {
         </div>
         <div class="quote-overlay__scroll">
           <div class="quote-overlay__paper">
-            <main class="page">${unsafeHTML(page)}</main>
+            <div class="page">${unsafeHTML(page)}</div>
           </div>
         </div>
       `,

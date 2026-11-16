@@ -190,8 +190,8 @@ export function openAnnotator(opts: AnnotateOptions): void {
 
   function view(): TemplateResult {
     return html`
-      <div class="annotate">
-        <header class="annotate__bar">
+      <div class="annotate" role="dialog" aria-modal="true" aria-label="Mark up photo">
+        <div class="annotate__bar">
           <button class="btn btn--ghost btn--sm" @click=${cancel}>Cancel</button>
           <div class="annotate__tools" role="group" aria-label="Shape">
             <button
@@ -215,7 +215,7 @@ export function openAnnotator(opts: AnnotateOptions): void {
               □ Rect
             </button>
           </div>
-        </header>
+        </div>
         <div class="annotate__hint">
           ${activeShape === 'circle' ? 'Drag to draw a circle, or tap to place a default one' : 'Drag to draw a rectangle'}
           · ${marks.length} mark${marks.length === 1 ? '' : 's'}
@@ -231,7 +231,7 @@ export function openAnnotator(opts: AnnotateOptions): void {
             @pointercancel=${onPointerUp}
           ></canvas>
         </div>
-        <footer class="annotate__actions">
+        <div class="annotate__actions">
           <button class="btn btn--secondary" @click=${undo} ?disabled=${marks.length === 0}>
             ↶ Undo
           </button>
@@ -239,7 +239,7 @@ export function openAnnotator(opts: AnnotateOptions): void {
             Clear
           </button>
           <button class="btn btn--primary" @click=${() => void save()}>Save</button>
-        </footer>
+        </div>
       </div>
     `;
   }

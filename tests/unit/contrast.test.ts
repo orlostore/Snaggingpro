@@ -51,6 +51,10 @@ const PAIRS: Array<[fg: string, bgs: string[], min: number]> = [
   ['color-accent', TEAL_SURFACES, LARGE],
   ['color-on-accent', ['color-accent'], NORMAL],
   ['color-critical', ['color-critical-soft'], NORMAL],
+  ['color-issue', ['color-issue-soft'], NORMAL],
+  ['color-warning', ['color-warning-soft'], NORMAL],
+  ['color-text-inverse', ['color-brand'], NORMAL],
+  ['color-text-muted', ['color-bg-elevated'], NORMAL],
   ['color-accent-strong', ['color-progress-track'], LARGE],
   ['color-border-strong', ['color-bg-elevated'], LARGE],
 ];

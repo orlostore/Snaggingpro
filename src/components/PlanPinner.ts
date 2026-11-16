@@ -59,6 +59,26 @@ export async function openPlanPinner(opts: PlanPinnerOptions): Promise<void> {
     paint();
   }
 
+  function nudge(e: KeyboardEvent) {
+    const step = e.shiftKey ? 0.05 : 0.015;
+    const delta: Record<string, [number, number]> = {
+      ArrowLeft: [-step, 0],
+      ArrowRight: [step, 0],
+      ArrowUp: [0, -step],
+      ArrowDown: [0, step],
+    };
+    const d = delta[e.key];
+    if (!d) return;
+    e.preventDefault();
+    const base = pin ?? { x: 0.5, y: 0.5 };
+    pin = {
+      x: Math.min(1, Math.max(0, base.x + d[0])),
+      y: Math.min(1, Math.max(0, base.y + d[1])),
+    };
+    paint();
+    scrollToPin();
+  }
+
   function zoom(delta: number) {
     zoomIdx = Math.min(ZOOM_STEPS.length - 1, Math.max(0, zoomIdx + delta));
     paint();
@@ -84,7 +104,7 @@ export async function openPlanPinner(opts: PlanPinnerOptions): Promise<void> {
     const scale = ZOOM_STEPS[zoomIdx] ?? 1;
     return html`
       <div class="plan-pinner" role="dialog" aria-modal="true" aria-label="Mark on floor plan">
-        <header class="plan-pinner__bar">
+        <div class="plan-pinner__bar">
           <button class="plan-pinner__icon-btn" aria-label="Close" @click=${close}>
             ${Icon({ name: 'x', size: 20 })}
           </button>
@@ -110,8 +130,14 @@ export async function openPlanPinner(opts: PlanPinnerOptions): Promise<void> {
               ${Icon({ name: 'plus', size: 18 })}
             </button>
           </div>
-        </header>
-        <div class="plan-pinner__stage">
+        </div>
+        <div
+          class="plan-pinner__stage"
+          role="region"
+          aria-label="Floor plan. Use the arrow keys to place and move the pin"
+          tabindex="0"
+          @keydown=${nudge}
+        >
           ${url
             ? html`
                 <div class="plan-pinner__paper" style="width:${scale * 100}%" @click=${place}>
@@ -122,7 +148,7 @@ export async function openPlanPinner(opts: PlanPinnerOptions): Promise<void> {
               `
             : html`<p class="plan-pinner__missing">The floor plan could not be loaded on this device.</p>`}
         </div>
-        <footer class="plan-pinner__actions">
+        <div class="plan-pinner__actions">
           ${opts.current
             ? html`<button
                 class="btn btn--ghost"
@@ -144,7 +170,7 @@ export async function openPlanPinner(opts: PlanPinnerOptions): Promise<void> {
           >
             Save pin
           </button>
-        </footer>
+        </div>
       </div>
     `;
   }

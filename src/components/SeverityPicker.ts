@@ -55,10 +55,10 @@ export function openSeverityPicker(opts: SeverityPickerOptions): void {
     html`
       <div class="modal-backdrop" @click=${cancel}></div>
       <div class="sev-sheet" role="dialog" aria-modal="true" aria-label="Pick severity">
-        <header class="sev-sheet__head">
+        <div class="sev-sheet__head">
           <h2 class="sev-sheet__title">How severe is this snag?</h2>
           <p class="sev-sheet__sub">${opts.itemLabel}</p>
-        </header>
+        </div>
         <div class="sev-sheet__rows">
           ${row('critical', 'safety / system failure')}
           ${row('major', 'significant defect')}

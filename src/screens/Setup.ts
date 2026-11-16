@@ -127,8 +127,11 @@ export function Setup(rootEl: HTMLElement, fromQuoteRef?: string): TemplateResul
   }
 
   function input<K extends keyof SetupDraft>(field: K, value: SetupDraft[K]) {
+    const hadName = draft.clientName.trim().length > 0;
     draft[field] = value;
     persist();
+    // The action buttons depend on the name being filled, so repaint when that flips.
+    if (field === 'clientName' && hadName !== draft.clientName.trim().length > 0) paint();
   }
 
   async function openQuotation() {
