@@ -30,13 +30,13 @@
   --color-brand-hover: #152d4a;
   --color-brand-deep: #152d4a;       /* end of the blue header / band, toasts */
   --color-brand-soft: rgba(30, 58, 95, 0.08);
-  --color-accent: #b4bdc9;           /* silver: button fills */
+  --color-accent: #cbd2dd;           /* silver: button fills */
   --color-on-accent: #1a1b1e;        /* text on silver fills */
   --color-accent-strong: #616b7a;    /* steel: small text, bars, lines on light surfaces */
-  --color-accent-light: #d5dbe4;     /* pale silver: large text / lines on blue */
+  --color-accent-light: #e2e7ee;     /* pale silver: large text / lines on blue */
   --color-accent-soft: rgba(97, 107, 122, 0.10);
   --gradient-brand: linear-gradient(160deg, var(--color-brand-light) 0%, var(--color-brand-deep) 100%);
-  --gradient-accent: linear-gradient(135deg, #c3cad5 0%, #a9b3c1 100%);
+  --gradient-accent: linear-gradient(135deg, #d8dde6 0%, #c2cad6 100%);
   --color-progress-track: #e2e4e9;
 
   /* ------- Surfaces ------- */

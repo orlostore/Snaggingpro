@@ -11,7 +11,7 @@
 
 ## Colours (owner decision, Nov 2026)
 
-- **Active palette: the original deep blue + a silver accent** (replacing the original gold). Blue `#1e3a5f` (header/band gradient `#1e3a5f` → `#152d4a`), silver fill `#b4bdc9`, steel `#616b7a` for small text/bars/lines on light surfaces, pale silver `#d5dbe4` on blue, background `#f7f7f8`. The owner will revisit colours later; until then do not introduce other brand colours.
+- **Active palette: the original deep blue + a silver accent** (replacing the original gold). Blue `#1e3a5f` (header/band gradient `#1e3a5f` → `#152d4a`), silver fill `#cbd2dd`, steel `#616b7a` for small text/bars/lines on light surfaces, pale silver `#e2e7ee` on blue, background `#f7f7f8`. The owner will revisit colours later; until then do not introduce other brand colours.
 - **Parked palettes (swap back by editing only `src/styles/tokens.css`):**
   - Original gold: fill `#b8923a`, small text `#816629`, pale `#dcc28f`, button text `#1a1b1e`.
   - Teal + sand: teal `#1f6b71` (band `#297c83` → `#1a5c64`), sand fill `#e1b27b`, ivory canvas `#f6f1ea`, ink `#192e31`, sand text on light `#8e5f31`, pale sand on teal `#eac9a3`, ivory on teal `#fcf8f1`.

@@ -103,7 +103,7 @@
 }
 .sync-dot--idle { background: var(--color-pass); }
 .sync-dot--syncing {
-  background: var(--color-accent);
+  background: var(--color-accent-strong);
   animation: sync-pulse 1.2s ease-in-out infinite;
 }
 .sync-dot--offline { background: var(--color-warning); }

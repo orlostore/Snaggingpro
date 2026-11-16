@@ -25,15 +25,15 @@ export interface PropOption {
 }
 
 export const PROP_OPTIONS: readonly PropOption[] = [
-  { id: 'apartment', bedrooms: 0, label: 'Studio Apt', icon: 'apartment', base: 1000, baseArea: 1000 },
-  { id: 'apartment', bedrooms: 1, label: '1 BR Apartment', icon: 'apartment', base: 1000, baseArea: 1000 },
-  { id: 'apartment', bedrooms: 2, label: '2 BR Apartment', icon: 'apartment', base: 1500, baseArea: 1500 },
-  { id: 'apartment', bedrooms: 3, label: '3 BR Apartment', icon: 'apartment', base: 1700, baseArea: 1700 },
-  { id: 'apartment', bedrooms: 4, label: '4 BR Apartment', icon: 'apartment', base: 1900, baseArea: 1900 },
-  { id: 'villa', bedrooms: 3, label: 'Villa / TH 3BR', icon: 'villa', base: 2500, baseArea: 2200 },
-  { id: 'villa', bedrooms: 4, label: 'Villa / TH 4BR', icon: 'villa', base: 2800, baseArea: 2400 },
-  { id: 'villa', bedrooms: 5, label: 'Villa / TH 5BR', icon: 'villa', base: 3400, baseArea: 3000 },
-  { id: 'villa', bedrooms: 6, label: 'Villa / TH 6BR', icon: 'villa', base: 3625, baseArea: 3250 },
+  { id: 'apartment', bedrooms: 0, label: 'Studio Apt', icon: 'apartment', base: 1200, baseArea: 1000 },
+  { id: 'apartment', bedrooms: 1, label: '1 BR Apartment', icon: 'apartment', base: 1200, baseArea: 1000 },
+  { id: 'apartment', bedrooms: 2, label: '2 BR Apartment', icon: 'apartment', base: 1800, baseArea: 1500 },
+  { id: 'apartment', bedrooms: 3, label: '3 BR Apartment', icon: 'apartment', base: 2100, baseArea: 1700 },
+  { id: 'apartment', bedrooms: 4, label: '4 BR Apartment', icon: 'apartment', base: 2300, baseArea: 1900 },
+  { id: 'villa', bedrooms: 3, label: 'Villa / TH 3BR', icon: 'villa', base: 3000, baseArea: 2200 },
+  { id: 'villa', bedrooms: 4, label: 'Villa / TH 4BR', icon: 'villa', base: 3400, baseArea: 2400 },
+  { id: 'villa', bedrooms: 5, label: 'Villa / TH 5BR', icon: 'villa', base: 4100, baseArea: 3000 },
+  { id: 'villa', bedrooms: 6, label: 'Villa / TH 6BR', icon: 'villa', base: 4400, baseArea: 3250 },
 ];
 
 export const PROP_LABEL: Record<PropType, string> = {
@@ -79,4 +79,5 @@ export function feeBreakdown(type: PropType, bedrooms: number, bua: number): Fee
   };
 }
 
-export const FOLLOWUP_FEE = 2000;
+/** Re-inspection after rectification is free of charge. */
+export const FOLLOWUP_FEE = 0;

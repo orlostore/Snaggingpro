@@ -257,7 +257,7 @@ export function generateQuotationHtml(q: QuoteInput): string {
         <p><strong>Access.</strong> Hirer provides full unobstructed access. Delays or denied access — no refund; re-inspection at full fee.</p>
         <p><strong>Scope.</strong> Visible and accessible areas only. Concealed works excluded.</p>
         <p><strong>Cancellation.</strong> 24 hours' notice required. Less than 24h = 50% fee. Same-day = non-refundable.</p>
-        <p><strong>Re-inspection.</strong> Separate service at an agreed fee, billed after developer rectification.</p>
+        <p><strong>Re-inspection.</strong> Free of charge after developer rectification.</p>
         <p><strong>Liability.</strong> Best-effort basis. Not a structural survey.</p>
         <p><strong>Governing law.</strong> Laws of the UAE · Dubai Courts jurisdiction.</p>
       </div>
