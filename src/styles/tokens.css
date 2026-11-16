@@ -1,17 +1,20 @@
 /**
  * Design tokens — single source of truth.
  *
- * APPROVED PALETTE (signed off by the owner, Nov 2026): midway teal + sand
- * on a warm ivory canvas. Do not introduce other brand colours.
+ * ACTIVE PALETTE (owner decision, Nov 2026): the ORIGINAL blue + gold,
+ * restored while colours are being reconsidered. The teal + sand palette
+ * the owner approved earlier is parked in CLAUDE.md and can be swapped
+ * back by changing only this file.
+ *
  * Every text/background pairing is checked by tests/unit/contrast.test.ts
  * against WCAG AA (4.5:1 normal text, 3:1 large text and UI parts).
  *
  * Rules:
- *  - Small text on teal is always --color-on-brand (or -muted).
- *  - --color-accent-light (pale sand) on teal is for LARGE text (24px+)
+ *  - Small text on blue is always --color-on-brand (or -muted).
+ *  - --color-accent-light (pale gold) on blue is for LARGE text (24px+)
  *    and decorative lines only.
- *  - --color-accent (sand) is a FILL colour; text on it is --color-on-accent.
- *  - Small sand text on light surfaces uses --color-accent-strong.
+ *  - --color-accent (gold) is a FILL colour; text on it is --color-on-accent.
+ *  - Small gold text on light surfaces uses --color-accent-strong.
  *  - Text colours are solid hex so the contrast test can check them.
  *
  * Nothing else in the app defines colour, spacing, radius, or shadow.
@@ -19,49 +22,49 @@
  */
 
 :root {
-  /* ------- Brand colours — approved midway teal + sand ------- */
-  --color-brand: #1f6b71;            /* teal: buttons, active tabs, icons */
-  --color-brand-light: #297c83;      /* lighter end of the teal band */
-  --color-brand-hover: #1a5c64;
-  --color-brand-deep: #1a5c64;       /* darker end of the teal band, toasts */
-  --color-brand-soft: rgba(31, 107, 113, 0.08);
-  --color-accent: #e1b27b;           /* sand: fills only (buttons, bars) */
-  --color-on-accent: #33200c;        /* text on sand fills */
-  --color-accent-strong: #8e5f31;    /* sand for small text on light surfaces */
-  --color-accent-light: #eac9a3;     /* pale sand: large text / lines on teal */
-  --color-accent-soft: rgba(225, 178, 123, 0.16);
+  /* ------- Brand colours — original deep blue + gold ------- */
+  --color-brand: #1e3a5f;            /* deep blue: buttons, active tabs, icons */
+  --color-brand-light: #1e3a5f;      /* start of the blue header / band */
+  --color-brand-hover: #152d4a;
+  --color-brand-deep: #152d4a;       /* end of the blue header / band, toasts */
+  --color-brand-soft: rgba(30, 58, 95, 0.08);
+  --color-accent: #b8923a;           /* gold: fills only (buttons, bars) */
+  --color-on-accent: #1a1b1e;        /* text on gold fills */
+  --color-accent-strong: #816629;    /* gold for small text on light surfaces */
+  --color-accent-light: #dcc28f;     /* pale gold: large text / lines on blue */
+  --color-accent-soft: rgba(184, 146, 58, 0.12);
   --gradient-brand: linear-gradient(160deg, var(--color-brand-light) 0%, var(--color-brand-deep) 100%);
-  --gradient-accent: linear-gradient(135deg, #e8bf8c 0%, #dcab70 100%);
-  --color-progress-track: #ede4d6;
+  --gradient-accent: linear-gradient(135deg, #c9a553 0%, #b8923a 100%);
+  --color-progress-track: #e2e4e9;
 
   /* ------- Surfaces ------- */
-  --color-bg: #f6f1ea;               /* warm ivory canvas */
+  --color-bg: #f7f7f8;               /* original app background */
   --color-bg-elevated: #ffffff;      /* cards, sheets */
-  --color-bg-sunken: #efe8dc;        /* input backgrounds, sunken rows */
-  --color-bg-overlay: rgba(16, 52, 56, 0.55);
+  --color-bg-sunken: #ecedf0;        /* input backgrounds, sunken rows */
+  --color-bg-overlay: rgba(20, 22, 26, 0.45);
 
   /* ------- Text ------- */
-  --color-text: #192e31;             /* ink */
-  --color-text-muted: #4f5b5d;
-  --color-text-dim: #5f6a6c;
+  --color-text: #1a1b1e;
+  --color-text-muted: #4f535b;
+  --color-text-dim: #676b72;
   --color-text-inverse: #ffffff;
-  --color-on-brand: #fcf8f1;         /* ivory text on teal */
-  --color-on-brand-muted: #f3f8f8;   /* secondary text on teal (use smaller size for hierarchy) */
-  --color-on-brand-line: rgba(252, 248, 241, 0.22);
-  --color-on-brand-glass: rgba(252, 248, 241, 0.10);
-  --color-issue-on-brand: #fff6ef;   /* issue figures on teal */
+  --color-on-brand: #ffffff;         /* text on blue */
+  --color-on-brand-muted: #cfd9e6;   /* secondary text on blue */
+  --color-on-brand-line: rgba(255, 255, 255, 0.22);
+  --color-on-brand-glass: rgba(255, 255, 255, 0.10);
+  --color-issue-on-brand: #ffd9bf;   /* issue figures on blue */
 
   /* ------- Borders ------- */
-  --color-border: #e6ded1;           /* warm hairline (decorative) */
-  --color-border-strong: #8b867d;    /* 3:1 — meets WCAG 1.4.11 for UI */
+  --color-border: #e2e4e9;           /* decorative card edges */
+  --color-border-strong: #8e949c;    /* 3:1 — meets WCAG 1.4.11 for UI */
 
-  /* ------- Status (all AA on white, both as fg and as bg with white fg) ------- */
-  --color-pass: #0f7642;             /* green — AA on all light surfaces */
-  --color-issue: #b83e0b;            /* pumpkin orange — AA on all light surfaces */
-  --color-critical: #b6221b;         /* 6.5:1 — deep red */
-  --color-warning: #945a06;          /* amber — AA on all light surfaces */
-  --color-na: #616874;
+  /* ------- Status (all AA on the light surfaces) ------- */
+  --color-pass: #0f7a44;             /* green */
+  --color-issue: #be400c;            /* orange */
+  --color-critical: #b6221b;         /* red */
   --color-critical-soft: #fbe9e7;    /* solid tint behind small critical text */
+  --color-warning: #995d07;          /* amber */
+  --color-na: #656b78;
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;
@@ -83,10 +86,10 @@
   --radius-pill: 999px;
 
   /* ------- Shadows ------- */
-  --shadow-sm: 0 1px 2px rgba(26, 92, 100, 0.05), 0 2px 8px rgba(26, 92, 100, 0.04);
-  --shadow-md: 0 10px 28px rgba(26, 92, 100, 0.10);
-  --shadow-lg: 0 24px 56px rgba(16, 52, 56, 0.22);
-  --shadow-gold: 0 10px 24px rgba(225, 178, 123, 0.40);
+  --shadow-sm: 0 1px 2px rgba(15, 16, 20, 0.06), 0 2px 8px rgba(15, 16, 20, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 16, 20, 0.10);
+  --shadow-lg: 0 24px 56px rgba(15, 16, 20, 0.20);
+  --shadow-gold: 0 8px 20px rgba(184, 146, 58, 0.32);
 
   /* ------- Typography ------- */
   /* Approved font (owner choice, Nov 2026): Barlow Semi Condensed everywhere */
