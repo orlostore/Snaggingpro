@@ -77,11 +77,12 @@ export function Splash(rootEl: HTMLElement): TemplateResult {
     `;
   }
 
-  function figure(value: number | undefined, label: string): TemplateResult {
+  function figure(icon: IconName, value: number | undefined, label: string): TemplateResult {
     return html`
       <div class="home-figure">
+        <span class="home-figure__icon">${Icon({ name: icon, size: 16 })}</span>
         <strong>${value ?? '–'}</strong>
-        <span>${label}</span>
+        <span class="home-figure__label">${label}</span>
       </div>
     `;
   }
@@ -110,13 +111,13 @@ export function Splash(rootEl: HTMLElement): TemplateResult {
           ${draft ? resumeCard(draft) : welcomeCard()}
 
           <div class="home-figures">
-            ${figure(figures?.thisMonth, 'This month')}
-            ${figure(figures?.quotesOpen, 'Quotes open')}
-            ${figure(figures?.third.value, figures?.third.label ?? (ENV.cloudEnabled ? 'T&C signed' : 'Reports'))}
+            ${figure('check', figures?.thisMonth, 'This month')}
+            ${figure('quote', figures?.quotesOpen, 'Quotes open')}
+            ${figure(ENV.cloudEnabled ? 'pin' : 'library', figures?.third.value, figures?.third.label ?? (ENV.cloudEnabled ? 'T&C signed' : 'Reports'))}
           </div>
 
           <button class="btn btn--lg btn--full home__new" @click=${() => go('pin', { to: 'setup' })}>
-            ${Icon({ name: 'plus', size: 18 })} New inspection
+            ${Icon({ name: 'plus', size: 18 })} New inspection ${Icon({ name: 'arrow-right', size: 18 })}
           </button>
         </main>
 
