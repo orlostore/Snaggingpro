@@ -48,6 +48,7 @@ const PAIRS: Array<[fg: string, bgs: string[], min: number]> = [
   ['color-issue-on-brand', TEAL_SURFACES, NORMAL],
   ['color-text-inverse', TEAL_SURFACES, NORMAL],
   ['color-accent-light', TEAL_SURFACES, LARGE],
+  ['color-accent', TEAL_SURFACES, LARGE],
   ['color-on-accent', ['color-accent'], NORMAL],
   ['color-critical', ['color-critical-soft'], NORMAL],
   ['color-accent-strong', ['color-progress-track'], LARGE],

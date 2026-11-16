@@ -61,7 +61,7 @@
 }
 .home-band__headline em {
   font-style: italic;
-  color: var(--color-accent-light);
+  color: var(--color-accent);
 }
 .home__body {
   flex: 1;
