@@ -11,16 +11,16 @@
 
 ## Colours (owner decision, Nov 2026)
 
-- **Active palette: the original deep blue + a warm copper accent.** Blue `#1e3a5f` (header/band gradient `#2a5590` → `#152d4a`), copper fill `#dc9560` (button text `#2a1606`), deep copper `#a4541f` for small text/bars/lines on light surfaces, pale copper `#f6d3b8` on blue, background `#f7f7f8`. The owner gave free creative rein and chose copper; do not introduce further brand colours without asking.
+- **Active palette: the original deep blue + a silver accent** (owner's final pick, Nov 2026). Blue `#1e3a5f` (header/band gradient `#2a5590` → `#152d4a`), silver fill `#e1e6ed` (button text `#1a1b1e`), steel `#616b7a` for small text/bars/lines on light surfaces, pale silver `#eef1f6` on blue, background `#f7f7f8`. Do not introduce further brand colours without asking.
 - **Parked palettes (swap back by editing only `src/styles/tokens.css`):**
+  - Copper accent: fill `#dc9560` (text `#2a1606`), deep `#a4541f`, pale `#f6d3b8`.
   - Sky blue accent: fill `#6cc4f4` (text `#0d2540`), deep `#1e6dac`, pale `#bfe6fc`.
-  - Silver accent: fill `#e1e6ed`, steel `#616b7a`, pale `#eef1f6`.
   - Original gold: fill `#b8923a`, small text `#816629`, pale `#dcc28f`, button text `#1a1b1e`.
   - Teal + sand: teal `#1f6b71` (band `#297c83` → `#1a5c64`), sand fill `#e1b27b`, ivory canvas `#f6f1ea`, ink `#192e31`, sand text on light `#8e5f31`, pale sand on teal `#eac9a3`, ivory on teal `#fcf8f1`.
 - Use the tokens in `src/styles/tokens.css` only; the rules for which colour may sit on which surface are written at the top of that file.
-- Small text on the blue is white (`--color-on-brand`). Pale copper (`--color-accent-light`) on blue is for large text (24px+) and lines only; the headline word "inspected." uses the copper fill itself (large text only, tested). Text on copper fills is `--color-on-accent`. Copper itself is too faint for text or thin lines on light surfaces — use `--color-accent-strong` there. Keep the accent visibly different from the status orange (`--color-issue`). No grid/square patterns or serif fonts (owner dislikes them).
+- Small text on the blue is white (`--color-on-brand`). Pale silver (`--color-accent-light`) on blue is for large text (24px+) and lines only; the headline word "inspected." uses the silver fill itself (large text only, tested). Text on silver fills is `--color-on-accent`. Silver is too faint for text, thin lines or bars on light surfaces — use `--color-accent-strong` there. No grid/square background patterns (owner dislikes them).
 - Every text/background pair is checked against WCAG AA by `tests/unit/contrast.test.ts`. Adding a new pairing means adding it to that test; changing a colour means the test must still pass.
-- Font: **Barlow Semi Condensed** for everything in the app (titles and body), via `--font-display` / `--font-body`. Do not reintroduce serif or other display fonts.
+- Fonts: **Cormorant Garamond** for titles and **DM Sans** for everything else, via `--font-display` / `--font-body` — the same pair Orlo uses (owner choice). Cormorant is thin at small sizes, so keep it for headings (18px+) only. Arabic would use Almarai (not needed today).
 - Client PDFs (quotation, receipt, report) keep their own fixed print styles.
 
 ## State

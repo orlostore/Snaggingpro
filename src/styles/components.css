@@ -47,7 +47,7 @@
 }
 .app-header__title {
   font-family: var(--font-display);
-  font-size: var(--text-md);
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-on-brand);
   letter-spacing: 0.01em;
@@ -396,8 +396,8 @@
 }
 .room-card__label {
   font-family: var(--font-display);
-  font-weight: 600;
-  font-size: var(--text-base);
+  font-weight: 700;
+  font-size: var(--text-md);
 }
 .room-card__meta {
   font-size: var(--text-xs);
