@@ -295,9 +295,9 @@
 .field__input:focus-visible,
 .field__select:focus-visible,
 .field__textarea:focus-visible {
-  outline: 2px solid var(--color-accent);
+  outline: 2px solid var(--color-accent-strong);
   outline-offset: 1px;
-  border-color: var(--color-accent);
+  border-color: var(--color-accent-strong);
 }
 .field__textarea {
   resize: vertical;
@@ -375,7 +375,7 @@
 }
 @media (hover: hover) {
   .room-card:hover {
-    border-color: var(--color-accent);
+    border-color: var(--color-accent-strong);
     box-shadow: var(--shadow-md);
   }
 }

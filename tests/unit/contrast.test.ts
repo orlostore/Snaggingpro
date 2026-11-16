@@ -50,6 +50,7 @@ const PAIRS: Array<[fg: string, bgs: string[], min: number]> = [
   ['color-accent-light', TEAL_SURFACES, LARGE],
   ['color-on-accent', ['color-accent'], NORMAL],
   ['color-critical', ['color-critical-soft'], NORMAL],
+  ['color-accent-strong', ['color-progress-track'], LARGE],
   ['color-border-strong', ['color-bg-elevated'], LARGE],
 ];
 
