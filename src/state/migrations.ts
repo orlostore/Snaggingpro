@@ -1,7 +1,8 @@
 /**
  * Forward migrations between STATE versions.
  * v0 = the legacy single-file shape (untyped).
- * v1 = current canonical shape (see schema.ts).
+ * v1 = first canonical shape.
+ * v2 = adds the floor plan (planPhotoId) and optional per-observation pins.
  *
  * Each migration is total: input the previous version, output the next.
  * Failing to migrate is fatal — the user will see a "couldn't restore" prompt.
@@ -55,8 +56,13 @@ function migrateV0ToV1(legacy: AnyState): unknown {
   };
 }
 
+function migrateV1ToV2(v1: AnyState): unknown {
+  return { ...v1, version: 2, planPhotoId: v1['planPhotoId'] ?? null };
+}
+
 const MIGRATIONS: Record<number, (input: AnyState) => unknown> = {
   0: migrateV0ToV1,
+  1: migrateV1ToV2,
 };
 
 export function migrate(input: unknown): State | null {

@@ -99,10 +99,10 @@ const OVERLAY_CHROME_CSS = `
   cursor: pointer; white-space: nowrap;
   min-height: 36px;
 }
-.quote-overlay__btn--start { grid-area: start; background: #b8923a; color: white; }
+.quote-overlay__btn--start { grid-area: start; background: var(--color-accent); color: var(--color-on-accent); }
 .quote-overlay__btn--wa    { grid-area: wa; background: #25d366; color: white; }
 .quote-overlay__btn--pdf   { grid-area: pdf; }
-.quote-overlay__btn--start:hover { background: #9a7a30; }
+.quote-overlay__btn--start:hover { background: var(--color-accent-strong); color: var(--color-text-inverse); }
 .quote-overlay__btn--wa:hover    { background: #1ea952; }
 .quote-overlay__btn--pdf:hover   { background: #f1f1f2; }
 .quote-overlay__btn:disabled { opacity: 0.55; cursor: wait; }

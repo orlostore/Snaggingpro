@@ -8,6 +8,7 @@ body {
   line-height: var(--leading-normal);
   color: var(--color-text);
   background: var(--color-bg);
+  font-variant-numeric: lining-nums;
   min-height: 100dvh;
   overscroll-behavior-y: none;
 }

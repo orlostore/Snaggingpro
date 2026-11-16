@@ -42,7 +42,7 @@ export function PinGate(rootEl: HTMLElement, next: RouteName = 'splash'): Templa
   function view(): TemplateResult {
     return html`
       <section class="screen pin-screen">
-        <div class="container pin-screen__inner">
+        <main class="container pin-screen__inner">
           <h1 class="pin-screen__title">Enter PIN</h1>
           <div class="pin__dots">
             ${[0, 1, 2, 3].map(
@@ -61,7 +61,7 @@ export function PinGate(rootEl: HTMLElement, next: RouteName = 'splash'): Templa
             <button class="pin__key" @click=${() => press('0')}>0</button>
             <button class="pin__key" @click=${back} aria-label="Delete">⌫</button>
           </div>
-        </div>
+        </main>
         ${Footer()}
       </section>
     `;

@@ -15,7 +15,7 @@ import type { QuoteRecord } from '@/quote/types';
 export interface PhotoRecord {
   id: string;
   blob: Blob;
-  kind: 'cover' | 'overview' | 'snag' | 'annotated' | 'rectification';
+  kind: 'cover' | 'overview' | 'snag' | 'annotated' | 'rectification' | 'plan';
   jobRef: string;
   createdAt: number;
   /** Ms-epoch when this photo was last successfully PUT to the cloud, or null. */

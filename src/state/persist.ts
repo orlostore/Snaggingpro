@@ -35,8 +35,14 @@ export function loadDraft(): State | null {
   try {
     const raw = localStorage.getItem(DRAFT_KEY);
     if (raw) {
-      const parsed = StateZ.safeParse(normalisePropType(JSON.parse(raw)));
+      const blob = normalisePropType(JSON.parse(raw));
+      const parsed = StateZ.safeParse(blob);
       if (parsed.success) return parsed.data;
+      const upgraded = migrate(blob);
+      if (upgraded) {
+        saveDraft(upgraded);
+        return upgraded;
+      }
     }
     const legacy = localStorage.getItem(LEGACY_KEY);
     if (legacy) {

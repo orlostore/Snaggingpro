@@ -27,7 +27,7 @@ export type IconName =
   | 'camera' | 'gallery' | 'image'
   | 'circle' | 'square' | 'undo'
   | 'print' | 'library' | 'save' | 'send'
-  | 'search' | 'home' | 'eye' | 'quote';
+  | 'search' | 'home' | 'eye' | 'quote' | 'pin';
 
 const P = (d: string): TemplateResult => svg`<path d=${d}/>`;
 const P2 = (d1: string, d2: string): TemplateResult =>
@@ -94,6 +94,7 @@ const ICONS: Record<IconName, TemplateResult> = {
   home: P('M3 12l9-9 9 9M5 10v10h14V10'),
   eye: svg`<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/>`,
   // Document with folded corner + horizontal lines + small currency mark — quotation feel.
+  pin: svg`<path d="M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/>`,
   quote: svg`<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h6"/><path d="M8 17h4"/>`,
 };
 

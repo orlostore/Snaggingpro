@@ -1,42 +1,75 @@
 /**
  * Design tokens — single source of truth.
- * Light theme. Magenta is the brand identity, used as accent (not as the
- * primary surface), so it shows up but doesn't shout.
+ *
+ * ACTIVE PALETTE (Nov 2026): the ORIGINAL deep blue with a SILVER accent
+ * (owner's final pick). Copper, sky blue, the original gold and the teal +
+ * sand palette are parked in CLAUDE.md and can be swapped back by changing
+ * only this file.
+ *
+ * Every text/background pairing is checked by tests/unit/contrast.test.ts
+ * against WCAG AA (4.5:1 normal text, 3:1 large text and UI parts).
+ *
+ * Rules:
+ *  - Small text on blue is always --color-on-brand (or -muted).
+ *  - --color-accent-light (pale silver) on blue is for LARGE text (24px+)
+ *    and decorative lines only.
+ *  - --color-accent (silver) is a FILL colour for buttons; text on it is
+ *    --color-on-accent. On light surfaces it is too faint for text or thin
+ *    lines: use --color-accent-strong (steel) there.
+ *  - Small accent text on light surfaces uses --color-accent-strong.
+ *  - Text colours are solid hex so the contrast test can check them.
  *
  * Nothing else in the app defines colour, spacing, radius, or shadow.
  * Add new tokens here, then reference them via var(--...) everywhere else.
  */
 
 :root {
-  /* ------- Brand colours — deep navy, no pink ------- */
-  --color-brand: #1e3a5f;            /* deep navy, premium */
+  /* ------- Brand colours — original deep blue + silver accent ------- */
+  --color-brand: #1e3a5f;            /* deep blue: buttons, active tabs, icons */
+  --color-brand-light: #2a5590;      /* start of the blue header / band */
   --color-brand-hover: #152d4a;
+  --color-brand-deep: #152d4a;       /* end of the blue header / band, toasts */
   --color-brand-soft: rgba(30, 58, 95, 0.08);
-  --color-accent: #b8923a;            /* warm gold, used sparingly */
-  --color-accent-soft: rgba(184, 146, 58, 0.10);
+  --color-accent: #e1e6ed;           /* silver: button fills, glow */
+  --accent-rgb: 225, 230, 237;       /* silver as r, g, b for translucent uses */
+  --color-on-accent: #1a1b1e;        /* text on silver fills */
+  --color-accent-strong: #616b7a;    /* steel: small text, bars, lines on light surfaces */
+  --color-accent-light: #eef1f6;     /* pale silver: large text / lines on blue */
+  --color-accent-soft: rgba(97, 107, 122, 0.10);
+  --gradient-brand: linear-gradient(160deg, var(--color-brand-light) 0%, var(--color-brand-deep) 100%);
+  --gradient-accent: linear-gradient(135deg, #f6f8fb 0%, #e9edf3 100%);
+  --gradient-progress: linear-gradient(90deg, var(--color-accent-strong), #8d98a8);
+  --glow-accent: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.5), rgba(var(--accent-rgb), 0));
+  --color-progress-track: #e2e4e9;
 
   /* ------- Surfaces ------- */
-  --color-bg: #f7f7f8;               /* warm off-white app background */
-  --color-bg-elevated: #ffffff;      /* cards, headers, sheets */
+  --color-bg: #f7f7f8;               /* original app background */
+  --color-bg-elevated: #ffffff;      /* cards, sheets */
   --color-bg-sunken: #ecedf0;        /* input backgrounds, sunken rows */
   --color-bg-overlay: rgba(20, 22, 26, 0.45);
 
-  /* ------- Text (all WCAG AA on white) ------- */
-  --color-text: #1a1b1e;             /* 17:1 — AAA on white */
-  --color-text-muted: #4f535b;       /* 7.7:1 — AAA */
-  --color-text-dim: #6b6f76;         /* 5.1:1 — AA, was 3.9 (failed) */
-  --color-text-inverse: #ffffff;     /* for dark/coloured backgrounds */
+  /* ------- Text ------- */
+  --color-text: #1a1b1e;
+  --color-text-muted: #4f535b;
+  --color-text-dim: #676b72;
+  --color-text-inverse: #ffffff;
+  --color-on-brand: #ffffff;         /* text on blue */
+  --color-on-brand-muted: #cfd9e6;   /* secondary text on blue */
+  --color-on-brand-line: rgba(255, 255, 255, 0.22);
+  --color-on-brand-glass: rgba(255, 255, 255, 0.10);
+  --color-issue-on-brand: #ffd9bf;   /* issue figures on blue */
 
   /* ------- Borders ------- */
   --color-border: #e2e4e9;           /* decorative card edges */
   --color-border-strong: #8e949c;    /* 3:1 — meets WCAG 1.4.11 for UI */
 
-  /* ------- Status (all AA on white, both as fg and as bg with white fg) ------- */
-  --color-pass: #0f7a44;             /* 5.4:1 — green */
-  --color-issue: #c2410c;            /* 5.2:1 — vibrant pumpkin orange (was muddy) */
-  --color-critical: #b6221b;         /* 6.5:1 — deep red */
-  --color-warning: #a16207;          /* 4.9:1 — gold-amber (clearly distinct from issue) */
-  --color-na: #6b7280;
+  /* ------- Status (all AA on the light surfaces) ------- */
+  --color-pass: #0f7a44;             /* green */
+  --color-issue: #be400c;            /* orange */
+  --color-critical: #b6221b;         /* red */
+  --color-critical-soft: #fbe9e7;    /* solid tint behind small critical text */
+  --color-warning: #995d07;          /* amber */
+  --color-na: #656b78;
 
   /* ------- Spacing scale (4px base) ------- */
   --space-1: 4px;
@@ -52,18 +85,20 @@
 
   /* ------- Radius ------- */
   --radius-sm: 6px;
-  --radius-md: 10px;
-  --radius-lg: 14px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
   --radius-xl: 20px;
   --radius-pill: 999px;
 
   /* ------- Shadows ------- */
-  --shadow-sm: 0 1px 2px rgba(15, 16, 20, 0.06);
-  --shadow-md: 0 4px 14px rgba(15, 16, 20, 0.08);
-  --shadow-lg: 0 16px 40px rgba(15, 16, 20, 0.15);
+  --shadow-sm: 0 1px 2px rgba(15, 16, 20, 0.06), 0 2px 8px rgba(15, 16, 20, 0.04);
+  --shadow-md: 0 8px 24px rgba(15, 16, 20, 0.10);
+  --shadow-lg: 0 24px 56px rgba(15, 16, 20, 0.20);
+  --shadow-accent: 0 10px 24px rgba(97, 107, 122, 0.28);
 
   /* ------- Typography ------- */
-  --font-display: 'Syne', system-ui, -apple-system, sans-serif;
+  /* Approved fonts (owner choice, Nov 2026) — the same pair Orlo uses */
+  --font-display: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   --font-body: 'DM Sans', system-ui, -apple-system, sans-serif;
 
   --text-xs: 13px;
@@ -80,6 +115,7 @@
   --leading-loose: 1.7;
   --tracking-tight: -0.01em;
   --tracking-wide: 0.05em;
+  --tracking-caps: 0.16em;
 
   /* ------- Touch targets ------- */
   --touch-min: 44px;

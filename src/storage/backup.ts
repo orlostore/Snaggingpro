@@ -13,7 +13,7 @@
  * older files.
  */
 
-import { getDB } from './idb';
+import { getDB, type PhotoRecord } from './idb';
 import { reportsRepo } from './reports';
 import type { State } from '@/state/schema';
 
@@ -22,7 +22,7 @@ const BUNDLE_VERSION = 1;
 interface PhotoBundle {
   id: string;
   jobRef: string;
-  kind: 'cover' | 'overview' | 'snag' | 'annotated' | 'rectification';
+  kind: PhotoRecord['kind'];
   createdAt: number;
   /** MIME type recovered from the original blob. */
   type: string;

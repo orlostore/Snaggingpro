@@ -48,6 +48,7 @@ export function emptyState(input: NewInspectionInput): State {
       price: 0,
     },
     coverPhotoIds: [null, null, null],
+    planPhotoId: null,
     rooms: {},
     roomOrder: [],
     discLabels: {},

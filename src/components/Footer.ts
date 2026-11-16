@@ -17,7 +17,7 @@ async function onTapVersion() {
 export function Footer(): TemplateResult {
   const year = new Date().getFullYear();
   return html`
-    <footer class="app-footer">
+    <footer class="app-footer" role="contentinfo">
       <div class="app-footer__inner container">
         <span class="app-footer__brand">${ENV.appName}</span>
         <span class="app-footer__sep">·</span>
