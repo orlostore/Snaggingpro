@@ -22,7 +22,7 @@
   height: 340px;
   right: -110px;
   top: -120px;
-  background: var(--glow-sky);
+  background: var(--glow-accent);
 }
 .home-band::after {
   width: 210px;
@@ -99,8 +99,8 @@
   animation: live-dot 2s ease-out infinite;
 }
 @keyframes live-dot {
-  70% { box-shadow: 0 0 0 7px rgba(108, 196, 244, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(108, 196, 244, 0); }
+  70% { box-shadow: 0 0 0 7px rgba(var(--accent-rgb), 0); }
+  100% { box-shadow: 0 0 0 0 rgba(var(--accent-rgb), 0); }
 }
 .home-card__client {
   font-family: var(--font-display);

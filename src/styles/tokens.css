@@ -1,20 +1,20 @@
 /**
  * Design tokens — single source of truth.
  *
- * ACTIVE PALETTE (Nov 2026): the ORIGINAL deep blue with a luminous SKY-BLUE
- * accent. Silver, the original gold and the teal + sand palette are parked
- * in CLAUDE.md and can be swapped back by changing only this file.
+ * ACTIVE PALETTE (Nov 2026): the ORIGINAL deep blue with a warm COPPER
+ * accent. Sky blue, silver, the original gold and the teal + sand palette
+ * are parked in CLAUDE.md and can be swapped back by changing only this file.
  *
  * Every text/background pairing is checked by tests/unit/contrast.test.ts
  * against WCAG AA (4.5:1 normal text, 3:1 large text and UI parts).
  *
  * Rules:
  *  - Small text on blue is always --color-on-brand (or -muted).
- *  - --color-accent-light (pale sky) on blue is for LARGE text (24px+)
+ *  - --color-accent-light (pale copper) on blue is for LARGE text (24px+)
  *    and decorative lines only.
- *  - --color-accent (sky) is a FILL colour for buttons; text on it is
+ *  - --color-accent (copper) is a FILL colour for buttons; text on it is
  *    --color-on-accent. On light surfaces it is too faint for text or thin
- *    lines: use --color-accent-strong (deep sky) there.
+ *    lines: use --color-accent-strong (deep copper) there.
  *  - Small accent text on light surfaces uses --color-accent-strong.
  *  - Text colours are solid hex so the contrast test can check them.
  *
@@ -23,21 +23,22 @@
  */
 
 :root {
-  /* ------- Brand colours — original deep blue + sky-blue accent ------- */
+  /* ------- Brand colours — original deep blue + copper accent ------- */
   --color-brand: #1e3a5f;            /* deep blue: buttons, active tabs, icons */
   --color-brand-light: #2a5590;      /* start of the blue header / band */
   --color-brand-hover: #152d4a;
   --color-brand-deep: #152d4a;       /* end of the blue header / band, toasts */
   --color-brand-soft: rgba(30, 58, 95, 0.08);
-  --color-accent: #6cc4f4;           /* sky: button fills, glow */
-  --color-on-accent: #0d2540;        /* text on sky fills */
-  --color-accent-strong: #1e6dac;    /* deep sky: small text, bars, lines on light surfaces */
-  --color-accent-light: #bfe6fc;     /* pale sky: large text / lines on blue */
-  --color-accent-soft: rgba(30, 109, 172, 0.10);
+  --color-accent: #dc9560;           /* copper: button fills, glow */
+  --accent-rgb: 220, 149, 96;        /* copper as r, g, b for translucent uses */
+  --color-on-accent: #2a1606;        /* text on copper fills */
+  --color-accent-strong: #a4541f;    /* deep copper: small text, bars, lines on light surfaces */
+  --color-accent-light: #f6d3b8;     /* pale copper: large text / lines on blue */
+  --color-accent-soft: rgba(164, 84, 31, 0.10);
   --gradient-brand: linear-gradient(160deg, var(--color-brand-light) 0%, var(--color-brand-deep) 100%);
-  --gradient-accent: linear-gradient(135deg, #8ad2f8 0%, #54b4ec 100%);
+  --gradient-accent: linear-gradient(135deg, #eaa874 0%, #d4894f 100%);
   --gradient-progress: linear-gradient(90deg, var(--color-accent-strong), var(--color-accent));
-  --glow-sky: radial-gradient(closest-side, rgba(108, 196, 244, 0.5), rgba(108, 196, 244, 0));
+  --glow-accent: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.5), rgba(var(--accent-rgb), 0));
   --color-progress-track: #e2e4e9;
 
   /* ------- Surfaces ------- */
@@ -92,7 +93,7 @@
   --shadow-sm: 0 1px 2px rgba(15, 16, 20, 0.06), 0 2px 8px rgba(15, 16, 20, 0.04);
   --shadow-md: 0 8px 24px rgba(15, 16, 20, 0.10);
   --shadow-lg: 0 24px 56px rgba(15, 16, 20, 0.20);
-  --shadow-accent: 0 10px 24px rgba(84, 180, 236, 0.40);
+  --shadow-accent: 0 10px 24px rgba(var(--accent-rgb), 0.4);
 
   /* ------- Typography ------- */
   /* Approved font (owner choice, Nov 2026): Barlow Semi Condensed everywhere */
