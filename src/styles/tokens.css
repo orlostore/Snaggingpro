@@ -37,7 +37,7 @@
   --color-accent-light: #eef1f6;     /* pale silver: large text / lines on blue */
   --color-accent-soft: rgba(97, 107, 122, 0.10);
   --gradient-brand: linear-gradient(160deg, var(--color-brand-light) 0%, var(--color-brand-deep) 100%);
-  --gradient-accent: linear-gradient(135deg, #ebeef3 0%, #dce1e9 100%);
+  --gradient-accent: linear-gradient(135deg, #f6f8fb 0%, #e9edf3 100%);
   --gradient-progress: linear-gradient(90deg, var(--color-accent-strong), #8d98a8);
   --glow-accent: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.5), rgba(var(--accent-rgb), 0));
   --color-progress-track: #e2e4e9;
